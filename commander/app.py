@@ -11,11 +11,18 @@ def create_app():
     @routes.post('/cmd')
     async def start_cmd(request):
         data = await request.json()
+        try:
+            assert 'csc' in data
+            assert 'salindex' in data
+            assert 'cmd' in data
+            assert 'params' in data
+        except AssertionError:
+            return web.Response(text='Request must have JSON data with the following keys: csc, salindex, cmd_name, params.', status=400)
+
         csc = data["csc"]
         salindex = data["salindex"]
         cmd_name = data["cmd"]
         params = data["params"]
-
         remote_name = f"{csc}.{salindex}"
         if remote_name not in remotes:
             remotes[remote_name] = salobj.Remote(
@@ -24,9 +31,12 @@ def create_app():
 
         cmd = getattr(remotes[remote_name], cmd_name)
         cmd.set(**params)
-        cmd_result = await cmd.start(timeout=10)
-
-        return web.json_response({'ack': cmd_result.result})
+        
+        try:
+            cmd_result = await cmd.start(timeout=10)
+            return web.json_response({'ack': cmd_result.result})
+        except salobj.AckTimeoutError:
+            return web.Response(status=504)
 
     app.add_routes(routes)
 
