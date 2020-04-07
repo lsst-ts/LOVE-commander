@@ -1,5 +1,8 @@
-def test_hello_world(client):
-    """Start with a blank database."""
+from aiohttp import web
+from commander.app import create_app
 
-    rv = client.get('/')
-    assert rv.data.decode('utf-8') == 'Hello, World!\n'
+async def test_hello(client):
+    resp = await client.get('/')
+    assert resp.status == 200
+    text = await resp.text()
+    assert 'Hello, world' in text
