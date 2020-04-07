@@ -1,8 +1,19 @@
 from aiohttp import web
 from commander.app import create_app
 
+
 async def test_hello(client):
-    resp = await client.get('/')
-    assert resp.status == 200
-    text = await resp.text()
-    assert 'Hello, world' in text
+    data = {
+        'csc': 'Test',
+        'salindex': 1,
+        'cmd': 'cmd_setScalars',
+        'params': {
+            'a': 1,
+            'b': 2
+        }
+    }
+    response = await client.post('/', json=data)
+    # response = await client.get('/')
+    assert response.status == 200
+    response_data = await response.json()
+    assert response_data == data
