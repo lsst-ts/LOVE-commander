@@ -11,6 +11,14 @@ def create_app():
     @routes.post('/cmd')
     async def start_cmd(request):
         data = await request.json()
+        try:
+            assert 'csc' in data
+            assert 'salindex' in data
+            assert 'cmd' in data
+            assert 'params' in data
+        except AssertionError:
+            return web.Response(text='Request must have JSON data with the following keys: csc, salindex, cmd_name, params.', status=400)
+
         csc = data["csc"]
         salindex = data["salindex"]
         cmd_name = data["cmd"]
