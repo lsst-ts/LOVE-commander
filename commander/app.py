@@ -23,7 +23,6 @@ def create_app():
         salindex = data["salindex"]
         cmd_name = data["cmd"]
         params = data["params"]
-
         remote_name = f"{csc}.{salindex}"
         if remote_name not in remotes:
             remotes[remote_name] = salobj.Remote(
@@ -32,9 +31,12 @@ def create_app():
 
         cmd = getattr(remotes[remote_name], cmd_name)
         cmd.set(**params)
-        cmd_result = await cmd.start(timeout=10)
-
-        return web.json_response({'ack': cmd_result.result})
+        
+        try:
+            cmd_result = await cmd.start(timeout=10)
+            return web.json_response({'ack': cmd_result.result})
+        except salobj.AckTimeoutError:
+            return web.Response(status=504)
 
     app.add_routes(routes)
 
