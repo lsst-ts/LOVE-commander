@@ -1,5 +1,38 @@
-def test_hello_world(client):
-    """Start with a blank database."""
+from aiohttp import web
+from lsst.ts import salobj
+from commander.app import create_app
+from utils import NumpyEncoder
+import json
 
-    rv = client.get('/')
-    assert rv.data.decode('utf-8') == 'Hello, World!\n'
+index_gen = salobj.index_generator()
+
+
+async def test_hello(client):
+    # Arrange
+    # setup dds / csc
+    salobj.set_random_lsst_dds_domain()
+    index = next(index_gen)
+    csc = salobj.TestCsc(index=1, config_dir=None,
+                         initial_state=salobj.State.ENABLED)
+    await csc.start_task
+
+    # build data
+    cmd_data = csc.make_random_cmd_scalars()
+    data = json.loads(json.dumps({
+        'csc': 'Test',
+        'salindex': 1,
+        'cmd': 'cmd_setScalars',
+        'params': dict(cmd_data.get_vars())
+    }, cls=NumpyEncoder))
+
+    # Act
+    response = await client.post('/cmd', json=data)
+
+    # Assert status
+    assert response.status == 200
+
+    # Assert content
+    response_data = await response.json()
+    assert response_data == { 'ack': 'Done'}
+
+    await csc.close()

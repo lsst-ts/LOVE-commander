@@ -1,8 +1,12 @@
 FROM lsstts/develop-env:b41
 
 WORKDIR /usr/src/love/commander
-COPY requirements.txt .
-RUN source /opt/lsst/software/stack/loadLSST.bash && pip install -r requirements.txt
+COPY requirements-dev.txt .
+
+# LOVE requirements
+RUN source /opt/lsst/software/stack/loadLSST.bash && pip install -r requirements-dev.txt
+
+# Missing SAL topics
 RUN source /opt/lsst/software/stack/loadLSST.bash \
     && source /home/saluser/repos/ts_sal/setup.env \
     && setup ts_sal -t current \
@@ -15,4 +19,4 @@ ENV FLASK_APP=/usr/src/love/commander
 ENV FLASK_ENV=development
 EXPOSE 5000
 
-CMD ["/usr/src/love/commander/start-daemon.sh"]
+CMD ["/usr/src/love/commander/start-daemon-dev.sh"]
