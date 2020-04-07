@@ -7,7 +7,7 @@ import json
 index_gen = salobj.index_generator()
 
 
-async def test_hello(client):
+async def test_successful_command(client):
     # Arrange
     # setup dds / csc
     salobj.set_random_lsst_dds_domain()
@@ -36,3 +36,23 @@ async def test_hello(client):
     assert response_data == { 'ack': 'Done'}
 
     await csc.close()
+
+async def test_wrong_data(client):
+    # Arrange
+    data = {
+        'wrong': 'data'
+    }
+
+    # Act
+    response = await client.post('/cmd', json=data)
+
+    # Assert status
+    assert response.status == 400
+
+    # Assert content
+    response_text = await response.text()
+    assert response_text == 'Request must have JSON data with the following keys: csc, salindex, cmd_name, params.'
+
+
+async def test_timeout(client):
+    pass
