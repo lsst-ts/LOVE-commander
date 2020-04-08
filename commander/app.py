@@ -1,6 +1,6 @@
 from aiohttp import web
 from lsst.ts import salobj
-
+import json
 
 def create_app():
     remotes = {}
@@ -17,7 +17,7 @@ def create_app():
             assert 'cmd' in data
             assert 'params' in data
         except AssertionError:
-            return web.Response(text='Request must have JSON data with the following keys: csc, salindex, cmd_name, params.', status=400)
+            return web.json_response({"ack": f'Request must have JSON data with the following keys: csc, salindex, cmd_name, params. Received {json.dumps(data)}'}, status=400)
 
         csc = data["csc"]
         salindex = data["salindex"]
@@ -31,12 +31,12 @@ def create_app():
 
         cmd = getattr(remotes[remote_name], cmd_name)
         cmd.set(**params)
-        
+
         try:
             cmd_result = await cmd.start(timeout=10)
             return web.json_response({'ack': cmd_result.result})
         except salobj.AckTimeoutError:
-            return web.Response(status=504)
+            return web.json_response({"ack": "Command time out"}, status=504)
 
     app.add_routes(routes)
 
