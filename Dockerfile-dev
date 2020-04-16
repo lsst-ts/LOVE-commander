@@ -14,9 +14,5 @@ RUN source /opt/lsst/software/stack/loadLSST.bash \
 
 WORKDIR /home/saluser
 
-# Flask environment variables
-ENV FLASK_APP=/usr/src/love/commander
-ENV FLASK_ENV=development
-EXPOSE 5000
 
 CMD ["/usr/src/love/commander/start-daemon-dev.sh"]

@@ -9,4 +9,6 @@ if [[ $LSST_DDS_IP != *"."* ]]; then
   unset LSST_DDS_IP
 fi
 
-python -m aiohttp.web -H 0.0.0.0 -P 5000 commander.main:init
+cd /usr/src/love
+
+python -m aiohttp.web -H 0.0.0.0 -P 5000 commander.app:create_app
