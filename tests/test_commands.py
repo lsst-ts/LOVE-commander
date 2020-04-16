@@ -51,8 +51,8 @@ async def test_wrong_data(client):
     assert response.status == 400
 
     # Assert content
-    response_text = await response.text()
-    assert response_text == 'Request must have JSON data with the following keys: csc, salindex, cmd_name, params.'
+    response = await response.json()
+    assert response['ack'] == f'Request must have JSON data with the following keys: csc, salindex, cmd_name, params. Received {json.dumps(data)}'
 
 
 async def test_timeout(client):
