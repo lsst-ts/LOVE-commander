@@ -2,13 +2,14 @@ from aiohttp import web
 from lsst.ts import salobj
 import json
 
+
 def create_app():
     remotes = {}
 
-    app = web.Application()
+    cmd = web.Application()
 
-    routes = web.RouteTableDef()
-    @routes.post('/cmd')
+    # routes = web.RouteTableDef()
+    # @routes.post('/')
     async def start_cmd(request):
         data = await request.json()
         try:
@@ -38,10 +39,16 @@ def create_app():
         except salobj.AckTimeoutError:
             return web.json_response({"ack": "Command time out"}, status=504)
 
-    app.add_routes(routes)
+    # cmd.add_routes(routes)
+    cmd.router.add_post('/', start_cmd)
 
-    async def on_cleanup(app):
+    async def on_cleanup(cmd):
         for remote_name in remotes:
             await remotes[remote_name].close()
-    app.on_cleanup.append(on_cleanup)
+    cmd.on_cleanup.append(on_cleanup)
+    
+    app = web.Application(
+        middlewares=[web.normalize_path_middleware()])
+    app.add_subapp('/cmd/', cmd)
+
     return app
