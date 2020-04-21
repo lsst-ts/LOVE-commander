@@ -1,4 +1,4 @@
-FROM lsstts/develop-env:b41
+FROM lsstts/develop-env:b65
 
 WORKDIR /usr/src/love/commander
 COPY requirements-dev.txt .
