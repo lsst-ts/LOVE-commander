@@ -10,5 +10,4 @@ if [[ $LSST_DDS_IP != *"."* ]]; then
 fi
 
 cd /usr/src/love
-
-python -m aiohttp.web -H 0.0.0.0 -P 5000 commander.app:create_app
+adev runserver commander -p 5000

@@ -1,11 +1,8 @@
 FROM lsstts/develop-env:b65
 
-WORKDIR /usr/src/love/commander
-COPY requirements-dev.txt .
+WORKDIR /usr/src/love/
 
-# LOVE requirements
-RUN source /opt/lsst/software/stack/loadLSST.bash && pip install -r requirements-dev.txt
-
+COPY . .
 # Missing SAL topics
 RUN source /opt/lsst/software/stack/loadLSST.bash \
     && source /home/saluser/repos/ts_sal/setup.env \
@@ -14,5 +11,4 @@ RUN source /opt/lsst/software/stack/loadLSST.bash \
 
 WORKDIR /home/saluser
 
-
-CMD ["/usr/src/love/commander/start-daemon-dev.sh"]
+CMD ["/usr/src/love/commander/start-daemon.sh"]

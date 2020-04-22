@@ -1,0 +1,9 @@
+.ipytest_cache
+
+virtualenv
+*/venv
+**/*.pyc
+*.cache
+.vscode
+**/__pycache__
+**/.DS_Store
