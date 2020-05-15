@@ -29,7 +29,7 @@ async def create_app(*args, **kwargs):
             for name in salinfos}
 
         return web.json_response(results)
-    salinfo_app.router.add_post('/metadata', get_metadata)
+    salinfo_app.router.add_get('/metadata', get_metadata)
 
     async def on_cleanup(salinfo_app):
         for name in names:

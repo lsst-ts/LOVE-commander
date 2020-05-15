@@ -19,7 +19,7 @@ async def test_metadata(client, *args, **kwargs):
                 for file in available_idl_files]
         names = names[:conftest.REMOTES_LEN_LIMIT]
 
-        response = await client.post('/salinfo/metadata')
+        response = await client.get('/salinfo/metadata')
 
         assert response.status == 200
 
