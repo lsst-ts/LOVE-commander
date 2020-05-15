@@ -14,27 +14,26 @@ async def create_app(*args, **kwargs):
     names = [file.name.split('_', )[-1].replace('.idl', '')
              for file in available_idl_files]
     if kwargs.get('remotes_len_limit') is not None:
-        names = names[:1]
-    remotes = {}
+        names = names[:kwargs.get('remotes_len_limit')]
+
+    salinfos = {}
     for name in names:
-        remote = salobj.Remote(domain, name)
-        await remote.start_task
-        remotes[name] = remote
+        salinfos[name] = salobj.SalInfo(domain, name)
 
     async def get_metadata(request):
         results = {
-            remotes[remote_name].salinfo.metadata.name: {
-                "sal_version": remotes[remote_name].salinfo.metadata.sal_version,
-                "xml_version": remotes[remote_name].salinfo.metadata.xml_version
+            salinfos[name].metadata.name: {
+                "sal_version": salinfos[name].metadata.sal_version,
+                "xml_version": salinfos[name].metadata.xml_version
             }
-            for remote_name in remotes}
+            for name in salinfos}
 
         return web.json_response(results)
     salinfo_app.router.add_post('/metadata', get_metadata)
 
     async def on_cleanup(salinfo_app):
-        for remote_name in remotes:
-            await remotes[remote_name].close()
+        for name in names:
+            await salinfos[name].close()
         await domain.close()
     salinfo_app.on_cleanup.append(on_cleanup)
 
