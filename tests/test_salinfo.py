@@ -49,7 +49,7 @@ async def test_all_topic_names(client, *args, **kwargs):
         ]
         names = names[: conftest.REMOTES_LEN_LIMIT]
 
-        response = await client.get("/salinfo/topic_names")
+        response = await client.get("/salinfo/topic-names")
 
         assert response.status == 200
 
@@ -90,7 +90,7 @@ async def test_some_topic_names(client, *args, **kwargs):
             query_param = "-".join(requested)
             # Requeste them
             response = await client.get(
-                "/salinfo/topic_names?categories=" + query_param
+                "/salinfo/topic-names?categories=" + query_param
             )
             assert response.status == 200
             response_data = await response.json()
