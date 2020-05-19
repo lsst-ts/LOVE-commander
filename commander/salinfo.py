@@ -33,15 +33,17 @@ async def create_app(*args, **kwargs):
         return web.json_response(results)
 
     async def get_topic_names(request):
+        accepted_categories = ["telemetry_names", "event_names", "command_names"]
+        categories = request.rel_url.query.get("categories", "").split("-")
+        categories = [
+            c + "_names" for c in categories if c + "_names" in accepted_categories
+        ]
+        if len(categories) == 0:
+            categories = accepted_categories
         results = {
-            name: {
-                "command_names": list(salinfos[name].command_names),
-                "event_names": list(salinfos[name].event_names),
-                "telemetry_names": list(salinfos[name].telemetry_names),
-            }
+            name: {c: salinfos[name].__getattribute__(c) for c in categories}
             for name in salinfos
         }
-
         return web.json_response(results)
 
     salinfo_app.router.add_get("/metadata", get_metadata)
