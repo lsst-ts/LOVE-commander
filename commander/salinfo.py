@@ -59,6 +59,7 @@ async def create_app(*args, **kwargs):
                 "type_name": field_info[k].type_name,
             }
             for k in field_info.keys()
+            if not k.startswith("private_")
         }
 
     def _get_details(salinfo, categories):
