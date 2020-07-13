@@ -1,7 +1,6 @@
 #!/bin/bash
+. /home/saluser/.setup_dev.sh
 
-. /etc/bashrc
-. .setup.sh
 
 export PYTHONPATH=$PYTHONPATH:/usr/src/love/commander
 if [[ $LSST_DDS_IP != *"."* ]]; then
