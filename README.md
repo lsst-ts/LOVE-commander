@@ -54,3 +54,12 @@ pytest -p no:cacheprovider -p no:pytest_session2file -k metadata
 ```
 
 will run the `test_metadata` test of the `test_salinfo.py` file.
+
+### 2.3 Build documentation
+
+Once inside the container and in the `love` folder you can build the documentation as follows:
+
+```
+cd docsrc
+./create_docs.sh
+```

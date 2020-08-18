@@ -1,0 +1,14 @@
+version: "3.7"
+
+services:
+  commander:
+    container_name: commander-local
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    image: love-commander-image-mount
+    volumes:
+      - .:/usr/src/love
+    command: ".setup.sh"
+    stdin_open: true
+    tty: true

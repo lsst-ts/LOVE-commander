@@ -91,6 +91,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#local-load-for-development">2. Local load for development</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#load-and-get-into-the-docker-image">2.1 Load and get into the docker image</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#run-tests">2.2 Run tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#build-documentation">2.3 Build documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -213,6 +214,14 @@ For example the following command:</p>
 </pre></div>
 </div>
 <p>will run the <code class="docutils literal notranslate"><span class="pre">test_metadata</span></code> test of the <code class="docutils literal notranslate"><span class="pre">test_salinfo.py</span></code> file.</p>
+</div>
+<div class="section" id="build-documentation">
+<h4>2.3 Build documentation<a class="headerlink" href="#build-documentation" title="Permalink to this headline">¶</a></h4>
+<p>Once inside the container and in the <code class="docutils literal notranslate"><span class="pre">love</span></code> folder you can build the documentation as follows:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>cd docsrc
+./create_docs.sh
+</pre></div>
+</div>
 </div>
 </div>
 </div>
