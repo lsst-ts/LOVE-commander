@@ -1,3 +1,4 @@
+"""Define the SAL Info subapplication, which provides the endpoints to request info from SAL."""
 from aiohttp import web
 from lsst.ts import salobj
 import json
@@ -7,6 +8,13 @@ import asyncio
 
 
 async def create_app(*args, **kwargs):
+    """Create the SAL Info application
+
+    Returns
+    -------
+    object
+        The application instance
+    """
     salinfo_app = web.Application()
 
     domain = salobj.Domain()
@@ -22,7 +30,25 @@ async def create_app(*args, **kwargs):
         salinfos[name] = salobj.SalInfo(domain, name)
 
     async def get_metadata(request):
-        """ Handle get metadata requets."""
+        """Handle get metadata requests.
+
+        Parameters
+        ----------
+        request : Request
+            The original HTTP request
+
+        Returns
+        -------
+        Response
+            The response for the HTTP request with the following structure:
+
+            .. code-block:: json
+
+                {
+                    "sal_version": "<SAL version in format x.x.x>",
+                    "xml_version": "<XML version in format x.x.x>"
+                }
+        """
         results = {
             salinfos[name].metadata.name: {
                 "sal_version": salinfos[name].metadata.sal_version,
@@ -34,7 +60,33 @@ async def create_app(*args, **kwargs):
         return web.json_response(results)
 
     async def get_topic_names(request):
-        """ Handle get topic names request."""
+        """Handle get topic names requests.
+
+        Parameters
+        ----------
+        request : Request
+            The original HTTP request
+
+        Returns
+        -------
+        Response
+            The response for the HTTP request with the following structure:
+
+            .. code-block:: json
+
+                {
+                    "<CSC_1>": {
+                        "event_names": ["<event_name_1>", "<event_name_2>"],
+                        "telemetry_names": ["<telemetry_name_1>", "<telemetry_name_2>"],
+                        "command_names": ["<command_name_1>", "<command_name_2>"]
+                    },
+                    "<CSC_2>": {
+                        "event_names": ["<event_name_1>", "<event_name_2>"],
+                        "telemetry_names": ["<telemetry_name_1>", "<telemetry_name_2>"],
+                        "command_names": ["<command_name_1>", "<command_name_2>"]
+                    }
+                }
+        """
         accepted_categories = ["telemetry", "event", "command"]
         categories = request.rel_url.query.get("categories", "").split("-")
         categories = [c for c in categories if c in accepted_categories]
@@ -50,7 +102,19 @@ async def create_app(*args, **kwargs):
         return web.json_response(results)
 
     def _dump_field_info(field_info):
-        """ Dump a FieldInfo to dictionary."""
+        """Dump a FieldInfo to dictionary.
+
+        Parameters
+        ----------
+        field_info : dictionary of object
+            a list of fields description objects
+
+        Returns
+        -------
+        dictionary
+            The data as a dictionary of fields whose values are subdictionaries containing the following keys:
+            name, description, units, type_name
+        """
         return {
             k: {
                 "name": field_info[k].name,
@@ -63,7 +127,22 @@ async def create_app(*args, **kwargs):
         }
 
     def _get_details(salinfo, categories):
-        """ Get detailed data of a given salinfo, for a given set of categories."""
+        """Get detailed data of a given salinfo, for a given set of categories.
+
+        Parameters
+        ----------
+        salinfo : dictionary
+            Dictionary containing the SAL Info in a tree-like structure
+        categories : list of string
+            List of categories to include, can contain any of "event", "telemetry" or "command"
+
+        Returns
+        -------
+        dictionary
+            The dictionary for the response, with a list of dictionaries describing each topic,
+            for all the topics defined in the "categories" parameter.
+            The dictionary is indexed by the topic type (event_data, telemetry_data or command_data).
+        """
         result = {}
         if "telemetry" in categories:
             result["telemetry_data"] = {
@@ -89,7 +168,55 @@ async def create_app(*args, **kwargs):
         return result
 
     async def get_topic_data(request):
-        """ Handle get topic data request."""
+        """Handle get topic data requests.
+
+        Parameters
+        ----------
+        request : Request
+            The original HTTP request
+
+        Returns
+        -------
+        Response
+            The response for the HTTP request with the following structure:
+
+            .. code-block:: json
+
+                {
+                    "<CSC_1>": {
+                        "event_data": {
+                        "<parameter_1>": {
+                            "<field_11>": "<value_11>",
+                            "<field_12>": "<value_12>",
+                        },
+                        "<parameter_2>": {
+                            "<field_21>": "<value_21>",
+                            "<field_22>": "<value_22>",
+                        },
+                        },
+                        "telemetry_data": {
+                        "<parameter_1>": {
+                            "<field_11>": "<value_11>",
+                            "<field_12>": "<value_12>",
+                        },
+                        "<parameter_2>": {
+                            "<field_21>": "<value_21>",
+                            "<field_22>": "<value_22>",
+                        },
+                        },
+                        "command_data": {
+                        "<parameter_1>": {
+                            "<field_11>": "<value_11>",
+                            "<field_12>": "<value_12>",
+                        },
+                        "<parameter_2>": {
+                            "<field_21>": "<value_21>",
+                            "<field_22>": "<value_22>",
+                        },
+                        },
+                    },
+                }
+        """
         accepted_categories = ["telemetry", "event", "command"]
         categories = request.rel_url.query.get("categories", "").split("-")
         categories = [c for c in categories if c in accepted_categories]
@@ -103,6 +230,13 @@ async def create_app(*args, **kwargs):
     salinfo_app.router.add_get("/topic-data", get_topic_data)
 
     async def on_cleanup(salinfo_app):
+        """Close the domain when cleaning the application
+
+        Parameters
+        ----------
+        salinfo_app : object
+            The SAL Info application
+        """
         for name in names:
             await salinfos[name].close()
         await domain.close()
