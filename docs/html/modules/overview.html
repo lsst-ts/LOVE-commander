@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ApiDoc &mdash; LOVE-Commander 2.0.0 documentation</title>
+  <title>Overview &mdash; LOVE-Commander 2.0.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="commander package" href="commander.html" />
-    <link rel="prev" title="Readme File" href="../modules/readme_link.html" /> 
+    <link rel="next" title="How it works" href="how_it_works.html" />
+    <link rel="prev" title="Welcome to LOVE-Commander’s documentation!" href="../index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -84,13 +84,10 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../modules/overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/how_it_works.html">How it works</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/readme_link.html">Readme File</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">ApiDoc</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="commander.html">commander package</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how_it_works.html">How it works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html">Readme File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apidoc/modules.html">ApiDoc</a></li>
 </ul>
 
             
@@ -137,13 +134,13 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>ApiDoc</li>
+      <li>Overview</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/apidoc/modules.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/modules/overview.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -156,23 +153,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="apidoc">
-<h1>ApiDoc<a class="headerlink" href="#apidoc" title="Permalink to this headline">¶</a></h1>
-<p>These are the ApiDocs of the project.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="commander.html">commander package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="commander.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="commander.html#module-commander.app">commander.app module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="commander.html#module-commander.commands">commander.commands module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="commander.html#module-commander.heartbeats">commander.heartbeats module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="commander.html#module-commander.salinfo">commander.salinfo module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="commander.html#module-commander">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
+  <div class="section" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p>The LOVE-commander is a backend application that acts as middleware between the LOVE-manager and SAL.</p>
+<p>It is built as a Python module that provides and HTTP API to accept command requests and run them using <code class="code docutils literal notranslate"><span class="pre">salobj</span></code>, and provide some SAL information, such as metadata, topics names, among others.
+Commands are run during the HTTP request, and their acknowledgement (or failure) is returned as the HTTP response.</p>
+<img alt="../_images/Commander-details.svg" src="../_images/Commander-details.svg" /></div>
 
 
            </div>
@@ -182,10 +168,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="commander.html" class="btn btn-neutral float-right" title="commander package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="how_it_works.html" class="btn btn-neutral float-right" title="How it works" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../modules/readme_link.html" class="btn btn-neutral float-left" title="Readme File" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to LOVE-Commander’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -10,6 +10,8 @@ Welcome to LOVE-Commander's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   modules/overview.rst
+   modules/how_it_works.rst
    modules/readme_link.rst
    apidoc/modules.rst
 

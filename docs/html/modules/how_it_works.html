@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ApiDoc &mdash; LOVE-Commander 2.0.0 documentation</title>
+  <title>How it works &mdash; LOVE-Commander 2.0.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="commander package" href="commander.html" />
-    <link rel="prev" title="Readme File" href="../modules/readme_link.html" /> 
+    <link rel="next" title="Readme File" href="readme_link.html" />
+    <link rel="prev" title="Overview" href="overview.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -84,13 +84,15 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../modules/overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/how_it_works.html">How it works</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/readme_link.html">Readme File</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">ApiDoc</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="commander.html">commander package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How it works</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#commands">Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sal-info">SAL Info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#heartbeats">Heartbeats</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html">Readme File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apidoc/modules.html">ApiDoc</a></li>
 </ul>
 
             
@@ -137,13 +139,13 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>ApiDoc</li>
+      <li>How it works</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/apidoc/modules.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/modules/how_it_works.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -156,21 +158,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="apidoc">
-<h1>ApiDoc<a class="headerlink" href="#apidoc" title="Permalink to this headline">¶</a></h1>
-<p>These are the ApiDocs of the project.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="commander.html">commander package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="commander.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="commander.html#module-commander.app">commander.app module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="commander.html#module-commander.commands">commander.commands module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="commander.html#module-commander.heartbeats">commander.heartbeats module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="commander.html#module-commander.salinfo">commander.salinfo module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="commander.html#module-commander">Module contents</a></li>
-</ul>
-</li>
-</ul>
+  <div class="section" id="how-it-works">
+<h1>How it works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h1>
+<img alt="../_images/Commander-details.svg" src="../_images/Commander-details.svg" /><p>The LOVE-Commander is built as an <code class="code docutils literal notranslate"><span class="pre">aiohttp</span></code> application composed by 3 different subapplications:</p>
+<div class="section" id="commands">
+<h2>Commands<a class="headerlink" href="#commands" title="Permalink to this headline">¶</a></h2>
+<p>Provides the HTTP endpoint to accept and run commands.
+It creates a <code class="code docutils literal notranslate"><span class="pre">salobj.Remote</span></code> object for the given <code class="code docutils literal notranslate"><span class="pre">CSC</span></code> and <code class="code docutils literal notranslate"><span class="pre">salindex</span></code>, and runs the given <code class="code docutils literal notranslate"><span class="pre">cmd</span></code> with its given <code class="code docutils literal notranslate"><span class="pre">params</span></code>.
+The command acknowledgement (or failure) is returned as the HTTP response.</p>
+</div>
+<div class="section" id="sal-info">
+<h2>SAL Info<a class="headerlink" href="#sal-info" title="Permalink to this headline">¶</a></h2>
+<p>Provides the HTTP endpoints to request data from SAL, such as metadata, names of topics (telemetries, events and commands) and topics data, such as parameters and fields.</p>
+</div>
+<div class="section" id="heartbeats">
+<h2>Heartbeats<a class="headerlink" href="#heartbeats" title="Permalink to this headline">¶</a></h2>
+<p>Provides an HTTP endpoint to accept requests for its own heartbeat. This is used by the <code class="code docutils literal notranslate"><span class="pre">LOVE-Manager</span></code> to make sure the <code class="code docutils literal notranslate"><span class="pre">LOVE-Commander</span></code> is “alive” and accepting requests.</p>
 </div>
 </div>
 
@@ -182,10 +185,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="commander.html" class="btn btn-neutral float-right" title="commander package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="readme_link.html" class="btn btn-neutral float-right" title="Readme File" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../modules/readme_link.html" class="btn btn-neutral float-left" title="Readme File" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="overview.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
