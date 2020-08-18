@@ -11,6 +11,7 @@ Welcome to LOVE-Commander's documentation!
    :caption: Contents:
 
    modules/overview.rst
+   modules/how_to_use_it.rst
    modules/how_it_works.rst
    modules/readme_link.rst
    apidoc/modules.rst
