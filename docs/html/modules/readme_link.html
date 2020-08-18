@@ -1,0 +1,277 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Readme File &mdash; LOVE-Commander 2.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ApiDoc" href="../apidoc/modules.html" />
+    <link rel="prev" title="Welcome to LOVE-Commander’s documentation!" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> LOVE-Commander
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Readme File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#love-commander">LOVE-commander</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#running-tests">Running tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-as-part-of-the-love-system">1. Use as part of the LOVE system</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#local-load-for-development">2. Local load for development</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#load-and-get-into-the-docker-image">2.1 Load and get into the docker image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#run-tests">2.2 Run tests</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apidoc/modules.html">ApiDoc</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LOVE-Commander</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Readme File</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/modules/readme_link.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="readme-file">
+<h1>Readme File<a class="headerlink" href="#readme-file" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="love-commander">
+<h2>LOVE-commander<a class="headerlink" href="#love-commander" title="Permalink to this headline">¶</a></h2>
+<p>LOVE service to send SAL commands from http endpoints using salobj</p>
+<div class="section" id="running-tests">
+<h3>Running tests<a class="headerlink" href="#running-tests" title="Permalink to this headline">¶</a></h3>
+<p>Disabling plugins that may throw errors due to not having write access is recommended:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pytest -p no:cacheprovider -p no:pytest_session2file
+</pre></div>
+</div>
+</div>
+<div class="section" id="use-as-part-of-the-love-system">
+<h3>1. Use as part of the LOVE system<a class="headerlink" href="#use-as-part-of-the-love-system" title="Permalink to this headline">¶</a></h3>
+<p>In order to use the LOVE-commander as part of the LOVE system we recommend to use the docker-compose and configuration files provided in the <a class="reference external" href="https://github.com/lsst-ts/LOVE-integration-tools">LOVE-integration-tools</a> repo. Please follow the instructions there.</p>
+</div>
+<div class="section" id="local-load-for-development">
+<h3>2. Local load for development<a class="headerlink" href="#local-load-for-development" title="Permalink to this headline">¶</a></h3>
+<p>We provide a docker image and a docker-compose file in order to load the LOVE-commander locally for development purposes, i.e. run tests and build documentation.</p>
+<p>This docker-compose does not copy the code into the image, but instead it mounts the repository inside the image, this way you can edit the code from outside the docker container with no need to rebuild or restart.</p>
+<div class="section" id="load-and-get-into-the-docker-image">
+<h4>2.1 Load and get into the docker image<a class="headerlink" href="#load-and-get-into-the-docker-image" title="Permalink to this headline">¶</a></h4>
+<p>Follow these instructions to run the application in a docker container and get into it:</p>
+<ol class="arabic simple">
+<li><p>Launch and get into the container:</p></li>
+</ol>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>docker-compose up -d
+docker-exec commander bash
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li><p>Inside the container:, load the setup and got to love folder</p></li>
+</ol>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>source .setup.sh
+cd /usr/src/love
+</pre></div>
+</div>
+</div>
+<div class="section" id="run-tests">
+<h4>2.2 Run tests<a class="headerlink" href="#run-tests" title="Permalink to this headline">¶</a></h4>
+<p>Once inside the container and in the <code class="docutils literal notranslate"><span class="pre">love</span></code> folder you can run the tests. Disabling plugins that may throw errors due to not having write access is recommended:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pytest -p no:cacheprovider -p no:pytest_session2file
+</pre></div>
+</div>
+<p>You may filter tests with the <code class="docutils literal notranslate"><span class="pre">-k</span> <span class="pre">&lt;filter-substring&gt;</span></code> flag, where <code class="docutils literal notranslate"><span class="pre">&lt;filter-substring&gt;</span></code> can be a file or a test suite name.
+For example the following command:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pytest -p no:cacheprovider -p no:pytest_session2file -k metadata
+</pre></div>
+</div>
+<p>will run the <code class="docutils literal notranslate"><span class="pre">test_metadata</span></code> test of the <code class="docutils literal notranslate"><span class="pre">test_salinfo.py</span></code> file.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../apidoc/modules.html" class="btn btn-neutral float-right" title="ApiDoc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to LOVE-Commander’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Inria Chile
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
