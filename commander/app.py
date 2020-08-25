@@ -19,9 +19,9 @@ async def create_app(*args, **kwargs):
 
     app.add_subapp("/cmd/", create_cmd_app())
     app.add_subapp("/heartbeat/", create_heartbeat_app())
-    app.add_subapp(
-        "/salinfo/",
-        await create_salinfo_app(remotes_len_limit=kwargs.get("remotes_len_limit")),
-    )
+    # app.add_subapp(
+    #     "/salinfo/",
+    #     await create_salinfo_app(remotes_len_limit=kwargs.get("remotes_len_limit")),
+    # )
 
     return app
