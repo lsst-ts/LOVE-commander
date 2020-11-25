@@ -20,7 +20,7 @@ def create_app(*args, **kwargs):
     salinfo_app = web.Application()
 
     async def post_observingLog(request):
-        """Handle post observingLog requests.
+        """Handle post observing log requests.
 
         Parameters
         ----------
@@ -35,8 +35,7 @@ def create_app(*args, **kwargs):
             .. code-block:: json
 
                 {
-                    "sal_version": "<SAL version in format x.x.x>",
-                    "xml_version": "<XML version in format x.x.x>"
+                    "ack": "<Description about the success state of the request>"
                 }
         """
 
@@ -59,13 +58,20 @@ def create_app(*args, **kwargs):
         # LOVECsc
         csc = LOVECsc()
         await csc.start_task
+        
+        # TODO: how can I check that observing log was added?
         csc.add_observing_log(user, message)
         await csc.close()
 
-        return web.json_response({"ack": "Added new observing log to SAL"})
+        return web.json_response(
+            {
+                "ack": "Added new observing log to SAL"
+            },
+            status=200
+        )
 
 
-    salinfo_app.router.add_post("/observing-log", post_observingLog)
+    salinfo_app.router.add_post("/observinglog", post_observingLog)
 
     async def on_cleanup(salinfo_app):
         """Close the domain when cleaning the application
