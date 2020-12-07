@@ -1,13 +1,14 @@
 """Define the SAL Info subapplication, which provides the endpoints to request info from SAL."""
 from aiohttp import web
 from lsst.ts import salobj
-from commander.lovecsc_controller import LOVECsc
 import utils
 import json
 
 STD_TIMEOUT = 15  # timeout for command ack
 
 index_gen = salobj.index_generator()
+
+
 
 def create_app(*args, **kwargs):
     """Create the LOVECsc application
@@ -17,7 +18,7 @@ def create_app(*args, **kwargs):
     object
         The application instance
     """
-    salinfo_app = web.Application()
+    lovecsc_app = web.Application()
 
     async def post_observingLog(request):
         """Handle post observing log requests.
@@ -56,12 +57,9 @@ def create_app(*args, **kwargs):
         message = data["message"]
 
         # LOVECsc
-        csc = LOVECsc()
-        await csc.start_task
-        
-        # TODO: how can I check that observing log was added?
-        csc.add_observing_log(user, message)
-        await csc.close()
+        csc = salobj.Controller("LOVE", index=None, do_callbacks=False)
+        csc.evt_observingLog.set(user=user, message=message)
+        csc.evt_observingLog.put()
 
         return web.json_response(
             {
@@ -71,16 +69,19 @@ def create_app(*args, **kwargs):
         )
 
 
-    salinfo_app.router.add_post("/observinglog", post_observingLog)
+    lovecsc_app.router.add_post("/observinglog", post_observingLog)
 
-    async def on_cleanup(salinfo_app):
-        """Close the domain when cleaning the application
+    async def on_cleanup(lovecsc_app):
+        """Close the CSC when cleaning the application
 
         Parameters
         ----------
+        lovecsc_app : web.Application
+            The LOVE Csc web application
         """
-        pass
 
-    salinfo_app.on_cleanup.append(on_cleanup)
+        await csc.close()
 
-    return salinfo_app
+    lovecsc_app.on_cleanup.append(on_cleanup)
+
+    return lovecsc_app

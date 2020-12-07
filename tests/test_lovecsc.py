@@ -1,19 +1,14 @@
 from lsst.ts import salobj
 from tests import conftest
-from commander.lovecsc_controller import LOVECsc
 import pytest
 import json
 import utils
 
-index_gen = salobj.index_generator()
-
 async def test_successful_command(client, *args, **kwargs):
     # Arrange
     salobj.set_random_lsst_dds_domain()
-    csc = LOVECsc()
-    remote = salobj.Remote(domain=csc.domain, name="LOVE")
+    remote = salobj.Remote(domain=salobj.Domain(), name="LOVE")
     
-    await csc.start_task
     await remote.start_task
     
     observing_log_msg = {
@@ -35,7 +30,6 @@ async def test_successful_command(client, *args, **kwargs):
     assert result.message == "a message"
 
     # Clean up
-    await csc.close()
     await remote.close()
 
 
