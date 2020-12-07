@@ -61,6 +61,8 @@ def create_app(*args, **kwargs):
         csc.evt_observingLog.set(user=user, message=message)
         csc.evt_observingLog.put()
 
+        await csc.close()
+
         return web.json_response(
             {
                 "ack": "Added new observing log to SAL"
@@ -72,15 +74,7 @@ def create_app(*args, **kwargs):
     lovecsc_app.router.add_post("/observinglog", post_observingLog)
 
     async def on_cleanup(lovecsc_app):
-        """Close the CSC when cleaning the application
-
-        Parameters
-        ----------
-        lovecsc_app : web.Application
-            The LOVE Csc web application
-        """
-
-        await csc.close()
+        pass
 
     lovecsc_app.on_cleanup.append(on_cleanup)
 
