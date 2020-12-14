@@ -19,6 +19,7 @@ def create_app(*args, **kwargs):
         The application instance
     """
     lovecsc_app = web.Application()
+    csc = salobj.Controller("LOVE", index=None, do_callbacks=False)
 
     async def post_observingLog(request):
         """Handle post observing log requests.
@@ -57,11 +58,8 @@ def create_app(*args, **kwargs):
         message = data["message"]
 
         # LOVECsc
-        csc = salobj.Controller("LOVE", index=None, do_callbacks=False)
         csc.evt_observingLog.set(user=user, message=message)
         csc.evt_observingLog.put()
-
-        await csc.close()
 
         return web.json_response(
             {
@@ -74,7 +72,7 @@ def create_app(*args, **kwargs):
     lovecsc_app.router.add_post("/observinglog", post_observingLog)
 
     async def on_cleanup(lovecsc_app):
-        pass
+        await csc.close()
 
     lovecsc_app.on_cleanup.append(on_cleanup)
 
