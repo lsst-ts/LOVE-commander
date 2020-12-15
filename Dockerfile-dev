@@ -1,4 +1,5 @@
-FROM lsstts/develop-env:c0010
+ARG LSSTTS_DEV_VERSION=c0010
+FROM lsstts/develop-env:${LSSTTS_DEV_VERSION}
 
 WORKDIR /usr/src/love/commander
 COPY requirements-dev.txt .
