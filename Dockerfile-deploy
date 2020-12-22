@@ -11,7 +11,7 @@ RUN source /home/saluser/.setup_sal_env.sh && \
     pip install kafkit[aiohttp] aiokafka && \
     pip install -r requirements-dev.txt
 
-COPY commander/start-daemon.sh /home/saluser/.startup.sh
+COPY commander/start-daemon-deploy.sh /home/saluser/.startup.sh
 USER root
 RUN chown saluser:saluser /home/saluser/.startup.sh && \
     chmod a+x /home/saluser/.startup.sh
