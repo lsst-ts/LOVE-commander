@@ -12,3 +12,12 @@ services:
     command: ".setup.sh"
     stdin_open: true
     tty: true
+
+  commander-deploy:
+    container_name: commander
+    build:
+      context: .
+      dockerfile: Dockerfile-deploy
+      args:
+        cycle: ${cycle}
+    image: ts-dockerhub.lsst.org/love-commander:${cycle}

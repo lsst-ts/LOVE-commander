@@ -4,6 +4,7 @@ pipeline {
     registryCredential = "dockerhub-inriachile"
     dockerImageName = "lsstts/love-commander:"
     dockerImage = ""
+    LSSTTS_DEV_VERSION = "c0016.001"
   }
 
   stages {
@@ -31,7 +32,7 @@ pipeline {
           }
           dockerImageName = dockerImageName + image_tag
           echo "dockerImageName: ${dockerImageName}"
-          dockerImage = docker.build dockerImageName
+          dockerImage = docker.build(dockerImageName, "--build-arg LSSTTS_DEV_VERSION=${LSSTTS_DEV_VERSION} .")
         }
       }
     }
