@@ -17,7 +17,7 @@ def create_app():
     heartbeat = web.Application()
 
     async def start_heartbeat(request):
-        data = await request.read()
+        await request.read()
         now = datetime.now()
         timestamp = datetime.timestamp(now)
         return web.json_response({"timestamp": timestamp})
