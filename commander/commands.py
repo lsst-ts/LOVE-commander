@@ -29,7 +29,7 @@ def create_app():
             return web.json_response(
                 {
                     "ack": f"Request must have JSON data with the following "
-                    "keys: csc, salindex, cmd_name, params. Received {json.dumps(data)}"
+                    f"keys: csc, salindex, cmd_name, params. Received {json.dumps(data)}"
                 },
                 status=400,
             )
