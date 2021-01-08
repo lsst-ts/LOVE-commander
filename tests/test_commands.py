@@ -81,7 +81,6 @@ async def test_timeout(client):
 
     # Assert status
     content = await response.json()
-    print(content)
-
+    
     assert response.status == 504
     await csc.close()
