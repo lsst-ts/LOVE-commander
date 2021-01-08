@@ -6,7 +6,6 @@ import utils
 
 async def test_successful_command(client, *args, **kwargs):
     # Arrange
-    salobj.set_random_lsst_dds_domain()
     remote = salobj.Remote(domain=salobj.Domain(), name="LOVE")
     
     await remote.start_task
