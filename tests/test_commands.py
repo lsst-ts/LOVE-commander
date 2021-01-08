@@ -71,7 +71,7 @@ async def test_timeout(client):
         'salindex': 1,
         'cmd': 'cmd_wait',
         'params': {
-            'duration': 11,
+            'duration': -11,
             'ack': salobj.SalRetCode.CMD_COMPLETE.value
         }
     }, cls=NumpyEncoder))
@@ -80,5 +80,8 @@ async def test_timeout(client):
     response = await client.post('/cmd', json=data)
 
     # Assert status
+    content = await response.json()
+    print(content)
+
     assert response.status == 504
     await csc.close()

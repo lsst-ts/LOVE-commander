@@ -58,7 +58,7 @@ def create_app():
         cmd.set(**params)
 
         try:
-            cmd_result = await cmd.start(timeout=10)
+            cmd_result = await cmd.start(timeout=5)
             return web.json_response({"ack": cmd_result.result})
         except salobj.AckTimeoutError as e:
             msg = (
