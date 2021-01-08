@@ -11,7 +11,7 @@ index_gen = salobj.index_generator()
 async def test_successful_command(client):
     # Arrange
     # setup dds / csc
-    salobj.set_random_lsst_dds_domain()
+    salobj.set_random_lsst_dds_partition_prefix()
     index = next(index_gen)
     csc = salobj.TestCsc(index=1, config_dir=None,
                          initial_state=salobj.State.ENABLED)
@@ -58,7 +58,7 @@ async def test_wrong_data(client):
 async def test_timeout(client):
     # Arrange
     # setup dds / csc
-    salobj.set_random_lsst_dds_domain()
+    salobj.set_random_lsst_dds_partition_prefix()
     index = next(index_gen)
     csc = salobj.TestCsc(index=1, config_dir=None,
                          initial_state=salobj.State.ENABLED)
