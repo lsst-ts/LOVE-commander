@@ -29,7 +29,7 @@ def create_app():
             return web.json_response(
                 {
                     "ack": f"Request must have JSON data with the following "
-                    "keys: csc, salindex, cmd_name, params. Received {json.dumps(data)}"
+                    f"keys: csc, salindex, cmd_name, params. Received {json.dumps(data)}"
                 },
                 status=400,
             )
@@ -58,7 +58,7 @@ def create_app():
         cmd.set(**params)
 
         try:
-            cmd_result = await cmd.start(timeout=10)
+            cmd_result = await cmd.start(timeout=5)
             return web.json_response({"ack": cmd_result.result})
         except salobj.AckTimeoutError as e:
             msg = (
