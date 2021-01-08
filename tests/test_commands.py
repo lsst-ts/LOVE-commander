@@ -80,7 +80,7 @@ async def test_timeout(client):
     response = await client.post('/cmd', json=data)
 
     # Assert status
-    content = await response.json()
+    await response.json()
     
     assert response.status == 504
     await csc.close()
