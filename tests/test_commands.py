@@ -12,7 +12,7 @@ async def test_successful_command(client):
     # Arrange
     # setup dds / csc
     salobj.set_random_lsst_dds_partition_prefix()
-    index = next(index_gen)
+    next(index_gen)
     csc = salobj.TestCsc(index=1, config_dir=None,
                          initial_state=salobj.State.ENABLED)
     await csc.start_task
@@ -59,13 +59,13 @@ async def test_timeout(client):
     # Arrange
     # setup dds / csc
     salobj.set_random_lsst_dds_partition_prefix()
-    index = next(index_gen)
+    next(index_gen)
     csc = salobj.TestCsc(index=1, config_dir=None,
                          initial_state=salobj.State.ENABLED)
     await csc.start_task
 
     # build data
-    cmd_data = csc.make_random_cmd_scalars()
+    csc.make_random_cmd_scalars()
     data = json.loads(json.dumps({
         'csc': 'Test',
         'salindex': 1,

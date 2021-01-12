@@ -10,13 +10,14 @@ from tests import conftest
 import pytest
 
 index_gen = salobj.index_generator()
+idl_glob = "**/*.idl"
 
 async def test_metadata(client, *args, **kwargs):
     """ Test the get metadata response."""
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
         domain = salobj.Domain()
-        available_idl_files = list(domain.idl_dir.glob("**/*.idl"))
+        available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
             file.name.split("_",)[-1].replace(".idl", "")
             for file in available_idl_files
@@ -42,7 +43,7 @@ async def test_all_topic_names(client, *args, **kwargs):
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
         domain = salobj.Domain()
-        available_idl_files = list(domain.idl_dir.glob("**/*.idl"))
+        available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
             file.name.split("_",)[-1].replace(".idl", "")
             for file in available_idl_files
@@ -70,7 +71,7 @@ async def test_some_topic_names(client, *args, **kwargs):
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
         domain = salobj.Domain()
-        available_idl_files = list(domain.idl_dir.glob("**/*.idl"))
+        available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
             file.name.split("_",)[-1].replace(".idl", "")
             for file in available_idl_files
@@ -136,7 +137,7 @@ async def test_all_topic_data(client, *args, **kwargs):
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
         domain = salobj.Domain()
-        available_idl_files = list(domain.idl_dir.glob("**/*.idl"))
+        available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
             file.name.split("_",)[-1].replace(".idl", "")
             for file in available_idl_files
@@ -164,7 +165,7 @@ async def test_some_topic_data(client, *args, **kwargs):
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
         domain = salobj.Domain()
-        available_idl_files = list(domain.idl_dir.glob("**/*.idl"))
+        available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
             file.name.split("_",)[-1].replace(".idl", "")
             for file in available_idl_files
