@@ -18,7 +18,6 @@ MagicMock.__await__ = lambda x: async_magic().__await__()
 
 class MockEFDClient(object):
     async def select_time_series(cls, topic_name, fields, start, end, is_window=False, index=None):
-    # select_time_series('lsst.sal.ATDome.position', 'azimuthPosition', t1, t2)
         f = asyncio.Future()
         data = {}
         for field in fields:
@@ -36,7 +35,7 @@ class MockEFDClient(object):
 
 async def test_efd_timeseries(client):
     """ Test the get timeseries response."""
-    mock_efd_patcher = patch('lsst_efd_client.EfdClient')
+    mock_efd_patcher = patch("lsst_efd_client.EfdClient")
 
     # Start patching `efd_client`.
     mock_efd_client = mock_efd_patcher.start()
@@ -64,6 +63,13 @@ async def test_efd_timeseries(client):
     assert response.status == 200
 
     response_data = await response.json()
+    assert "ATDome-0-topic1" in list(response_data.keys())
+    assert "ATMCS-1-topic2" in list(response_data.keys())
+    assert len(response_data["ATDome-0-topic1"]) == 1
+    assert len(response_data["ATMCS-1-topic2"]) == 2
+    assert response_data["ATDome-0-topic1"]["field1"][0]["ts"] == "1583531381471"
+    assert response_data["ATDome-0-topic1"]["field1"][0]["value"] == 0.21
+
     # Stop patching `efd_client`.
     mock_efd_patcher.stop()
 
