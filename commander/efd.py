@@ -19,16 +19,16 @@ def create_app():
     efd_app = web.Application()
 
     async def query_efd_timeseries(request):
-        efd_client = lsst_efd_client.EfdClient()
+        efd_client = lsst_efd_client.EfdClient("summit_efd")
         req = await request.json()
 
         start_date = req["start_date"]
-        time_window = req["time_window"]
+        time_window = int(req["time_window"])
         cscs = req["cscs"]
         resample = req["resample"]
         
-        parsed_date = Time(start_date, scale='tai')
-        time_delta = TimeDelta(time_window, format='sec')
+        parsed_date = Time(start_date, scale="tai")
+        time_delta = TimeDelta(time_window*60, format="sec", scale="tai")
         query_tasks = []
         sources = []
         for csc in cscs:
@@ -40,23 +40,27 @@ def create_app():
                     task = efd_client.select_time_series(
                         f"lsst.sal.{csc}.{topic}", 
                         fields,
-                        start_date,
+                        parsed_date,
                         time_delta,
-                        index=index,
+                        index=int(index),
                         is_window=True
                     )
                     sources.append(f"{csc}-{index}-{topic}")
                     query_tasks.append(task)
 
-        results = [r.result().to_dict() for r in await asyncio.gather(*query_tasks)]
+        results = [r.resample(resample).mean() for r in await asyncio.gather(*query_tasks)]
+        results = [r.to_dict() for r in results]
+
         for res in results:
             for field in res:
                 items = res[field].items()
-                res[field] = [{'ts': item[0], 'value': item[1]} for item in items]
+                res[field] = [{"ts": str(item[0]), "value": item[1]} for item in items]
+
         response_data = dict(zip(sources,  results))
         return web.json_response(response_data)
 
     efd_app.router.add_post("/timeseries", query_efd_timeseries)
+    efd_app.router.add_post("/timeseries/", query_efd_timeseries)
 
     async def on_cleanup(efd_app):
         # Do cleanup
