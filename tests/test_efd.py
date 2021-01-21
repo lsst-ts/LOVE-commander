@@ -8,6 +8,7 @@ from commander.app import create_app
 from utils import NumpyEncoder
 from tests import conftest
 import pytest
+import pandas as pd
 from unittest.mock import patch, call, MagicMock
 
 # Patch for using MagicMock in async environments
@@ -19,18 +20,18 @@ class MockEFDClient(object):
     async def select_time_series(cls, topic_name, fields, start, end, is_window=False, index=None):
     # select_time_series('lsst.sal.ATDome.position', 'azimuthPosition', t1, t2)
         f = asyncio.Future()
-        data = []
+        data = {}
         for field in fields:
-            data.append({
-            field: {
+            data[field] = {
                 "1583531381471":0.21,
                 "1583531381692":0.21,
                 "1583531381900":0.21,
                 "1583531382109":0.21,
                 "1583531382316":0.21
             }
-        })
-        f.set_result(data)
+
+        df = pd.DataFrame.from_dict(data)
+        f.set_result(df)
         return f
 
 async def test_efd_timeseries(client):
@@ -63,7 +64,6 @@ async def test_efd_timeseries(client):
     assert response.status == 200
 
     response_data = await response.json()
-    import pdb; pdb.set_trace()
     # Stop patching `efd_client`.
     mock_efd_patcher.stop()
 

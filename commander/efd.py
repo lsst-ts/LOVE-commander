@@ -48,7 +48,11 @@ def create_app():
                     sources.append(f"{csc}-{index}-{topic}")
                     query_tasks.append(task)
 
-        results = [r.result() for r in await asyncio.gather(*query_tasks)]
+        results = [r.result().to_dict() for r in await asyncio.gather(*query_tasks)]
+        for res in results:
+            for field in res:
+                items = res[field].items()
+                res[field] = [{'ts': item[0], 'value': item[1]} for item in items]
         response_data = dict(zip(sources,  results))
         return web.json_response(response_data)
 
