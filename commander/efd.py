@@ -48,7 +48,7 @@ def create_app():
                     sources.append(f"{csc}-{index}-{topic}")
                     query_tasks.append(task)
 
-        results = [r.resample(resample).mean() for r in await asyncio.gather(*query_tasks)]
+        results = [r.resample(resample).mean() if not r.empty else r for r in await asyncio.gather(*query_tasks)]
         results = [r.to_dict() for r in results]
 
         for res in results:
