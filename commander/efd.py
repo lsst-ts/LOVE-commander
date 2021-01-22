@@ -7,6 +7,7 @@ from astropy.time import Time, TimeDelta
 import pytest
 import asyncio
 from astropy.time import Time, TimeDelta
+import os
 
 def create_app():
     """Create the EFD application
@@ -17,9 +18,10 @@ def create_app():
         The application instance
     """
     efd_app = web.Application()
+    efd_instance = os.environ.get("EFD_INSTANCE", "summit_efd")
 
     async def query_efd_timeseries(request):
-        efd_client = lsst_efd_client.EfdClient("summit_efd")
+        efd_client = lsst_efd_client.EfdClient(efd_instance)
         req = await request.json()
 
         start_date = req["start_date"]
