@@ -22,11 +22,11 @@ class MockEFDClient(object):
         data = {}
         for field in fields:
             data[field] = {
-                pd.Timestamp("2020-03-06 21:49:41.471000"):0.21,
-                pd.Timestamp("2020-03-06 21:50:41.471000"):0.21,
-                pd.Timestamp("2020-03-06 21:51:41.471000"):0.21,
-                pd.Timestamp("2020-03-06 21:52:41.471000"):0.21,
-                pd.Timestamp("2020-03-06 21:53:41.471000"):0.21
+                pd.Timestamp("2020-03-06 21:49:41"):0.21,
+                pd.Timestamp("2020-03-06 21:50:41"):0.21,
+                pd.Timestamp("2020-03-06 21:51:41"):0.21,
+                pd.Timestamp("2020-03-06 21:52:41"):0.21,
+                pd.Timestamp("2020-03-06 21:53:41"):0.21
             }
 
         df = pd.DataFrame.from_dict(data)
@@ -67,6 +67,7 @@ async def test_efd_timeseries(client):
     assert "ATMCS-1-topic2" in list(response_data.keys())
     assert len(response_data["ATDome-0-topic1"]) == 1
     assert len(response_data["ATMCS-1-topic2"]) == 2
+    # Endpoint truncates seconds due to resample
     assert response_data["ATDome-0-topic1"]["field1"][0]["ts"] == "2020-03-06 21:49:00"
     assert response_data["ATDome-0-topic1"]["field1"][0]["value"] == 0.21
 
