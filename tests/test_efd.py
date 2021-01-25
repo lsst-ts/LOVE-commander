@@ -33,13 +33,14 @@ class MockEFDClient(object):
         f.set_result(df)
         return df
 
+# Start patching `efd_client`.
+mock_efd_patcher = patch("lsst_efd_client.EfdClient")
+mock_efd_client = mock_efd_patcher.start()
+mock_efd_client.return_value = MockEFDClient()
+
 async def test_efd_timeseries(client):
     """ Test the get timeseries response."""
-    mock_efd_patcher = patch("lsst_efd_client.EfdClient")
 
-    # Start patching `efd_client`.
-    mock_efd_client = mock_efd_patcher.start()
-    mock_efd_client.return_value = MockEFDClient()
 
     cscs = {
         "ATDome": {
