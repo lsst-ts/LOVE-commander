@@ -9,7 +9,6 @@ STD_TIMEOUT = 15  # timeout for command ack
 index_gen = salobj.index_generator()
 
 
-
 def create_app(*args, **kwargs):
     """Create the LOVECsc application
 
@@ -61,13 +60,7 @@ def create_app(*args, **kwargs):
         csc.evt_observingLog.set(user=user, message=message)
         csc.evt_observingLog.put()
 
-        return web.json_response(
-            {
-                "ack": "Added new observing log to SAL"
-            },
-            status=200
-        )
-
+        return web.json_response({"ack": "Added new observing log to SAL"}, status=200)
 
     lovecsc_app.router.add_post("/observinglog", post_observing_log)
 
