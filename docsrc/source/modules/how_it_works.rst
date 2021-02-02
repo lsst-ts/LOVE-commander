@@ -19,3 +19,7 @@ Heartbeats
 ----------------
 Provides an HTTP endpoint to accept requests for its own heartbeat. This is used by the :code:`LOVE-Manager` to make sure the :code:`LOVE-Commander` is "alive" and accepting requests.
 
+EFD
+----------------
+Provides an HTTP endpoint to query an instance of the EFD and return timeseries for any CSCs and topics available
+
