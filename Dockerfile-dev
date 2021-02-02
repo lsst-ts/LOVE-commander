@@ -5,7 +5,9 @@ WORKDIR /usr/src/love/commander
 COPY requirements-dev.txt .
 
 # LOVE requirements
-RUN source /opt/lsst/software/stack/loadLSST.bash && pip install -r requirements-dev.txt
+RUN source /opt/lsst/software/stack/loadLSST.bash && \
+    pip install kafkit[aiohttp] aiokafka lsst_efd_client && \
+    pip install -r requirements-dev.txt
 
 # Missing SAL topics
 RUN source /opt/lsst/software/stack/loadLSST.bash \

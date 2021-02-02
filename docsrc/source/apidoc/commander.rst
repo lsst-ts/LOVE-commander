@@ -36,6 +36,13 @@ commander.salinfo module
    :undoc-members:
    :show-inheritance:
 
+commander.efd module
+------------------------
+
+.. automodule:: commander.efd
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------

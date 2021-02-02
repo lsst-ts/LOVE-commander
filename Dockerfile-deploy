@@ -8,7 +8,7 @@ COPY . .
 
 ARG idl
 RUN source /home/saluser/.setup_sal_env.sh && \
-    pip install kafkit[aiohttp] aiokafka && \
+    pip install kafkit[aiohttp] aiokafka lsst_efd_client && \
     pip install -r requirements-dev.txt
 
 COPY commander/start-daemon-deploy.sh /home/saluser/.startup.sh
