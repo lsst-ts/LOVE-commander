@@ -36,7 +36,7 @@ docker-exec commander bash
 2. Inside the container:, load the setup and got to love folder
 
 ```
-source .setup.sh
+source .setup_dev.sh
 cd /usr/src/love
 ```
 
