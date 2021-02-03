@@ -50,7 +50,17 @@ async def test_atcs_command(client):
     assert result["value2"] == 2
     assert result["value3"] == True
 
-    # Stop patching `tcs_client`.
-    mock_tcs_patcher.stop()
 
+async def test_missing_atcs_command(client):
+    """ Test an ATCS command response."""
 
+    request_data = {
+        "command_name": "missing_atcs_command",
+        "params": {
+            "param1": "value1",
+            "param2": 2,
+            "param3": True,
+        }
+    }
+    response = await client.post("/tcs/aux", json=request_data)
+    assert response.status == 400
