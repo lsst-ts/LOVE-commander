@@ -1,13 +1,10 @@
-"""Define the Heartbeats subapplication, which provides the endpoints to request a heartbeat."""
+"""Define the Heartbeats subapplication, which
+provides the endpoints to request a heartbeat."""
 from aiohttp import web
-import json
-from datetime import datetime
-from astropy.time import Time, TimeDelta
-import pytest
-import asyncio
-import os
+
 # from lsst.ts.observatory.control.auxtel import ATCS
 import lsst.ts.observatory.control.auxtel as auxtel
+
 
 def create_app():
     """Create the TCS application
@@ -29,36 +26,29 @@ def create_app():
         try:
             command = getattr(atcs, command_name)
         except Exception:
-            return web.json_response(
-                {
-                    "ack": f"Invalid command"
-                },
-                status=400,
-            )
+            resp = {"ack": f"Invalid command"}
+            return web.json_response(resp, status=400,)
         try:
             result = await command(**params)
-            return web.json_response(
-                {
-                    "ack": result
-                },
-                status=200,
-            )
+            return web.json_response({"ack": result}, status=200,)
         except Exception:
-            return web.json_response(
-                {
-                    "ack": f"Error running command"
-                },
-                status=400,
-            )
-        return web.json_response(
-            {
-                "ack": f"Error running command"
-            },
-            status=400,
-        )
+            pass
+        resp = {"ack": f"Error running command"}
+        return web.json_response(resp, status=400,)
+
+    async def auxtel_docstrings(request):
+        methods = [
+            func
+            for func in dir(atcs)
+            if callable(getattr(atcs, func)) and not func.startswith("__")
+        ]
+        docstrings = {m: getattr(atcs, m).__doc__ for m in methods}
+        return web.json_response((docstrings), status=200,)
 
     tcs_app.router.add_post("/aux", auxtel_command)
     tcs_app.router.add_post("/aux/", auxtel_command)
+    tcs_app.router.add_get("/docstrings", auxtel_docstrings)
+    tcs_app.router.add_get("/docstrings/", auxtel_docstrings)
 
     async def on_cleanup(tcs_app):
         # Do cleanup
