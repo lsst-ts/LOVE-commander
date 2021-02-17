@@ -11,8 +11,8 @@ index_gen = salobj.index_generator()
 async def test_successful_command(client):
     # Arrange
     # setup dds / csc
-    salobj.set_random_lsst_dds_domain()
-    index = next(index_gen)
+    salobj.set_random_lsst_dds_partition_prefix()
+    next(index_gen)
     csc = salobj.TestCsc(index=1, config_dir=None,
                          initial_state=salobj.State.ENABLED)
     await csc.start_task
@@ -58,20 +58,20 @@ async def test_wrong_data(client):
 async def test_timeout(client):
     # Arrange
     # setup dds / csc
-    salobj.set_random_lsst_dds_domain()
-    index = next(index_gen)
+    salobj.set_random_lsst_dds_partition_prefix()
+    next(index_gen)
     csc = salobj.TestCsc(index=1, config_dir=None,
                          initial_state=salobj.State.ENABLED)
     await csc.start_task
 
     # build data
-    cmd_data = csc.make_random_cmd_scalars()
+    csc.make_random_cmd_scalars()
     data = json.loads(json.dumps({
         'csc': 'Test',
         'salindex': 1,
         'cmd': 'cmd_wait',
         'params': {
-            'duration': 11,
+            'duration': -11,
             'ack': salobj.SalRetCode.CMD_COMPLETE.value
         }
     }, cls=NumpyEncoder))
@@ -80,5 +80,7 @@ async def test_timeout(client):
     response = await client.post('/cmd', json=data)
 
     # Assert status
+    await response.json()
+    
     assert response.status == 504
     await csc.close()

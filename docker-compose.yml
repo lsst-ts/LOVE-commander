@@ -6,9 +6,20 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-dev
+      args:
+        LSSTTS_DEV_VERSION: c0017.000
     image: love-commander-image-mount
     volumes:
       - .:/usr/src/love
     command: ".setup.sh"
     stdin_open: true
     tty: true
+
+  commander-deploy:
+    container_name: commander
+    build:
+      context: .
+      dockerfile: Dockerfile-deploy
+      args:
+        cycle: ${cycle}
+    image: ts-dockerhub.lsst.org/love-commander:${cycle}

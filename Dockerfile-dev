@@ -1,14 +1,17 @@
-FROM lsstts/develop-env:b101
+ARG LSSTTS_DEV_VERSION=develop
+FROM lsstts/develop-env:${LSSTTS_DEV_VERSION}
 
 WORKDIR /usr/src/love/commander
 COPY requirements-dev.txt .
 
 # LOVE requirements
-RUN source /opt/lsst/software/stack/loadLSST.bash && pip install -r requirements-dev.txt
+RUN source /opt/lsst/software/stack/loadLSST.bash && \
+    pip install kafkit[aiohttp] aiokafka lsst_efd_client && \
+    pip install -r requirements-dev.txt
 
 # Missing SAL topics
 RUN source /opt/lsst/software/stack/loadLSST.bash \
-    && source /home/saluser/repos/ts_sal/setup.env \
+    && source /home/saluser/.setup_salobj.sh \
     && setup ts_sal -t current \
     && /home/saluser/repos/ts_sal/bin/make_idl_files.py Watcher
 

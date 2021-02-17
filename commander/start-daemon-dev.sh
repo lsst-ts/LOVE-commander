@@ -3,10 +3,7 @@
 
 
 export PYTHONPATH=$PYTHONPATH:/usr/src/love/commander
-if [[ $LSST_DDS_IP != *"."* ]]; then
-  echo "Unset LSST_DDS_IP"
-  unset LSST_DDS_IP
-fi
+/home/saluser/repos/ts_sal/bin/make_idl_files.py LOVE
 
 cd /usr/src/love
 adev runserver commander -p 5000

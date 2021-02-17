@@ -1,5 +1,5 @@
 #!/bin/bash
-. /home/saluser/.setup_dev.sh
+. /home/saluser/.setup_sal_env.sh
 
 
 export PYTHONPATH=$PYTHONPATH:/usr/src/love/commander
