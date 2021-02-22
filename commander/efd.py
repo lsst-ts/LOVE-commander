@@ -5,6 +5,8 @@ from astropy.time import Time, TimeDelta
 import asyncio
 import os
 
+efd_client = None
+
 
 def create_app():
     """Create the EFD application
@@ -17,18 +19,26 @@ def create_app():
     efd_app = web.Application()
     efd_instance = os.environ.get("EFD_INSTANCE", "summit_efd")
 
-    try:
-        efd_client = lsst_efd_client.EfdClient(efd_instance)
-    except ConnectionError:
-        efd_client = None
+    def connect_to_efd_intance():
+        global efd_client
+        try:
+            efd_client = lsst_efd_client.EfdClient(efd_instance)
+        except ConnectionError:
+            efd_client = None
 
-    async def unavailableEfdClient():
+    connect_to_efd_intance()
+
+    def unavailableEfdClient():
         return web.json_response(
             {"ack": f"EFD Client could not stablish connection"}, status=400
         )
 
     async def query_efd_timeseries(request):
-        if not efd_client:
+        global efd_client
+        if efd_client is None:
+            connect_to_efd_intance()
+
+        if efd_client is None:
             return unavailableEfdClient()
 
         req = await request.json()
