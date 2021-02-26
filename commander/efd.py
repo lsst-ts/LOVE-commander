@@ -23,7 +23,7 @@ def create_app():
         global efd_client
         try:
             efd_client = lsst_efd_client.EfdClient(efd_instance)
-        except ConnectionError:
+        except Exception:
             efd_client = None
 
     connect_to_efd_intance()
