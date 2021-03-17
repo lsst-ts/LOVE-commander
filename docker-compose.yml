@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile-dev
       args:
-        LSSTTS_DEV_VERSION: c0017.000
+        LSSTTS_DEV_VERSION: ${dev-cycle}
     image: love-commander-image-mount
     volumes:
       - .:/usr/src/love
