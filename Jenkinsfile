@@ -108,13 +108,14 @@ pipeline {
         build(job: '../LOVE-integration-tools/develop', wait: false)
       }
     }
-    // stage("Trigger master deployment") {
-    //   when {
-    //     branch "master"
-    //   }
-    //   steps {
-    //     build(job: '../LOVE-integration-tools/master', wait: false)
-    //   }
-    // }
+    
+    stage("Trigger master deployment") {
+      when {
+        branch "master"
+      }
+      steps {
+        build(job: '../LOVE-integration-tools/master', wait: false)
+      }
+    }
   }
 }
