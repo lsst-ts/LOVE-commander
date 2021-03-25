@@ -1,5 +1,5 @@
-ARG LSSTTS_DEV_VERSION=develop
-FROM lsstts/develop-env:${LSSTTS_DEV_VERSION}
+ARG dev_cycle=develop
+FROM lsstts/develop-env:${dev_cycle}
 
 WORKDIR /usr/src/love/
 
