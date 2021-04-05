@@ -4,7 +4,7 @@ pipeline {
     registryCredential = "dockerhub-inriachile"
     dockerImageName = "lsstts/love-commander:"
     dockerImage = ""
-    LSSTTS_DEV_VERSION = "c0016.001"
+    dev_cycle = "c0017.000"
     user_ci = credentials('lsst-io')
     LTD_USERNAME="${user_ci_USR}"
     LTD_PASSWORD="${user_ci_PSW}"
@@ -19,6 +19,7 @@ pipeline {
           branch "bugfix/*"
           branch "hotfix/*"
           branch "release/*"
+          branch "tickets/*"
         }
       }
       steps {
@@ -29,13 +30,13 @@ pipeline {
           if (slashPosition > 0) {
             git_tag = git_branch.substring(slashPosition + 1, git_branch.length())
             git_branch = git_branch.substring(0, slashPosition)
-            if (git_branch == "release" || git_branch == "hotfix" || git_branch == "bugfix") {
+            if (git_branch == "release" || git_branch == "hotfix" || git_branch == "bugfix" || git_branch == "tickets") {
               image_tag = git_tag
             }
           }
           dockerImageName = dockerImageName + image_tag
           echo "dockerImageName: ${dockerImageName}"
-          dockerImage = docker.build(dockerImageName, "--build-arg LSSTTS_DEV_VERSION=${LSSTTS_DEV_VERSION} .")
+          dockerImage = docker.build(dockerImageName, "--build-arg dev_cycle=${dev_cycle} .")
         }
       }
     }
@@ -48,6 +49,7 @@ pipeline {
           branch "bugfix/*"
           branch "hotfix/*"
           branch "release/*"
+          branch "tickets/*"
         }
       }
       steps {
@@ -106,13 +108,14 @@ pipeline {
         build(job: '../LOVE-integration-tools/develop', wait: false)
       }
     }
-    // stage("Trigger master deployment") {
-    //   when {
-    //     branch "master"
-    //   }
-    //   steps {
-    //     build(job: '../LOVE-integration-tools/master', wait: false)
-    //   }
-    // }
+    
+    stage("Trigger master deployment") {
+      when {
+        branch "master"
+      }
+      steps {
+        build(job: '../LOVE-integration-tools/master', wait: false)
+      }
+    }
   }
 }
