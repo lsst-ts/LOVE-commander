@@ -1,8 +1,9 @@
 import asyncio
-from commander.app import create_app
 import pandas as pd
 from unittest.mock import patch, MagicMock
 from aiohttp.test_utils import TestClient, TestServer
+
+from commander.app import create_app
 
 
 # Patch for using MagicMock in async environments
