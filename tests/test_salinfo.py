@@ -1,16 +1,11 @@
-import json
-import asyncio
-from aiohttp import web
-from unittest.mock import patch
 from itertools import chain, combinations
 from lsst.ts import salobj
-from commander.app import create_app
-from utils import NumpyEncoder
+
 from tests import conftest
-import pytest
 
 index_gen = salobj.index_generator()
 idl_glob = "**/*.idl"
+
 
 async def test_metadata(client, *args, **kwargs):
     """ Test the get metadata response."""
