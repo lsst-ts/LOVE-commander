@@ -16,6 +16,7 @@ def create_app():
     """
     tcs_app = web.Application()
     atcs = auxtel.ATCS()
+    atcs.start_task
 
     async def auxtel_command(request):
         req = await request.json()
@@ -30,11 +31,10 @@ def create_app():
             return web.json_response(resp, status=400,)
         try:
             result = await command(**params)
-            return web.json_response({"ack": result}, status=200,)
-        except Exception:
-            pass
-        resp = {"ack": f"Error running command"}
-        return web.json_response(resp, status=400,)
+            return web.json_response({"ack": str(result)}, status=200,)
+        except Exception as e:
+            resp = {"ack": f"Error running command {command_name}: {e}"}
+            return web.json_response(resp, status=400,)
 
     async def auxtel_docstrings(request):
         methods = [
