@@ -1,13 +1,9 @@
 """Define the SAL Info subapplication, which provides the endpoints to request info from SAL."""
 from aiohttp import web
 from lsst.ts import salobj
-import json
-import concurrent.futures
-import time
-import asyncio
 
 
-async def create_app(*args, **kwargs):
+def create_app(*args, **kwargs):
     """Create the SAL Info application
 
     Returns
@@ -20,10 +16,7 @@ async def create_app(*args, **kwargs):
     domain = salobj.Domain()
     available_idl_files = list(domain.idl_dir.glob("**/*.idl"))
     names = [
-        file.name.split("_",)[
-            -1
-        ].replace(".idl", "")
-        for file in available_idl_files
+        file.name.split("_",)[-1].replace(".idl", "") for file in available_idl_files
     ]
     if kwargs.get("remotes_len_limit") is not None:
         names = names[: kwargs.get("remotes_len_limit")]
