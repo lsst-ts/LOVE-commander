@@ -18,7 +18,10 @@ def create_app(*args, **kwargs):
         The application instance
     """
     lovecsc_app = web.Application()
-    csc = salobj.Controller("LOVE", index=None, do_callbacks=False)
+    try:
+        csc = salobj.Controller("LOVE", index=None, do_callbacks=False)
+    except Exception:
+        pass
 
     async def post_observing_log(request):
         """Handle post observing log requests.
