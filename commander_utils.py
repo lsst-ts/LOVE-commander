@@ -8,6 +8,9 @@ class NumpyEncoder(json.JSONEncoder):
             return bool(obj)
         if isinstance(obj, np.ndarray):
             return obj.tolist()
-        if isinstance(obj, (np.uint8, np.int16, np.int32, np.int64, np.uint8, np.uint16, np.uint32)):
+        if isinstance(
+            obj,
+            (np.uint8, np.int16, np.int32, np.int64, np.uint8, np.uint16, np.uint32),
+        ):
             return int(obj)
         return json.JSONEncoder.default(self, obj)

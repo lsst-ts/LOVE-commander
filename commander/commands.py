@@ -4,7 +4,7 @@ from lsst.ts import salobj
 import json
 
 
-def create_app():
+def create_app(*args, **kwargs):
     """Create the Commands application
 
     Returns
