@@ -8,7 +8,7 @@ import os
 efd_client = None
 
 
-def create_app():
+def create_app(*args, **kwargs):
     """Create the EFD application
 
     Returns

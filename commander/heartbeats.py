@@ -1,10 +1,9 @@
 """Define the Heartbeats subapplication, which provides the endpoints to request a heartbeat."""
 from aiohttp import web
-import json
 from datetime import datetime
 
 
-def create_app():
+def create_app(*args, **kwargs):
     """Create the Heartbeats application
 
     Returns

@@ -1,8 +1,8 @@
 """Define the SAL Info subapplication, which provides the endpoints to request info from SAL."""
+import json
+
 from aiohttp import web
 from lsst.ts import salobj
-import utils
-import json
 
 STD_TIMEOUT = 15  # timeout for command ack
 
@@ -18,7 +18,10 @@ def create_app(*args, **kwargs):
         The application instance
     """
     lovecsc_app = web.Application()
-    csc = salobj.Controller("LOVE", index=None, do_callbacks=False)
+    try:
+        csc = salobj.Controller("LOVE", index=None, do_callbacks=False)
+    except Exception:
+        pass
 
     async def post_observing_log(request):
         """Handle post observing log requests.
@@ -48,7 +51,8 @@ def create_app(*args, **kwargs):
         except AssertionError:
             return web.json_response(
                 {
-                    "ack": f"Request must have JSON data with the following keys: user, message. Received {json.dumps(data)}"
+                    "ack": "Request must have JSON data with the following keys:"
+                    + f" user, message. Received {json.dumps(data)}"
                 },
                 status=400,
             )
