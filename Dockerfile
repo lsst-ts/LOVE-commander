@@ -13,4 +13,4 @@ RUN source /opt/lsst/software/stack/loadLSST.bash \
 
 WORKDIR /home/saluser
 
-CMD ["/usr/src/love/commander/start-daemon-deploy.sh"]
+CMD ["/usr/src/love/commander/start-daemon.sh"]
