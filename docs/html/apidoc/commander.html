@@ -92,8 +92,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-commander.app">commander.app module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-commander.commands">commander.commands module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-commander.efd">commander.efd module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-commander.heartbeats">commander.heartbeats module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-commander.lovecsc">commander.lovecsc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-commander.salinfo">commander.salinfo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-commander.tcs">commander.tcs module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-commander">Module contents</a></li>
 </ul>
 </li>
@@ -207,6 +210,24 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-commander.efd">
+<span id="commander-efd-module"></span><h2>commander.efd module<a class="headerlink" href="#module-commander.efd" title="Permalink to this headline">¶</a></h2>
+<p>Define the Heartbeats subapplication, which provides the endpoints to request a heartbeat.</p>
+<dl class="function">
+<dt id="commander.efd.create_app">
+<code class="sig-prename descclassname">commander.efd.</code><code class="sig-name descname">create_app</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#commander.efd.create_app" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the EFD application</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The application instance</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-commander.heartbeats">
 <span id="commander-heartbeats-module"></span><h2>commander.heartbeats module<a class="headerlink" href="#module-commander.heartbeats" title="Permalink to this headline">¶</a></h2>
 <p>Define the Heartbeats subapplication, which provides the endpoints to request a heartbeat.</p>
@@ -225,6 +246,24 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-commander.lovecsc">
+<span id="commander-lovecsc-module"></span><h2>commander.lovecsc module<a class="headerlink" href="#module-commander.lovecsc" title="Permalink to this headline">¶</a></h2>
+<p>Define the SAL Info subapplication, which provides the endpoints to request info from SAL.</p>
+<dl class="function">
+<dt id="commander.lovecsc.create_app">
+<code class="sig-prename descclassname">commander.lovecsc.</code><code class="sig-name descname">create_app</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#commander.lovecsc.create_app" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the LOVECsc application</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The application instance</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-commander.salinfo">
 <span id="commander-salinfo-module"></span><h2>commander.salinfo module<a class="headerlink" href="#module-commander.salinfo" title="Permalink to this headline">¶</a></h2>
 <p>Define the SAL Info subapplication, which provides the endpoints to request info from SAL.</p>
@@ -232,6 +271,24 @@
 <dt id="commander.salinfo.create_app">
 <em class="property">async </em><code class="sig-prename descclassname">commander.salinfo.</code><code class="sig-name descname">create_app</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#commander.salinfo.create_app" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the SAL Info application</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The application instance</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-commander.tcs">
+<span id="commander-tcs-module"></span><h2>commander.tcs module<a class="headerlink" href="#module-commander.tcs" title="Permalink to this headline">¶</a></h2>
+<p>Define the Heartbeats subapplication, which provides the endpoints to request a heartbeat.</p>
+<dl class="function">
+<dt id="commander.tcs.create_app">
+<code class="sig-prename descclassname">commander.tcs.</code><code class="sig-name descname">create_app</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#commander.tcs.create_app" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the TCS application</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The application instance</p>

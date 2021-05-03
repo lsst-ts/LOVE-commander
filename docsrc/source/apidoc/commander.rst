@@ -20,10 +20,26 @@ commander.commands module
    :undoc-members:
    :show-inheritance:
 
+commander.efd module
+--------------------
+
+.. automodule:: commander.efd
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 commander.heartbeats module
 ---------------------------
 
 .. automodule:: commander.heartbeats
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+commander.lovecsc module
+------------------------
+
+.. automodule:: commander.lovecsc
    :members:
    :undoc-members:
    :show-inheritance:
@@ -36,13 +52,14 @@ commander.salinfo module
    :undoc-members:
    :show-inheritance:
 
-commander.efd module
-------------------------
+commander.tcs module
+--------------------
 
-.. automodule:: commander.efd
+.. automodule:: commander.tcs
    :members:
    :undoc-members:
    :show-inheritance:
+
 
 Module contents
 ---------------

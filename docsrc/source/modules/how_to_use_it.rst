@@ -321,3 +321,31 @@ Endpoint to request EFD timeseries.
       }
     }
   }
+
+TCS
+============
+Endpoint to send TCS commands.
+
+- Url: :code:`<IP>/tcs/aux`
+- HTTP Operation: POST
+- Message Payload:
+
+.. code-block:: json
+
+  {
+    "command_name": "point_azel",
+    "params": {
+      "az": 80,
+      "el": 70
+    }
+  }
+  
+
+- Expected Response, if command successful:
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": "command_result"
+  }
