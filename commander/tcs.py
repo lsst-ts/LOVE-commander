@@ -34,6 +34,12 @@ def create_app():
         )
 
     async def auxtel_command(request):
+        global atcs_client
+        if not atcs_client:
+            await connect_to_atcs_intance()
+        if not atcs_client:
+            return unavailable_atcs_client()
+
         req = await request.json()
 
         command_name = req["command_name"]
@@ -52,6 +58,12 @@ def create_app():
             return web.json_response(resp, status=400,)
 
     async def auxtel_docstrings(request):
+        global atcs_client
+        if not atcs_client:
+            await connect_to_atcs_intance()
+        if not atcs_client:
+            return unavailable_atcs_client()
+
         methods = [
             func
             for func in dir(atcs_client)
