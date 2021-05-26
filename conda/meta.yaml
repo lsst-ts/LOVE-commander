@@ -1,0 +1,25 @@
+{% set data= load_setup_py_data() %}
+package:
+  name: love-commander
+  version: {{ data.get('version') }}
+
+source:
+  path: ../
+
+build:
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools_scm
+    - setuptools
+  run:
+    - python
+    - setuptools
+    - setuptools_scm
+    - astroquery
+    - ts-salobj
+    - ts-idl
+    - ts-observatory-control
