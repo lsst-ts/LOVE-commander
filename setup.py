@@ -18,7 +18,7 @@ setuptools.setup(
         "write_to": "commander/version.py",
         "write_to_template": scm_version_template,
     },
-    py_modules=["commander"],
+    packages=["commander"],
     license="GPL",
     project_url={
         "Bug Tracker": "https://jira.lsstcorp.org/secure/Dashboard.jspa",
