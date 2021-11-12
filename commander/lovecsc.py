@@ -8,6 +8,8 @@ STD_TIMEOUT = 15  # timeout for command ack
 
 index_gen = salobj.index_generator()
 
+csc = None
+
 
 def create_app(*args, **kwargs):
     """Create the LOVECsc application
@@ -18,10 +20,20 @@ def create_app(*args, **kwargs):
         The application instance
     """
     lovecsc_app = web.Application()
-    try:
-        csc = salobj.Controller("LOVE", index=None, do_callbacks=False)
-    except Exception:
-        pass
+
+    def connect_to_love_controller():
+        global csc
+        try:
+            csc = salobj.Controller("LOVE", index=None, do_callbacks=False)
+        except Exception:
+            csc = None
+
+    connect_to_love_controller()
+
+    def unavailable_love_controller():
+        return web.json_response(
+            {"ack": f"LOVE CSC could not stablish connection"}, status=400
+        )
 
     async def post_observing_log(request):
         """Handle post observing log requests.
@@ -42,6 +54,11 @@ def create_app(*args, **kwargs):
                     "ack": "<Description about the success state of the request>"
                 }
         """
+        global csc
+        if csc is None:
+            connect_to_love_controller()
+        if csc is None:
+            return unavailable_love_controller()
 
         data = await request.json()
 
@@ -69,6 +86,7 @@ def create_app(*args, **kwargs):
     lovecsc_app.router.add_post("/observinglog", post_observing_log)
 
     async def on_cleanup(lovecsc_app):
+        global csc
         await csc.close()
 
     lovecsc_app.on_cleanup.append(on_cleanup)
