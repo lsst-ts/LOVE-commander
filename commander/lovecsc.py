@@ -11,7 +11,7 @@ index_gen = salobj.index_generator()
 csc = None
 
 
-def create_app(*args, **kwargs):
+async def create_app(*args, **kwargs):
     """Create the LOVECsc application
 
     Returns
@@ -29,7 +29,7 @@ def create_app(*args, **kwargs):
         except Exception:
             csc = None
 
-    connect_to_love_controller()
+    await connect_to_love_controller()
 
     def unavailable_love_controller():
         return web.json_response(
