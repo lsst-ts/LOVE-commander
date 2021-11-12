@@ -21,10 +21,11 @@ def create_app(*args, **kwargs):
     """
     lovecsc_app = web.Application()
 
-    def connect_to_love_controller():
+    async def connect_to_love_controller():
         global csc
         try:
             csc = salobj.Controller("LOVE", index=None, do_callbacks=False)
+            await csc.start_task
         except Exception:
             csc = None
 
@@ -56,7 +57,7 @@ def create_app(*args, **kwargs):
         """
         global csc
         if csc is None:
-            connect_to_love_controller()
+            await connect_to_love_controller()
         if csc is None:
             return unavailable_love_controller()
 
