@@ -19,6 +19,10 @@ def create_app(*args, **kwargs):
 
     def connect_to_efd_intance(instance):
         global efd_clients
+        instance_exists = efd_clients.get(instance)
+        if instance_exists is not None:
+            return instance_exists
+
         try:
             efd_clients[instance] = lsst_efd_client.EfdClient(instance)
         except Exception:
@@ -35,10 +39,10 @@ def create_app(*args, **kwargs):
         req = await request.json()
 
         efd_instance = req["efd_instance"]
-        if efd_clients[efd_instance] is None:
+        if efd_clients.get(efd_instance) is None:
             efd_client = connect_to_efd_intance(efd_instance)
 
-        if efd_clients[efd_instance] is None:
+        if efd_clients.get(efd_instance) is None:
             return unavailableEfdClient()
 
         start_date = req["start_date"]
@@ -46,8 +50,8 @@ def create_app(*args, **kwargs):
         cscs = req["cscs"]
         resample = req["resample"]
 
-        parsed_date = Time(start_date, scale="tai")
-        time_delta = TimeDelta(time_window * 60, format="sec", scale="tai")
+        parsed_date = Time(start_date, scale="utc")
+        time_delta = TimeDelta(time_window * 60, format="sec")
         query_tasks = []
         sources = []
         for csc in cscs:
@@ -88,7 +92,7 @@ def create_app(*args, **kwargs):
 
     efd_app.router.add_post("/timeseries", query_efd_timeseries)
     efd_app.router.add_post("/timeseries/", query_efd_timeseries)
-    efd_app.router.add_post("/efd_clients/", query_efd_clients)
+    efd_app.router.add_get("/efd_clients", query_efd_clients)
 
     async def on_cleanup(efd_app):
         # Do cleanup
