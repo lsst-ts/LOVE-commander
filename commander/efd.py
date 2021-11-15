@@ -3,9 +3,8 @@ from aiohttp import web
 import lsst_efd_client
 from astropy.time import Time, TimeDelta
 import asyncio
-import os
 
-efd_client = None
+efd_clients = dict()
 
 
 def create_app(*args, **kwargs):
@@ -17,16 +16,14 @@ def create_app(*args, **kwargs):
         The application instance
     """
     efd_app = web.Application()
-    efd_instance = os.environ.get("EFD_INSTANCE", "summit_efd")
 
-    def connect_to_efd_intance():
-        global efd_client
+    def connect_to_efd_intance(instance):
+        global efd_clients
         try:
-            efd_client = lsst_efd_client.EfdClient(efd_instance)
+            efd_clients[instance] = lsst_efd_client.EfdClient(instance)
         except Exception:
-            efd_client = None
-
-    connect_to_efd_intance()
+            efd_clients[instance] = None
+        return efd_clients[instance]
 
     def unavailableEfdClient():
         return web.json_response(
@@ -34,14 +31,15 @@ def create_app(*args, **kwargs):
         )
 
     async def query_efd_timeseries(request):
-        global efd_client
-        if efd_client is None:
-            connect_to_efd_intance()
-
-        if efd_client is None:
-            return unavailableEfdClient()
-
+        global efd_clients
         req = await request.json()
+
+        efd_instance = req["efd_instance"]
+        if efd_clients[efd_instance] is None:
+            efd_client = connect_to_efd_intance(efd_instance)
+
+        if efd_clients[efd_instance] is None:
+            return unavailableEfdClient()
 
         start_date = req["start_date"]
         time_window = int(req["time_window"])
@@ -82,6 +80,11 @@ def create_app(*args, **kwargs):
 
         response_data = dict(zip(sources, results))
         return web.json_response(response_data)
+
+    async def query_efd_clients(request):
+        efd_instances = lsst_efd_client.EfdClient.list_efd_names()
+        response_data = {"instances": efd_instances}
+        return web.json_response(response_data, status=200)
 
     efd_app.router.add_post("/timeseries", query_efd_timeseries)
     efd_app.router.add_post("/timeseries/", query_efd_timeseries)
