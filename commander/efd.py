@@ -39,10 +39,11 @@ def create_app(*args, **kwargs):
         req = await request.json()
 
         efd_instance = req["efd_instance"]
-        if efd_clients.get(efd_instance) is None:
+        efd_client = efd_clients.get(efd_instance)
+        if efd_client is None:
             efd_client = connect_to_efd_intance(efd_instance)
 
-        if efd_clients.get(efd_instance) is None:
+        if efd_client is None:
             return unavailableEfdClient()
 
         start_date = req["start_date"]
