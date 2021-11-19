@@ -29,7 +29,7 @@ def create_app(*args, **kwargs):
             efd_clients[instance] = None
         return efd_clients[instance]
 
-    def unavailableEfdClient():
+    def unavailable_efd_client():
         return web.json_response(
             {"ack": f"EFD Client could not stablish connection"}, status=400
         )
@@ -44,7 +44,7 @@ def create_app(*args, **kwargs):
             efd_client = connect_to_efd_intance(efd_instance)
 
         if efd_client is None:
-            return unavailableEfdClient()
+            return unavailable_efd_client()
 
         start_date = req["start_date"]
         time_window = int(req["time_window"])
