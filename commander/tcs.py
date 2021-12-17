@@ -1,10 +1,7 @@
 """Define the Heartbeats subapplication, which
 provides the endpoints to request a heartbeat."""
 from aiohttp import web
-
 from lsst.ts.observatory.control.auxtel import ATCS
-
-# import lsst.ts.observatory.control.auxtel as auxtel
 from lsst.ts.observatory.control.maintel import MTCS
 
 
@@ -30,12 +27,12 @@ def create_app():
         except Exception:
             atcs_client = None
 
-    connect_to_atcs_intance()
-
     def unavailable_atcs_client():
         return web.json_response(
             {"ack": f"ATCS Client could not stablish connection"}, status=400
         )
+
+    connect_to_atcs_intance()
 
     async def auxtel_command(request):
         global atcs_client
@@ -84,6 +81,11 @@ def create_app():
         except Exception:
             mtcs_client = None
 
+    def unavailable_mtcs_client():
+        return web.json_response(
+            {"ack": f"MTCS Client could not stablish connection"}, status=400
+        )
+
     connect_to_mtcs_intance()
 
     async def maintel_command(request):
@@ -124,11 +126,6 @@ def create_app():
         ]
         docstrings = {m: getattr(mtcs_client, m).__doc__ for m in methods}
         return web.json_response((docstrings), status=200,)
-
-    def unavailable_mtcs_client():
-        return web.json_response(
-            {"ack": f"MTCS Client could not stablish connection"}, status=400
-        )
 
     tcs_app.router.add_post("/aux", auxtel_command)
     tcs_app.router.add_post("/aux/", auxtel_command)
