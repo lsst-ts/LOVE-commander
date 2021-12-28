@@ -40,7 +40,7 @@ def raise_exception(name):
     raise ConnectionError
 
 
-async def test_efd_timeseries(client):
+async def test_efd_timeseries():
     """Test the get timeseries response."""
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
