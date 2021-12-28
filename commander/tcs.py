@@ -29,7 +29,8 @@ def create_app():
 
     def unavailable_atcs_client():
         return web.json_response(
-            {"ack": f"ATCS Client could not stablish connection"}, status=400
+            {"ack": "ATCS Client could not stablish connection"},
+            status=400,
         )
 
     connect_to_atcs_intance()
@@ -49,14 +50,23 @@ def create_app():
         try:
             command = getattr(atcs_client, command_name)
         except Exception:
-            resp = {"ack": f"Invalid command"}
-            return web.json_response(resp, status=400,)
+            resp = {"ack": "Invalid command"}
+            return web.json_response(
+                resp,
+                status=400,
+            )
         try:
             result = await command(**params)
-            return web.json_response({"ack": str(result)}, status=200,)
+            return web.json_response(
+                {"ack": str(result)},
+                status=200,
+            )
         except Exception as e:
             resp = {"ack": f"Error running command {command_name}: {e}"}
-            return web.json_response(resp, status=400,)
+            return web.json_response(
+                resp,
+                status=400,
+            )
 
     async def auxtel_docstrings(request):
         global atcs_client
@@ -71,7 +81,10 @@ def create_app():
             if callable(getattr(atcs_client, func)) and not func.startswith("__")
         ]
         docstrings = {m: getattr(atcs_client, m).__doc__ for m in methods}
-        return web.json_response((docstrings), status=200,)
+        return web.json_response(
+            (docstrings),
+            status=200,
+        )
 
     async def connect_to_mtcs_intance():
         global mtcs_client
@@ -83,7 +96,8 @@ def create_app():
 
     def unavailable_mtcs_client():
         return web.json_response(
-            {"ack": f"MTCS Client could not stablish connection"}, status=400
+            {"ack": "MTCS Client could not stablish connection"},
+            status=400,
         )
 
     connect_to_mtcs_intance()
@@ -103,14 +117,23 @@ def create_app():
         try:
             command = getattr(mtcs_client, command_name)
         except Exception:
-            resp = {"ack": f"Invalid command"}
-            return web.json_response(resp, status=400,)
+            resp = {"ack": "Invalid command"}
+            return web.json_response(
+                resp,
+                status=400,
+            )
         try:
             result = await command(**params)
-            return web.json_response({"ack": str(result)}, status=200,)
+            return web.json_response(
+                {"ack": str(result)},
+                status=200,
+            )
         except Exception as e:
             resp = {"ack": f"Error running command {command_name}: {e}"}
-            return web.json_response(resp, status=400,)
+            return web.json_response(
+                resp,
+                status=400,
+            )
 
     async def maintel_docstrings(request):
         global mtcs_client
@@ -125,7 +148,10 @@ def create_app():
             if callable(getattr(mtcs_client, func)) and not func.startswith("__")
         ]
         docstrings = {m: getattr(mtcs_client, m).__doc__ for m in methods}
-        return web.json_response((docstrings), status=200,)
+        return web.json_response(
+            (docstrings),
+            status=200,
+        )
 
     tcs_app.router.add_post("/aux", auxtel_command)
     tcs_app.router.add_post("/aux/", auxtel_command)
