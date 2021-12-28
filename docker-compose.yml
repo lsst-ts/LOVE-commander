@@ -9,6 +9,8 @@ services:
       args:
         dev_cycle: ${dev_cycle}
     image: love-commander-image-mount
+    environment:
+      - LSST_DDS_DOMAIN=${LSST_DDS_DOMAIN}
     volumes:
       - .:/usr/src/love
     command: ".setup.sh"
