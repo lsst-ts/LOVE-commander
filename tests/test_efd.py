@@ -16,7 +16,7 @@ MagicMock.__await__ = lambda x: async_magic().__await__()
 
 class MockEFDClient(object):
     async def select_time_series(
-        cls, topic_name, fields, start, end, is_window=False, index=None
+        self, topic_name, fields, start, end, is_window=False, index=None
     ):
         f = asyncio.Future()
         data = {}
@@ -41,18 +41,21 @@ def raise_exception(name):
 
 
 async def test_efd_timeseries(client):
-    """ Test the get timeseries response."""
+    """Test the get timeseries response."""
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
     mock_efd_client = mock_efd_patcher.start()
     mock_efd_client.return_value = MockEFDClient()
     loop = asyncio.get_event_loop()
-    app = await create_app()
+    app = create_app()
     async with TestClient(TestServer(app), loop=loop) as client:
-
         cscs = {
-            "ATDome": {0: {"topic1": ["field1"]},},
-            "ATMCS": {1: {"topic2": ["field2", "field3"]},},
+            "ATDome": {
+                0: {"topic1": ["field1"]},
+            },
+            "ATMCS": {
+                1: {"topic2": ["field2", "field3"]},
+            },
         }
         request_data = {
             "start_date": "2020-03-16T12:00:00",
@@ -79,18 +82,22 @@ async def test_efd_timeseries(client):
 
 
 async def test_efd_timeseries_with_errors():
-    """ Test the get timeseries response with errors."""
+    """Test the get timeseries response with errors."""
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
     mock_efd_client = mock_efd_patcher.start()
     mock_efd_client.return_value = MockEFDClient()
     mock_efd_client.side_effect = raise_exception
     loop = asyncio.get_event_loop()
-    app = await create_app()
+    app = create_app()
     async with TestClient(TestServer(app), loop=loop) as client:
         cscs = {
-            "ATDome": {0: {"topic1": ["field1"]},},
-            "ATMCS": {1: {"topic2": ["field2", "field3"]},},
+            "ATDome": {
+                0: {"topic1": ["field1"]},
+            },
+            "ATMCS": {
+                1: {"topic2": ["field2", "field3"]},
+            },
         }
         request_data = {
             "start_date": "2020-03-16T12:00:00",
