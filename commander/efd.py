@@ -30,7 +30,7 @@ def create_app(*args, **kwargs):
 
     def unavailableEfdClient():
         return web.json_response(
-            {"ack": f"EFD Client could not stablish connection"}, status=400
+            {"ack": "EFD Client could not stablish connection"}, status=400
         )
 
     async def query_efd_timeseries(request):
