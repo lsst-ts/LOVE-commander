@@ -11,9 +11,13 @@ async def test_successful_command(client):
     # Arrange
     # setup dds / csc
     salobj.set_random_lsst_dds_partition_prefix()
+    print("HOLA A", flush=True)
     next(index_gen)
+    print("HOLA B", flush=True)
     csc = salobj.TestCsc(index=1, config_dir=None, initial_state=salobj.State.ENABLED)
+    print("HOLA C", flush=True)
     await csc.start_task
+    print("HOLA D", flush=True)
 
     # build data
     cmd_data = csc.make_random_cmd_scalars()
