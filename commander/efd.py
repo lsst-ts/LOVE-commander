@@ -94,6 +94,7 @@ def create_app(*args, **kwargs):
     efd_app.router.add_post("/timeseries", query_efd_timeseries)
     efd_app.router.add_post("/timeseries/", query_efd_timeseries)
     efd_app.router.add_get("/efd_clients", query_efd_clients)
+    efd_app.router.add_get("/efd_clients/", query_efd_clients)
 
     async def on_cleanup(efd_app):
         # Do cleanup
