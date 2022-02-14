@@ -14,7 +14,7 @@ pipeline {
     stage("Build Commander Docker image") {
       when {
         anyOf {
-          branch "master"
+          branch "main"
           branch "develop"
           branch "bugfix/*"
           branch "hotfix/*"
@@ -44,7 +44,7 @@ pipeline {
     stage("Push Docker image") {
       when {
         anyOf {
-          branch "master"
+          branch "main"
           branch "develop"
           branch "bugfix/*"
           branch "hotfix/*"
@@ -109,12 +109,12 @@ pipeline {
       }
     }
     
-    stage("Trigger master deployment") {
+    stage("Trigger main deployment") {
       when {
-        branch "master"
+        branch "main"
       }
       steps {
-        build(job: '../LOVE-integration-tools/master', wait: false)
+        build(job: '../LOVE-integration-tools/main', wait: false)
       }
     }
   }
