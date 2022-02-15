@@ -64,7 +64,7 @@ pipeline {
     stage("Run tests") {
       when {
         anyOf {
-          branch "master"
+          branch "main"
           branch "develop"
           branch "bugfix/*"
           branch "hotfix/*"
