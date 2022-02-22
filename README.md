@@ -22,14 +22,15 @@ Follow these instructions to run the application in a docker container and get i
 
 ```
 cd docker/
-docker-compose up -d
+export dev_cycle=develop #Here you can set a specified version of the lsstts/develop-env image
+docker-compose up -d --build
 docker-exec commander bash
 ```
 
 2. Inside the container:, load the setup and got to love folder
 
 ```
-source /home/saluser/.setup_dev.sh
+source /home/saluser/.setup_dev.sh #Here some configurations will be loaded and you will enter another bash. Press [Ctrl + D] to exit the current console, then the love-producer package will be installed and you can continue with the following step
 cd /usr/src/love
 ```
 
@@ -55,8 +56,7 @@ will run the `test_metadata` test of the `test_salinfo.py` file.
 Once inside the container and in the `love` folder you can build the documentation as follows:
 
 ```
-source /home/saluser/.setup_dev.sh
-cd /usr/src/love/docsrc
+cd docsrc/
 ./create_docs.sh
 ```
 
