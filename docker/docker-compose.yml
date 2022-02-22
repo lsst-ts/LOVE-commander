@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  commander:
+    container_name: love-commander-mount
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile-dev
+      args:
+        dev_cycle: ${dev_cycle}
+    image: love-commander-mount-image
+    environment:
+      - LSST_DDS_PARTITION_PREFIX=local
+    volumes:
+      - ..:/usr/src/love
