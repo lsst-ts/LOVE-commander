@@ -13,3 +13,6 @@ services:
       - LSST_DDS_PARTITION_PREFIX=local
     volumes:
       - ..:/usr/src/love
+    command: "/usr/src/love/docker/setup-dev.sh"
+    stdin_open: true
+    tty: true

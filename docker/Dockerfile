@@ -7,4 +7,4 @@ COPY . .
 RUN source /opt/lsst/software/stack/loadLSST.bash && \
     pip install lsst_efd_client
 
-CMD ["./docker/start-daemon.sh"]
+CMD ["/usr/src/love/docker/start-daemon.sh"]
