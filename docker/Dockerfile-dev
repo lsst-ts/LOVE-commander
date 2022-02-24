@@ -8,8 +8,4 @@ RUN source /opt/lsst/software/stack/loadLSST.bash && \
     pip install lsst_efd_client && \
     pip install -r requirements-dev.txt
 
-# There is a problem trying to copy the start-daemon-dev.sh when source code is mounted
-# from a volume, thus we call start-daemon-dev.sh directly from the docker folder
-#COPY docker/start-daemon-dev.sh
-
 CMD ["/usr/src/love/docker/start-daemon-dev.sh"]
