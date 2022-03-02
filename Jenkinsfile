@@ -68,7 +68,7 @@ pipeline {
           branch "bugfix/*"
           branch "hotfix/*"
           branch "release/*"
-          branch "PR-*"
+          // branch "PR-*"
         }
       }
       steps {
