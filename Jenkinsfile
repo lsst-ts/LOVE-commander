@@ -4,7 +4,6 @@ pipeline {
     registryCredential = "dockerhub-inriachile"
     dockerImageName = "lsstts/love-commander:"
     dockerImage = ""
-    dev_cycle = "c0021.007"
     user_ci = credentials('lsst-io')
     LTD_USERNAME="${user_ci_USR}"
     LTD_PASSWORD="${user_ci_PSW}"
@@ -36,7 +35,7 @@ pipeline {
           }
           dockerImageName = dockerImageName + image_tag
           echo "dockerImageName: ${dockerImageName}"
-          dockerImage = docker.build(dockerImageName, "--build-arg dev_cycle=${dev_cycle} .")
+          dockerImage = docker.build(dockerImageName, "-f docker/Dockerfile .")
         }
       }
     }
@@ -69,12 +68,13 @@ pipeline {
           branch "bugfix/*"
           branch "hotfix/*"
           branch "release/*"
-          branch "tickets/*"
+          // branch "PR-*"
         }
       }
       steps {
         script {
-          sh "docker run ${dockerImageName} /usr/src/love/run-tests.sh"	
+          sh "docker build -f docker/Dockerfile-test -t love-commander-test  ."
+          sh "docker run love-commander-test"
         }
       }
     }
