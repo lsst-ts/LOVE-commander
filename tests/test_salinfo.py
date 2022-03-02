@@ -8,13 +8,15 @@ idl_glob = "**/*.idl"
 
 
 async def test_metadata(client):
-    """ Test the get metadata response."""
+    """Test the get metadata response."""
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
         domain = salobj.Domain()
         available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
-            file.name.split("_",)[-1].replace(".idl", "")
+            file.name.split("_",)[
+                -1
+            ].replace(".idl", "")
             for file in available_idl_files
         ]
         names = names[: conftest.REMOTES_LEN_LIMIT]
@@ -34,13 +36,15 @@ async def test_metadata(client):
 
 
 async def test_all_topic_names(client):
-    """ Test the get topic_names response."""
+    """Test the get topic_names response."""
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
         domain = salobj.Domain()
         available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
-            file.name.split("_",)[-1].replace(".idl", "")
+            file.name.split("_",)[
+                -1
+            ].replace(".idl", "")
             for file in available_idl_files
         ]
         names = names[: conftest.REMOTES_LEN_LIMIT]
@@ -62,13 +66,15 @@ async def test_all_topic_names(client):
 
 
 async def test_some_topic_names(client):
-    """ Test the use of query params to get only some of the topic_names."""
+    """Test the use of query params to get only some of the topic_names."""
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
         domain = salobj.Domain()
         available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
-            file.name.split("_",)[-1].replace(".idl", "")
+            file.name.split("_",)[
+                -1
+            ].replace(".idl", "")
             for file in available_idl_files
         ]
         names = names[: conftest.REMOTES_LEN_LIMIT]
@@ -110,7 +116,7 @@ async def test_some_topic_names(client):
 
 
 def assert_topic_data(topic_data):
-    """ Assert the structure of a topic data."""
+    """Assert the structure of a topic data."""
     assert type(topic_data) == dict
     for data in topic_data.values():
         assert type(data) == dict
@@ -120,21 +126,31 @@ def assert_topic_data(topic_data):
             assert "description" in v
             assert "units" in v
             assert "type_name" in v
-            assert type(v["name"]) == str
+            # assert type(v["name"]) == str
             assert k == v["name"]
-            assert type(v["description"]) == str or type(v["description"]) == type(None)
-            assert type(v["units"]) == str or type(v["units"]) == type(None)
-            assert type(v["type_name"]) == str or type(v["type_name"]) == type(None)
+            # assert type(v["description"]) == str or type(v["description"]) == type(None)
+            # assert type(v["units"]) == str or type(v["units"]) == type(None)
+            # assert type(v["type_name"]) == str or type(v["type_name"]) == type(None)
+            assert isinstance(v["name"], str)
+            assert isinstance(v["description"], str) or isinstance(
+                v["description"], type(None)
+            )
+            assert isinstance(v["units"], str) or isinstance(v["units"], type(None))
+            assert isinstance(v["type_name"], str) or isinstance(
+                v["type_name"], type(None)
+            )
 
 
 async def test_all_topic_data(client, *args, **kwargs):
-    """ Test the get topic_data response."""
+    """Test the get topic_data response."""
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
         domain = salobj.Domain()
         available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
-            file.name.split("_",)[-1].replace(".idl", "")
+            file.name.split("_",)[
+                -1
+            ].replace(".idl", "")
             for file in available_idl_files
         ]
         names = names[: conftest.REMOTES_LEN_LIMIT]
@@ -156,13 +172,15 @@ async def test_all_topic_data(client, *args, **kwargs):
 
 
 async def test_some_topic_data(client, *args, **kwargs):
-    """ Test the use of query params to get only some of the topic_data."""
+    """Test the use of query params to get only some of the topic_data."""
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
         domain = salobj.Domain()
         available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
-            file.name.split("_",)[-1].replace(".idl", "")
+            file.name.split("_",)[
+                -1
+            ].replace(".idl", "")
             for file in available_idl_files
         ]
         names = names[: conftest.REMOTES_LEN_LIMIT]
