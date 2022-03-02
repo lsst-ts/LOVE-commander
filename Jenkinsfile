@@ -61,19 +61,23 @@ pipeline {
       }
     }
 
-    // stage("Run tests") {
-    //   when {
-    //     anyOf {
-    //       branch "develop"
-    //       branch "test_pipeline"
-    //     }
-    //   }
-    //   steps {
-    //     script {
-    //       sh "docker run lsstts/love-producer:develop /usr/src/love/producer/run-tests.sh"	
-    //     }
-    //   }
-    // }
+    stage("Run tests") {
+      when {
+        anyOf {
+          branch "main"
+          branch "develop"
+          branch "bugfix/*"
+          branch "hotfix/*"
+          branch "release/*"
+          branch "tickets/*"
+        }
+      }
+      steps {
+        script {
+          sh "docker run ${dockerImageName} /usr/src/love/run-tests.sh"	
+        }
+      }
+    }
 
     stage("Deploy documentation") {
       agent {
