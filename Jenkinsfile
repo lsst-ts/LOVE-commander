@@ -4,7 +4,6 @@ pipeline {
     registryCredential = "dockerhub-inriachile"
     dockerImageName = "lsstts/love-commander:"
     dockerImage = ""
-    dev_cycle = "c0021.007"
     user_ci = credentials('lsst-io')
     LTD_USERNAME="${user_ci_USR}"
     LTD_PASSWORD="${user_ci_PSW}"
@@ -14,7 +13,7 @@ pipeline {
     stage("Build Commander Docker image") {
       when {
         anyOf {
-          branch "master"
+          branch "main"
           branch "develop"
           branch "bugfix/*"
           branch "hotfix/*"
@@ -36,7 +35,7 @@ pipeline {
           }
           dockerImageName = dockerImageName + image_tag
           echo "dockerImageName: ${dockerImageName}"
-          dockerImage = docker.build(dockerImageName, "--build-arg dev_cycle=${dev_cycle} .")
+          dockerImage = docker.build(dockerImageName, "-f docker/Dockerfile .")
         }
       }
     }
@@ -44,7 +43,7 @@ pipeline {
     stage("Push Docker image") {
       when {
         anyOf {
-          branch "master"
+          branch "main"
           branch "develop"
           branch "bugfix/*"
           branch "hotfix/*"
@@ -61,19 +60,24 @@ pipeline {
       }
     }
 
-    // stage("Run tests") {
-    //   when {
-    //     anyOf {
-    //       branch "develop"
-    //       branch "test_pipeline"
-    //     }
-    //   }
-    //   steps {
-    //     script {
-    //       sh "docker run lsstts/love-producer:develop /usr/src/love/producer/run-tests.sh"	
-    //     }
-    //   }
-    // }
+    stage("Run tests") {
+      when {
+        anyOf {
+          branch "main"
+          branch "develop"
+          branch "bugfix/*"
+          branch "hotfix/*"
+          branch "release/*"
+          // branch "PR-*"
+        }
+      }
+      steps {
+        script {
+          sh "docker build -f docker/Dockerfile-test -t love-commander-test  ."
+          sh "docker run love-commander-test"
+        }
+      }
+    }
 
     stage("Deploy documentation") {
       agent {
@@ -109,12 +113,12 @@ pipeline {
       }
     }
     
-    stage("Trigger master deployment") {
+    stage("Trigger main deployment") {
       when {
-        branch "master"
+        branch "main"
       }
       steps {
-        build(job: '../LOVE-integration-tools/master', wait: false)
+        build(job: '../LOVE-integration-tools/main', wait: false)
       }
     }
   }
