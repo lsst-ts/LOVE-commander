@@ -87,8 +87,11 @@ def create_app(*args, **kwargs):
         return web.json_response(response_data)
 
     async def query_efd_clients(request):
-        efd_instances = lsst_efd_client.EfdClient.list_efd_names()
-        response_data = {"instances": efd_instances}
+        try:
+            efd_instances = lsst_efd_client.EfdClient.list_efd_names()
+            response_data = {"instances": efd_instances}
+        except Exception as e:
+            response_data = {"error": e}
         return web.json_response(response_data, status=200)
 
     efd_app.router.add_post("/timeseries", query_efd_timeseries)
