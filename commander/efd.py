@@ -38,18 +38,20 @@ def create_app(*args, **kwargs):
         global efd_clients
         req = await request.json()
 
-        efd_instance = req["efd_instance"]
+        try:
+            efd_instance = req["efd_instance"]
+            start_date = req["start_date"]
+            time_window = int(req["time_window"])
+            cscs = req["cscs"]
+            resample = req["resample"]
+        except Exception as e:
+            return web.json_response({"error": e}, status=400)
+
         efd_client = efd_clients.get(efd_instance)
         if efd_client is None:
             efd_client = connect_to_efd_intance(efd_instance)
-
         if efd_client is None:
             return unavailable_efd_client()
-
-        start_date = req["start_date"]
-        time_window = int(req["time_window"])
-        cscs = req["cscs"]
-        resample = req["resample"]
 
         parsed_date = Time(start_date, scale="utc")
         time_delta = TimeDelta(time_window * 60, format="sec")
