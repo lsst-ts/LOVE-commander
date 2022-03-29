@@ -1,10 +1,9 @@
 import json
-
 from lsst.ts import salobj
-
+from lsst.ts.utils import index_generator
 from commander_utils import NumpyEncoder
 
-index_gen = salobj.index_generator()
+index_gen = index_generator()
 
 
 async def test_successful_command(client):

@@ -1,13 +1,9 @@
-"""Define the SAL Info subapplication, which provides the endpoints to request info from SAL."""
+"""Define LOVE CSC subapplication, which provides the endpoints to request info to the LOVE CSC from SAL."""
 import json
-
 from aiohttp import web
 from lsst.ts import salobj
 
 STD_TIMEOUT = 15  # timeout for command ack
-
-index_gen = salobj.index_generator()
-
 csc = None
 
 
