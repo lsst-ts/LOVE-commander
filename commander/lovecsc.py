@@ -32,7 +32,7 @@ def create_app(*args, **kwargs):
 
     def unavailable_love_controller():
         return web.json_response(
-            {"ack": f"LOVE CSC could not stablish connection"}, status=400
+            {"ack": "LOVE CSC could not stablish connection"}, status=400
         )
 
     async def post_observing_log(request):
@@ -88,7 +88,8 @@ def create_app(*args, **kwargs):
 
     async def on_cleanup(lovecsc_app):
         global csc
-        await csc.close()
+        if csc is not None:
+            await csc.close()
 
     lovecsc_app.on_cleanup.append(on_cleanup)
 
