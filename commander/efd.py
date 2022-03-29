@@ -44,8 +44,10 @@ def create_app(*args, **kwargs):
             time_window = int(req["time_window"])
             cscs = req["cscs"]
             resample = req["resample"]
-        except Exception as e:
-            return web.json_response({"error": e}, status=400)
+        except Exception:
+            return web.json_response(
+                {"error": "Some of the required parameters is not present"}, status=400
+            )
 
         efd_client = efd_clients.get(efd_instance)
         if efd_client is None:
