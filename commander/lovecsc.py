@@ -1,5 +1,6 @@
 """Define LOVE CSC subapplication, which provides the endpoints to request info to the LOVE CSC from SAL."""
 import json
+import logging
 from aiohttp import web
 from lsst.ts import salobj
 
@@ -21,7 +22,8 @@ def create_app(*args, **kwargs):
         global csc
         try:
             csc = salobj.Controller("LOVE", index=None, do_callbacks=False)
-        except Exception:
+        except Exception as e:
+            logging.warning(e)
             csc = None
 
     connect_to_love_controller()
