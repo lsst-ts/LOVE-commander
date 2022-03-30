@@ -15,14 +15,14 @@ async def test_successful_command(client):
     await csc.start_task
 
     # build data
-    cmd_data = csc.make_random_cmd_scalars()
+    cmd_data = csc.make_random_scalars_dict()
     data = json.loads(
         json.dumps(
             {
                 "csc": "Test",
                 "salindex": 1,
                 "cmd": "cmd_setScalars",
-                "params": dict(cmd_data.get_vars()),
+                "params": cmd_data,
             },
             cls=NumpyEncoder,
         )
@@ -69,7 +69,7 @@ async def test_timeout(client):
     await csc.start_task
 
     # build data
-    csc.make_random_cmd_scalars()
+    csc.make_random_scalars_dict()
     data = json.loads(
         json.dumps(
             {
