@@ -1,13 +1,10 @@
-"""Define the SAL Info subapplication, which provides the endpoints to request info from SAL."""
+"""Define LOVE CSC subapplication, which provides the endpoints to request info to the LOVE CSC from SAL."""
 import json
-
+import logging
 from aiohttp import web
 from lsst.ts import salobj
 
 STD_TIMEOUT = 15  # timeout for command ack
-
-index_gen = salobj.index_generator()
-
 csc = None
 
 
@@ -25,14 +22,15 @@ def create_app(*args, **kwargs):
         global csc
         try:
             csc = salobj.Controller("LOVE", index=None, do_callbacks=False)
-        except Exception:
+        except Exception as e:
+            logging.warning(e)
             csc = None
 
     connect_to_love_controller()
 
     def unavailable_love_controller():
         return web.json_response(
-            {"ack": f"LOVE CSC could not stablish connection"}, status=400
+            {"ack": "LOVE CSC could not stablish connection"}, status=400
         )
 
     async def post_observing_log(request):
@@ -88,7 +86,8 @@ def create_app(*args, **kwargs):
 
     async def on_cleanup(lovecsc_app):
         global csc
-        await csc.close()
+        if csc is not None:
+            await csc.close()
 
     lovecsc_app.on_cleanup.append(on_cleanup)
 

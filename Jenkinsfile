@@ -68,13 +68,14 @@ pipeline {
           branch "bugfix/*"
           branch "hotfix/*"
           branch "release/*"
-          // branch "PR-*"
+          branch "tickets/*"
+          branch "PR-*"
         }
       }
       steps {
         script {
           sh "docker build -f docker/Dockerfile-test -t love-commander-test  ."
-          sh "docker run love-commander-test"
+          sh "docker run --env LSST_DDS_PARTITION_PREFIX=ci --env LSST_SITE=ci love-commander-test"
         }
       }
     }

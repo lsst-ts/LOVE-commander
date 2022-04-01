@@ -38,18 +38,22 @@ def create_app(*args, **kwargs):
         global efd_clients
         req = await request.json()
 
-        efd_instance = req["efd_instance"]
+        try:
+            efd_instance = req["efd_instance"]
+            start_date = req["start_date"]
+            time_window = int(req["time_window"])
+            cscs = req["cscs"]
+            resample = req["resample"]
+        except Exception:
+            return web.json_response(
+                {"error": "Some of the required parameters is not present"}, status=400
+            )
+
         efd_client = efd_clients.get(efd_instance)
         if efd_client is None:
             efd_client = connect_to_efd_intance(efd_instance)
-
         if efd_client is None:
             return unavailable_efd_client()
-
-        start_date = req["start_date"]
-        time_window = int(req["time_window"])
-        cscs = req["cscs"]
-        resample = req["resample"]
 
         parsed_date = Time(start_date, scale="utc")
         time_delta = TimeDelta(time_window * 60, format="sec")
@@ -87,8 +91,11 @@ def create_app(*args, **kwargs):
         return web.json_response(response_data)
 
     async def query_efd_clients(request):
-        efd_instances = lsst_efd_client.EfdClient.list_efd_names()
-        response_data = {"instances": efd_instances}
+        try:
+            efd_instances = lsst_efd_client.EfdClient.list_efd_names()
+            response_data = {"instances": efd_instances}
+        except Exception as e:
+            response_data = {"error": e}
         return web.json_response(response_data, status=200)
 
     efd_app.router.add_post("/timeseries", query_efd_timeseries)

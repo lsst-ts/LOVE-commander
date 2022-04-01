@@ -33,8 +33,6 @@ def create_app():
             status=400,
         )
 
-    connect_to_atcs_intance()
-
     async def auxtel_command(request):
         global atcs_client
         if not atcs_client:
@@ -99,8 +97,6 @@ def create_app():
             {"ack": "MTCS Client could not stablish connection"},
             status=400,
         )
-
-    connect_to_mtcs_intance()
 
     async def maintel_command(request):
         global mtcs_client
