@@ -46,7 +46,7 @@ def create_app(*args, **kwargs):
             resample = req["resample"]
         except Exception:
             return web.json_response(
-                {"error": "Some of the required parameters is not present"}, status=400
+                {"ack": "Some of the required parameters is not present"}, status=400
             )
 
         efd_client = efd_clients.get(efd_instance)
@@ -90,16 +90,63 @@ def create_app(*args, **kwargs):
         response_data = dict(zip(sources, results))
         return web.json_response(response_data)
 
+    async def query_efd_logs(request):
+        global efd_clients
+        req = await request.json()
+
+        try:
+            efd_instance = req["efd_instance"]
+            start_date = req["start_date"]
+            end_date = req["end_date"]
+            cscs = req["cscs"]
+        except Exception:
+            return web.json_response(
+                {"ack": "Some of the required parameters is not present"}, status=400
+            )
+
+        efd_client = efd_clients.get(efd_instance)
+        if efd_client is None:
+            efd_client = connect_to_efd_intance(efd_instance)
+        if efd_client is None:
+            return unavailable_efd_client()
+
+        start_date = Time(start_date, scale="utc")
+        end_date = Time(end_date, scale="utc")
+        query_tasks = []
+        sources = []
+        for csc in cscs:
+            indices = cscs[csc]
+            for index in indices:
+                topics = indices[index]
+                for topic in topics:
+                    fields = topics[topic]
+                    task = efd_client.select_time_series(
+                        f"lsst.sal.{csc}.{topic}",
+                        fields,
+                        start_date,
+                        end_date,
+                        index=int(index),
+                    )
+                    sources.append(f"{csc}-{index}-{topic}")
+                    query_tasks.append(task)
+
+        results = [r for r in await asyncio.gather(*query_tasks)]
+        results = [r.to_dict("records") for r in results]
+
+        response_data = dict(zip(sources, results))
+        return web.json_response(response_data)
+
     async def query_efd_clients(request):
         try:
             efd_instances = lsst_efd_client.EfdClient.list_efd_names()
-            response_data = {"instances": efd_instances}
+            return web.json_response({"instances": efd_instances}, status=200)
         except Exception as e:
-            response_data = {"error": e}
-        return web.json_response(response_data, status=200)
+            return web.json_response({"ack": e}, status=400)
 
     efd_app.router.add_post("/timeseries", query_efd_timeseries)
     efd_app.router.add_post("/timeseries/", query_efd_timeseries)
+    efd_app.router.add_post("/logmessages", query_efd_logs)
+    efd_app.router.add_post("/logmessages/", query_efd_logs)
     efd_app.router.add_get("/efd_clients", query_efd_clients)
     efd_app.router.add_get("/efd_clients/", query_efd_clients)
 
