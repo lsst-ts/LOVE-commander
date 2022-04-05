@@ -4,6 +4,7 @@ import lsst_efd_client
 from astropy.time import Time, TimeDelta
 import asyncio
 
+MAX_EFD_LOGS_LEN = 10
 efd_clients = dict()
 
 
@@ -133,7 +134,30 @@ def create_app(*args, **kwargs):
         results = [r for r in await asyncio.gather(*query_tasks)]
         results = [r.to_dict("records") for r in results]
 
-        response_data = dict(zip(sources, results))
+        flattened_results = []
+        result_id_counter = 0
+        for sublist in results:
+            for item in sublist:
+                result_id_counter += 1
+                item["id"] = result_id_counter
+                flattened_results.append(item)
+
+        flattened_results.sort(key=lambda x: x["private_rcvStamp"], reverse=False)
+        marked_results_ids = [
+            item["id"] for item in flattened_results[:MAX_EFD_LOGS_LEN]
+        ]
+
+        counter = 0
+        filtered_results = []
+        for s, sublist in enumerate(results):
+            filtered_results.append([])
+            for i, item in enumerate(sublist):
+                counter += 1
+                if counter not in marked_results_ids:
+                    continue
+                filtered_results[s].append(results[s][i])
+
+        response_data = dict(zip(sources, filtered_results))
         return web.json_response(response_data)
 
     async def query_efd_clients(request):
