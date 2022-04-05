@@ -147,13 +147,11 @@ def create_app(*args, **kwargs):
             item["id"] for item in flattened_results[:MAX_EFD_LOGS_LEN]
         ]
 
-        counter = 0
         filtered_results = []
         for s, sublist in enumerate(results):
             filtered_results.append([])
             for i, item in enumerate(sublist):
-                counter += 1
-                if counter not in marked_results_ids:
+                if item["id"] not in marked_results_ids:
                     continue
                 filtered_results[s].append(results[s][i])
 
