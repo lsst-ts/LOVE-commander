@@ -27,7 +27,7 @@ class MockMTCSClient(object):
 
 
 async def test_atcs_command(client):
-    """ Test an ATCS command response."""
+    """Test an ATCS command response."""
 
     mock_tcs_patcher = patch("commander.tcs.ATCS")
     mock_tcs_client = mock_tcs_patcher.start()
@@ -49,7 +49,7 @@ async def test_atcs_command(client):
 
 
 async def test_missing_atcs_command(client):
-    """ Test an ATCS command response."""
+    """Test an ATCS command response."""
 
     mock_tcs_patcher = patch("commander.tcs.ATCS")
     mock_tcs_client = mock_tcs_patcher.start()
@@ -65,7 +65,7 @@ async def test_missing_atcs_command(client):
 
 
 async def test_atcs_docstring(client):
-    """ Test an ATCS command response."""
+    """Test an ATCS command response."""
 
     mock_tcs_patcher = patch("commander.tcs.ATCS")
     mock_tcs_client = mock_tcs_patcher.start()
@@ -79,7 +79,7 @@ async def test_atcs_docstring(client):
 
 
 async def test_mtcs_command(client):
-    """ Test an MTCS command response."""
+    """Test an MTCS command response."""
 
     mock_tcs_patcher = patch("commander.tcs.MTCS")
     mock_tcs_client = mock_tcs_patcher.start()
@@ -101,7 +101,7 @@ async def test_mtcs_command(client):
 
 
 async def test_missing_mtcs_command(client):
-    """ Test an MTCS command response."""
+    """Test an MTCS command response."""
 
     mock_tcs_patcher = patch("commander.tcs.MTCS")
     mock_tcs_client = mock_tcs_patcher.start()
@@ -117,7 +117,7 @@ async def test_missing_mtcs_command(client):
 
 
 async def test_mtcs_docstring(client):
-    """ Test an MTCS command response."""
+    """Test an MTCS command response."""
 
     mock_tcs_patcher = patch("commander.tcs.MTCS")
     mock_tcs_client = mock_tcs_patcher.start()
