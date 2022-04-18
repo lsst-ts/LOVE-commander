@@ -61,9 +61,9 @@ def create_app(*args, **kwargs):
         query_tasks = []
         sources = []
         for csc in cscs:
-            indices = cscs[csc]
-            for index in indices:
-                topics = indices[index]
+            indexes = cscs[csc]
+            for index in indexes:
+                topics = indexes[index]
                 for topic in topics:
                     fields = topics[topic]
                     task = efd_client.select_time_series(
@@ -116,9 +116,9 @@ def create_app(*args, **kwargs):
         query_tasks = []
         sources = []
         for csc in cscs:
-            indices = cscs[csc]
-            for index in indices:
-                topics = indices[index]
+            indexes = cscs[csc]
+            for index in indexes:
+                topics = indexes[index]
                 for topic in topics:
                     fields = topics[topic]
                     task = efd_client.select_time_series(
