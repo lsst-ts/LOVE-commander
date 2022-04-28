@@ -75,10 +75,7 @@ def create_app(*args, **kwargs):
 
         user = data["user"]
         message = data["message"]
-
-        # LOVECsc
-        csc.evt_observingLog.set(user=user, message=message)
-        csc.evt_observingLog.put()
+        await csc.evt_observingLog.set_write(user=user, message=message)
 
         return web.json_response({"ack": "Added new observing log to SAL"}, status=200)
 
