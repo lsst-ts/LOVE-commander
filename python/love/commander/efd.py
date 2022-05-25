@@ -6,7 +6,7 @@ import lsst_efd_client
 from astropy.time import Time, TimeDelta
 import asyncio
 
-MAX_EFD_LOGS_LEN = 10
+MAX_EFD_LOGS_LEN = 100
 efd_clients = dict()
 
 
