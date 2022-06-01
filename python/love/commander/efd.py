@@ -9,7 +9,7 @@ EFD_CLIENT_CONNECTION_TIMEOUT = 5
 efd_clients = dict()
 
 
-def riseTimeout(*args):
+def raise_timeout(*args):
     raise TimeoutError
 
 
@@ -26,7 +26,7 @@ def create_app(*args, **kwargs):
     def connect_to_efd_intance(instance):
         global efd_clients
 
-        signal.signal(signal.SIGALRM, riseTimeout)
+        signal.signal(signal.SIGALRM, raise_timeout)
 
         instance_exists = efd_clients.get(instance)
         if instance_exists is not None:
@@ -37,6 +37,8 @@ def create_app(*args, **kwargs):
             efd_clients[instance] = lsst_efd_client.EfdClient(instance)
         except Exception:
             efd_clients[instance] = None
+        finally:
+            signal.signal(signal.SIGALRM, signal.SIG_IGN)
         return efd_clients[instance]
 
     def unavailable_efd_client():
