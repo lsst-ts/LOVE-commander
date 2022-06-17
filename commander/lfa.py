@@ -1,5 +1,5 @@
 """Define LOVE CSC subapplication, which provides the endpoints to request info to the LOVE CSC from SAL."""
-import json
+from tempfile import TemporaryFile
 from aiohttp import web
 from lsst.ts import utils
 from lsst.ts import salobj
@@ -42,37 +42,44 @@ def create_app(*args, **kwargs):
                     "ack": "<Description about the success state of the request>"
                 }
         """
-        data = await request.json()
+
+        reader = await request.multipart()
+        field = await reader.next()
 
         try:
-            assert "file" in data
+            assert field.name == "uploaded_file"
         except AssertionError:
             return web.json_response(
-                {
-                    "ack": "Request must have JSON data with the following keys:"
-                    + f" file. Received {json.dumps(data)}"
-                },
+                {"ack": "Request must have a file uploaded"},
                 status=400,
             )
 
-        file = data["file"]
-        file_type = file.split(".")[-1]
+        filename = field.filename
+        file_type = filename.split(".")[-1]
         key = s3_bucket.make_key(
             salname="LOVE",
             salindexname=0,
             generator="OLE",
             date=utils.astropy_time_from_tai_unix(utils.current_tai()),
-            suffix=file_type,
+            suffix="." + file_type,
         )
 
         try:
-            await s3_bucket.upload(fileobj=file, key=key)
-            print("File uploaded correctly!")
+            size = 0
+            with TemporaryFile() as f:
+                while True:
+                    chunk = await field.read_chunk()
+                    if not chunk:
+                        break
+                    size += len(chunk)
+                    f.write(chunk)
+                await s3_bucket.upload(fileobj=f, key=key)
             new_url = f"{s3_bucket.service_resource.meta.client.meta.endpoint_url}/{s3_bucket.name}/{key}"
-            print(new_url)
-        except Exception as e:
-            print("File could not be uploaded")
-            print(e)
+        except Exception:
+            return web.json_response(
+                {"ack": "File could not be uploaded"},
+                status=400,
+            )
 
         return web.json_response(
             {
@@ -82,11 +89,11 @@ def create_app(*args, **kwargs):
             status=200,
         )
 
-    lfa_app.router.add_post("/upload_file", upload_file)
+    lfa_app.router.add_post("/upload-file", upload_file)
 
     async def on_cleanup(lfa_app):
         pass
 
-    lfa_app.on_cleanu.pappend(on_cleanup)
+    lfa_app.on_cleanup.append(on_cleanup)
 
     return lfa_app
