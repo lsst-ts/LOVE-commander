@@ -1,4 +1,6 @@
-"""Define the Heartbeats subapplication, which provides the endpoints to request a heartbeat."""
+"""Define the Heartbeats subapplication, which provides the endpoints to
+request a heartbeat.
+"""
 from aiohttp import web
 from datetime import datetime
 

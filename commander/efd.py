@@ -1,4 +1,6 @@
-"""Define the Heartbeats subapplication, which provides the endpoints to request a heartbeat."""
+"""Define the Heartbeats subapplication, which provides the endpoints to
+request a heartbeat.
+"""
 from aiohttp import web
 import lsst_efd_client
 from astropy.time import Time, TimeDelta
