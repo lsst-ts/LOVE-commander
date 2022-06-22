@@ -1,4 +1,6 @@
-"""Define LOVE CSC subapplication, which provides the endpoints to request info to the LOVE CSC from SAL."""
+"""Define LOVE CSC subapplication, which provides the endpoints to request
+info to the LOVE CSC from SAL.
+"""
 import json
 import logging
 from aiohttp import web
@@ -49,7 +51,8 @@ def create_app(*args, **kwargs):
             .. code-block:: json
 
                 {
-                    "ack": "<Description about the success state of the request>"
+                    "ack":
+                    "<Description about the success state of the request>"
                 }
         """
         global csc

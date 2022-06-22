@@ -1,4 +1,6 @@
-"""Define the Commands subapplication, which provides the endpoints to accept command requests."""
+"""Define the Commands subapplication, which provides the endpoints to accept
+command requests.
+"""
 from aiohttp import web
 from lsst.ts import salobj
 import json
