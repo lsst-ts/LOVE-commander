@@ -102,8 +102,7 @@ async def test_some_topic_names(client):
                 requested = categories
                 non_req = []
 
-            for name, data in response_data.items():
-                # assert name in names
+            for _, data in response_data.items():
                 # Assert that requested categories are in the response
                 for r in requested:
                     key = r + "_names"
@@ -126,11 +125,7 @@ def assert_topic_data(topic_data):
             assert "description" in v
             assert "units" in v
             assert "type_name" in v
-            # assert type(v["name"]) == str
             assert k == v["name"]
-            # assert type(v["description"]) == str or type(v["description"]) == type(None)
-            # assert type(v["units"]) == str or type(v["units"]) == type(None)
-            # assert type(v["type_name"]) == str or type(v["type_name"]) == type(None)
             assert isinstance(v["name"], str)
             assert isinstance(v["description"], str) or isinstance(
                 v["description"], type(None)
@@ -161,8 +156,7 @@ async def test_all_topic_data(client, *args, **kwargs):
 
         response_data = await response.json()
 
-        for name, data in response_data.items():
-            # assert name in names
+        for _, data in response_data.items():
             assert "command_data" in data
             assert "event_data" in data
             assert "telemetry_data" in data
@@ -206,8 +200,7 @@ async def test_some_topic_data(client, *args, **kwargs):
                 requested = categories
                 non_req = []
 
-            for name, data in response_data.items():
-                # assert name in names
+            for _, data in response_data.items():
                 # Assert that requested categories are in the response
                 for r in requested:
                     key = r + "_data"

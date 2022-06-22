@@ -1,4 +1,6 @@
-"""Define the SAL Info subapplication, which provides the endpoints to request info from SAL."""
+"""Define the SAL Info subapplication, which provides the endpoints to request
+info from SAL.
+"""
 from aiohttp import web
 from lsst.ts import salobj
 
@@ -61,30 +63,42 @@ def create_app(*args, **kwargs):
     async def get_topic_names(request):
         """Handle get topic names requests.
 
-        Parameters
-        ----------
-        request : Request
-            The original HTTP request
+            Parameters
+            ----------
+            request : Request
+                The original HTTP request
 
-        Returns
-        -------
-        Response
-            The response for the HTTP request with the following structure:
+            Returns
+            -------
+            Response
+                The response for the HTTP request with the following structure:
 
             .. code-block:: json
 
                 {
                     "<CSC_1>": {
                         "event_names": ["<event_name_1>", "<event_name_2>"],
-                        "telemetry_names": ["<telemetry_name_1>", "<telemetry_name_2>"],
-                        "command_names": ["<command_name_1>", "<command_name_2>"]
+                        "telemetry_names": [
+                            "<telemetry_name_1>",
+                            "<telemetry_name_2>"
+                            ],
+                        "command_names": [
+                            "<command_name_1>",
+                            "<command_name_2>"
+                            ]
                     },
                     "<CSC_2>": {
                         "event_names": ["<event_name_1>", "<event_name_2>"],
-                        "telemetry_names": ["<telemetry_name_1>", "<telemetry_name_2>"],
-                        "command_names": ["<command_name_1>", "<command_name_2>"]
+                        "telemetry_names": [
+                            "<telemetry_name_1>",
+                            "<telemetry_name_2>"
+                            ],
+                        "command_names": [
+                            "<command_name_1>",
+                            "<command_name_2>"
+                            ]
                     }
-                }
+        }
         """
         accepted_categories = ["telemetry", "event", "command"]
         categories = request.rel_url.query.get("categories", "").split("-")
@@ -111,8 +125,8 @@ def create_app(*args, **kwargs):
         Returns
         -------
         dictionary
-            The data as a dictionary of fields whose values are subdictionaries containing the following keys:
-            name, description, units, type_name
+            The data as a dictionary of fields whose values are subdictionaries
+            containing the following keys: name, description, units, type_name
         """
         return {
             k: {
@@ -133,14 +147,16 @@ def create_app(*args, **kwargs):
         salinfo : dictionary
             Dictionary containing the SAL Info in a tree-like structure
         categories : list of string
-            List of categories to include, can contain any of "event", "telemetry" or "command"
+            List of categories to include, can contain any of "event",
+            "telemetry" or "command".
 
         Returns
         -------
         dictionary
-            The dictionary for the response, with a list of dictionaries describing each topic,
-            for all the topics defined in the "categories" parameter.
-            The dictionary is indexed by the topic type (event_data, telemetry_data or command_data).
+            The dictionary for the response, with a list of dictionaries
+            describing each topic, for all the topics defined in the
+            "categories" parameter. The dictionary is indexed by the topic type
+            (event_data, telemetry_data or command_data).
         """
         result = {}
         if "telemetry" in categories:
