@@ -1,33 +1,28 @@
 import json
-
 from lsst.ts import salobj
-
+from lsst.ts.utils import index_generator
 from commander_utils import NumpyEncoder
 
-index_gen = salobj.index_generator()
+index_gen = index_generator()
 
 
 async def test_successful_command(client):
     # Arrange
     # setup dds / csc
     salobj.set_random_lsst_dds_partition_prefix()
-    print("HOLA A", flush=True)
     next(index_gen)
-    print("HOLA B", flush=True)
     csc = salobj.TestCsc(index=1, config_dir=None, initial_state=salobj.State.ENABLED)
-    print("HOLA C", flush=True)
     await csc.start_task
-    print("HOLA D", flush=True)
 
     # build data
-    cmd_data = csc.make_random_cmd_scalars()
+    cmd_data = csc.make_random_scalars_dict()
     data = json.loads(
         json.dumps(
             {
                 "csc": "Test",
                 "salindex": 1,
                 "cmd": "cmd_setScalars",
-                "params": dict(cmd_data.get_vars()),
+                "params": cmd_data,
             },
             cls=NumpyEncoder,
         )
@@ -74,7 +69,7 @@ async def test_timeout(client):
     await csc.start_task
 
     # build data
-    csc.make_random_cmd_scalars()
+    csc.make_random_scalars_dict()
     data = json.loads(
         json.dumps(
             {

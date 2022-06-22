@@ -1,8 +1,9 @@
 import json
-
+import pytest
 from lsst.ts import salobj
 
 
+@pytest.mark.skip(reason="LOVE CSC is not functional at this moment")
 async def test_successful_command(client, *args, **kwargs):
     # Arrange
     remote = salobj.Remote(domain=salobj.Domain(), name="LOVE")
@@ -33,6 +34,7 @@ async def test_successful_command(client, *args, **kwargs):
     await remote.close()
 
 
+@pytest.mark.skip(reason="LOVE CSC is not functional at this moment")
 async def test_wrong_data(client, *args, **kwargs):
     # Arrange
     data = {"wrong": "data"}

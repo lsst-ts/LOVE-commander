@@ -1,9 +1,9 @@
 from itertools import chain, combinations
+from lsst.ts import salobj
+from lsst.ts.utils import index_generator
 from tests import conftest
 
-from lsst.ts import salobj
-
-index_gen = salobj.index_generator()
+index_gen = index_generator()
 idl_glob = "**/*.idl"
 
 

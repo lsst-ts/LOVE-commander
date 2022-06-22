@@ -11,6 +11,7 @@ services:
     image: love-commander-mount-image
     environment:
       - LSST_DDS_PARTITION_PREFIX=local
+      - LSST_SITE=local
     volumes:
       - ..:/usr/src/love
     command: "/usr/src/love/docker/setup-dev.sh"
