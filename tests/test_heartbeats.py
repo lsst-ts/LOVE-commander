@@ -1,9 +1,10 @@
 from datetime import datetime
+from commander.app import create_app
 
 
-async def test_successful_heartbeat(client):
+async def test_successful_heartbeat(aiohttp_client):
     # Arrange
-    # setup dds / csc
+    client = await aiohttp_client(create_app())
 
     # build data
     # Act
