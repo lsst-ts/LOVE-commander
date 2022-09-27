@@ -1,6 +1,7 @@
 """Define LOVE CSC subapplication, which provides the endpoints
 to request info to the LOVE CSC from SAL."""
 import os
+import logging
 from tempfile import TemporaryFile
 from aiohttp import web
 from lsst.ts import utils
@@ -8,6 +9,7 @@ from lsst.ts import salobj
 
 
 s3_bucket = None
+LOVE_controller = None
 
 
 def create_app(*args, **kwargs):
@@ -36,13 +38,29 @@ def create_app(*args, **kwargs):
             s3_bucket = salobj.AsyncS3Bucket(
                 name=s3_bucket_name, domock=mock_s3, create=mock_s3
             )
-        except Exception:
+        except Exception as e:
+            logging.warning(e)
             s3_bucket = None
 
     def unavailable_s3_bucket():
         return web.json_response(
             {"ack": "Could not stablish connection with S3 Bucket "},
             status=400,
+        )
+
+    def connect_to_love_controller():
+        global LOVE_controller
+        try:
+            LOVE_controller = salobj.Controller("LOVE", index=None, do_callbacks=False)
+        except Exception as e:
+            logging.warning(e)
+            LOVE_controller = None
+
+    connect_to_love_controller()
+
+    def unavailable_love_controller():
+        return web.json_response(
+            {"ack": "LOVE CSC could not stablish connection"}, status=400
         )
 
     async def upload_file(request):
@@ -66,17 +84,17 @@ def create_app(*args, **kwargs):
                 }
         """
 
-        global s3_bucket
+        global s3_bucket, LOVE_controller
         if not s3_bucket:
             connect_to_s3_bucket()
         if not s3_bucket:
             return unavailable_s3_bucket()
 
-        if s3_bucket is None:
-            return web.json_response(
-                {"ack": "Connection to the S3 bucket could not be stablished"},
-                status=400,
-            )
+        if not LOVE_controller:
+            connect_to_love_controller()
+        if not LOVE_controller:
+            return unavailable_love_controller()
+        await LOVE_controller.start_task
 
         reader = await request.multipart()
         field = await reader.next()
@@ -116,6 +134,12 @@ def create_app(*args, **kwargs):
                 {"ack": "File could not be uploaded"},
                 status=400,
             )
+
+        # Uncomment next lines once the new XML version is ready
+        # LOVE_controller.evt_largeFileObjectAvailable.set_put(
+        #   url=new_url,
+        #   generator=f"{LOVE_controller.salinfo.name}:{LOVE_controller.salinfo.index}",
+        # )
 
         return web.json_response(
             {
