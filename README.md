@@ -24,7 +24,7 @@ Follow these instructions to run the application in a docker container and get i
 cd docker/
 export dev_cycle=develop #Here you can set a specified version of the lsstts/develop-env image
 docker-compose up -d --build
-docker-exec commander bash
+docker-compose exec commander bash
 ```
 
 2. Inside the container:, load the setup and got to love folder
