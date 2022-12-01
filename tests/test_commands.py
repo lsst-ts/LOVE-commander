@@ -3,13 +3,16 @@ from lsst.ts import salobj
 from lsst.ts.utils import index_generator
 from commander_utils import NumpyEncoder
 from commander.app import create_app
+import pytest
 
 index_gen = index_generator()
 
 
+@pytest.mark.asyncio
 async def test_successful_command(aiohttp_client):
     # Arrange
-    client = await aiohttp_client(create_app())
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     # setup dds / csc
     salobj.set_random_lsst_dds_partition_prefix()
@@ -46,7 +49,8 @@ async def test_successful_command(aiohttp_client):
 
 async def test_wrong_data(aiohttp_client):
     # Arrange
-    client = await aiohttp_client(create_app())
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     data = {"wrong": "data"}
 
@@ -67,7 +71,8 @@ async def test_wrong_data(aiohttp_client):
 
 async def test_timeout(aiohttp_client):
     # Arrange
-    client = await aiohttp_client(create_app())
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     # setup dds / csc
     salobj.set_random_lsst_dds_partition_prefix()
