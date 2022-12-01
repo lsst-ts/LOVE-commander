@@ -48,7 +48,9 @@ def raise_exception(name):
 
 async def test_efd_timeseries(aiohttp_client):
     """Test the get timeseries response."""
-    client = await aiohttp_client(create_app())
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
@@ -88,7 +90,9 @@ async def test_efd_timeseries(aiohttp_client):
 
 async def test_efd_timeseries_with_errors(aiohttp_client):
     """Test the get timeseries response with errors."""
-    client = await aiohttp_client(create_app())
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
@@ -122,7 +126,9 @@ async def test_efd_timeseries_with_errors(aiohttp_client):
 
 async def test_efd_logmessages(aiohttp_client):
     """Test the get timeseries response."""
-    client = await aiohttp_client(create_app())
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
@@ -217,7 +223,9 @@ async def test_efd_logmessages(aiohttp_client):
 
 async def test_efd_clients(aiohttp_client):
     """Test query_efd_clients method"""
-    client = await aiohttp_client(create_app())
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")

@@ -7,7 +7,8 @@ from commander.app import create_app
 @pytest.mark.skip(reason="LOVE CSC is not functional at this moment")
 async def test_successful_command(aiohttp_client, *args, **kwargs):
     # Arrange
-    client = await aiohttp_client(create_app())
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     remote = salobj.Remote(domain=salobj.Domain(), name="LOVE")
 
@@ -40,7 +41,8 @@ async def test_successful_command(aiohttp_client, *args, **kwargs):
 @pytest.mark.skip(reason="LOVE CSC is not functional at this moment")
 async def test_wrong_data(aiohttp_client, *args, **kwargs):
     # Arrange
-    client = await aiohttp_client(create_app())
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     data = {"wrong": "data"}
 

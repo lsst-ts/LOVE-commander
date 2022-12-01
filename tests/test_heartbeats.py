@@ -4,7 +4,8 @@ from commander.app import create_app
 
 async def test_successful_heartbeat(aiohttp_client):
     # Arrange
-    client = await aiohttp_client(create_app())
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     # build data
     # Act

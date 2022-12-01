@@ -40,7 +40,9 @@ class MockAsyncS3Bucket:
 async def test_lfa_upload_file(aiohttp_client):
     """Test LFA file upload."""
 
-    client = await aiohttp_client(create_app())
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     mock_lfa_patcher = patch("lsst.ts.salobj.AsyncS3Bucket")
     mock_lfa_client = mock_lfa_patcher.start()
@@ -68,7 +70,9 @@ async def test_lfa_upload_file(aiohttp_client):
 async def test_lfa_upload_erros(aiohttp_client):
     """Test errors on uploading a file."""
 
-    client = await aiohttp_client(create_app())
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     mock_lfa_patcher = patch("lsst.ts.salobj.AsyncS3Bucket")
     mock_lfa_client = mock_lfa_patcher.start()
@@ -90,7 +94,10 @@ async def test_lfa_upload_erros(aiohttp_client):
 
 async def test_lfa_wrong_option(aiohttp_client):
     """Test wrong option."""
-    client = await aiohttp_client(create_app())
+
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     response = await client.post("/lfa/upload-fileS", data={"uploaded_file": None})
     assert response.status == 404

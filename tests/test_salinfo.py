@@ -11,7 +11,9 @@ idl_glob = "**/*.idl"
 async def test_metadata(aiohttp_client):
     """Test the get metadata response."""
 
-    client = await aiohttp_client(create_app())
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
@@ -42,7 +44,9 @@ async def test_metadata(aiohttp_client):
 async def test_all_topic_names(aiohttp_client):
     """Test the get topic_names response."""
 
-    client = await aiohttp_client(create_app())
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
@@ -75,7 +79,9 @@ async def test_all_topic_names(aiohttp_client):
 async def test_some_topic_names(aiohttp_client):
     """Test the use of query params to get only some of the topic_names."""
 
-    client = await aiohttp_client(create_app())
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
@@ -149,7 +155,9 @@ def assert_topic_data(topic_data):
 async def test_all_topic_data(aiohttp_client, *args, **kwargs):
     """Test the get topic_data response."""
 
-    client = await aiohttp_client(create_app())
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
@@ -181,7 +189,9 @@ async def test_all_topic_data(aiohttp_client, *args, **kwargs):
 async def test_some_topic_data(aiohttp_client, *args, **kwargs):
     """Test the use of query params to get only some of the topic_data."""
 
-    client = await aiohttp_client(create_app())
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
 
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
