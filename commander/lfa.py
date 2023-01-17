@@ -28,7 +28,8 @@ def create_app(*args, **kwargs):
         # Define the S3 instance to be used
         S3_INSTANCE = os.environ.get("S3_INSTANCE")
 
-        mock_s3 = True  # Remove on production
+        # mock_s3 = True if os.environ.get("MOCK_S3", False) else False
+        mock_s3 = False
 
         try:
             s3_bucket_name = salobj.AsyncS3Bucket.make_bucket_name(
