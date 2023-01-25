@@ -121,6 +121,7 @@ def create_app(*args, **kwargs):
             with TemporaryFile() as f:
                 file_data = await field.read()
                 f.write(file_data)
+                f.seek(0)
                 await s3_bucket.upload(fileobj=f, key=key)
             new_url = f"{s3_bucket.service_resource.meta.client.meta.endpoint_url}/{s3_bucket.name}/{key}"
         except Exception as e:
