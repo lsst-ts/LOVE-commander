@@ -28,8 +28,7 @@ def create_app(*args, **kwargs):
         # Define the S3 instance to be used
         S3_INSTANCE = os.environ.get("S3_INSTANCE")
 
-        # mock_s3 = True if os.environ.get("MOCK_S3", False) else False
-        mock_s3 = False
+        mock_s3 = True if os.environ.get("MOCK_S3", False) else False
 
         try:
             s3_bucket_name = salobj.AsyncS3Bucket.make_bucket_name(
@@ -119,14 +118,9 @@ def create_app(*args, **kwargs):
         )
 
         try:
-            size = 0
             with TemporaryFile() as f:
-                while True:
-                    chunk = await field.read_chunk()
-                    if not chunk:
-                        break
-                    size += len(chunk)
-                    f.write(chunk)
+                file_data = await field.read()
+                f.write(file_data)
                 await s3_bucket.upload(fileobj=f, key=key)
             new_url = f"{s3_bucket.service_resource.meta.client.meta.endpoint_url}/{s3_bucket.name}/{key}"
         except Exception as e:
