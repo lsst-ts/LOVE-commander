@@ -125,17 +125,15 @@ def create_app(*args, **kwargs):
                 await s3_bucket.upload(fileobj=f, key=key)
             new_url = f"{s3_bucket.service_resource.meta.client.meta.endpoint_url}/{s3_bucket.name}/{key}"
         except Exception as e:
-            print(e, flush=True)
             return web.json_response(
-                {"ack": "File could not be uploaded"},
+                {"ack": f"File could not be uploaded: {e}"},
                 status=400,
             )
 
-        # Uncomment next lines once the new XML version is ready
-        # LOVE_controller.evt_largeFileObjectAvailable.set_put(
-        #   url=new_url,
-        #   generator=f"{LOVE_controller.salinfo.name}:{LOVE_controller.salinfo.index}",
-        # )
+        await LOVE_controller.evt_largeFileObjectAvailable.set_write(
+            url=new_url,
+            generator=f"{LOVE_controller.salinfo.name}:{LOVE_controller.salinfo.index}",
+        )
 
         return web.json_response(
             {
