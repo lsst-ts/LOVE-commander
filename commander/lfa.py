@@ -23,18 +23,26 @@ def create_app(*args, **kwargs):
     lfa_app = web.Application()
 
     def connect_to_s3_bucket():
+        """Connect to the S3 bucket to be used for the OLE requests.
+
+        Notes
+        -----
+        The S3 bucket is defined by the environment variable S3_INSTANCE.
+        If the environment variable MOCK_S3 is set to True, the connection
+        will be mocked.
+
+        s3_bucket is a global variable that will be used to store the
+        connection to the S3 bucket. If the connection could not be
+        established, s3_bucket will be set to None.
+        """
         global s3_bucket
-
-        # Define the S3 instance to be used
         S3_INSTANCE = os.environ.get("S3_INSTANCE")
-
         mock_s3 = True if os.environ.get("MOCK_S3", False) else False
 
         try:
             s3_bucket_name = salobj.AsyncS3Bucket.make_bucket_name(
                 s3instance=S3_INSTANCE
             )
-
             s3_bucket = salobj.AsyncS3Bucket(
                 name=s3_bucket_name, domock=mock_s3, create=mock_s3
             )
@@ -43,12 +51,35 @@ def create_app(*args, **kwargs):
             s3_bucket = None
 
     def unavailable_s3_bucket():
+        """Return a response for the case when the S3 bucket is not available.
+
+        Returns
+        -------
+        Response
+            The response for the HTTP request with the following structure:
+
+            .. code-block:: json
+
+                {
+                    "ack": "<Description about the \
+                    success state of the request>"
+                }
+        """
         return web.json_response(
             {"ack": "Could not stablish connection with S3 Bucket "},
             status=400,
         )
 
     def connect_to_love_controller():
+        """Connect to the LOVE CSC.
+
+        Notes
+        -----
+        LOVE_controller is a global variable that will be used to store the
+        connection to the LOVE CSC using `salobj.Controller`.
+        If the connection could not be established, LOVE_controller will
+        be set to None.
+        """
         global LOVE_controller
         try:
             LOVE_controller = salobj.Controller("LOVE", index=None, do_callbacks=False)
@@ -56,9 +87,21 @@ def create_app(*args, **kwargs):
             logging.warning(e)
             LOVE_controller = None
 
-    connect_to_love_controller()
-
     def unavailable_love_controller():
+        """Return a response for the case when the LOVE CSC is not available.
+
+        Returns
+        -------
+        Response
+            The response for the HTTP request with the following structure:
+
+            .. code-block:: json
+
+                {
+                    "ack": "<Description about the \
+                    success state of the request>"
+                }
+        """
         return web.json_response(
             {"ack": "LOVE CSC could not stablish connection"}, status=400
         )
@@ -80,7 +123,8 @@ def create_app(*args, **kwargs):
 
                 {
                     "ack": "<Description about the \
-                    success state of the request>"
+                    success state of the request>",
+                    "url": "<URL to the uploaded file>"
                 }
         """
 
@@ -143,11 +187,11 @@ def create_app(*args, **kwargs):
             status=200,
         )
 
-    lfa_app.router.add_post("/upload-file", upload_file)
-
     async def on_cleanup(lfa_app):
         pass
 
+    connect_to_love_controller()
+    lfa_app.router.add_post("/upload-file", upload_file)
     lfa_app.on_cleanup.append(on_cleanup)
 
     return lfa_app
