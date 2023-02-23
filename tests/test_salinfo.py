@@ -2,13 +2,19 @@ from itertools import chain, combinations
 from lsst.ts import salobj
 from lsst.ts.utils import index_generator
 from tests import conftest
+from commander.app import create_app
 
 index_gen = index_generator()
 idl_glob = "**/*.idl"
 
 
-async def test_metadata(client):
+async def test_metadata(aiohttp_client):
     """Test the get metadata response."""
+
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
+
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
         domain = salobj.Domain()
@@ -35,8 +41,13 @@ async def test_metadata(client):
             assert data["xml_version"].count(".") == 2
 
 
-async def test_all_topic_names(client):
+async def test_all_topic_names(aiohttp_client):
     """Test the get topic_names response."""
+
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
+
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
         domain = salobj.Domain()
@@ -65,8 +76,13 @@ async def test_all_topic_names(client):
             assert type(data["telemetry_names"]) == list
 
 
-async def test_some_topic_names(client):
+async def test_some_topic_names(aiohttp_client):
     """Test the use of query params to get only some of the topic_names."""
+
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
+
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
         domain = salobj.Domain()
@@ -136,8 +152,13 @@ def assert_topic_data(topic_data):
             )
 
 
-async def test_all_topic_data(client, *args, **kwargs):
+async def test_all_topic_data(aiohttp_client, *args, **kwargs):
     """Test the get topic_data response."""
+
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
+
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
         domain = salobj.Domain()
@@ -165,8 +186,13 @@ async def test_all_topic_data(client, *args, **kwargs):
             assert_topic_data(data["telemetry_data"])
 
 
-async def test_some_topic_data(client, *args, **kwargs):
+async def test_some_topic_data(aiohttp_client, *args, **kwargs):
     """Test the use of query params to get only some of the topic_data."""
+
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
+
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain() as domain:
         domain = salobj.Domain()

@@ -1,11 +1,15 @@
 import json
 import pytest
 from lsst.ts import salobj
+from commander.app import create_app
 
 
 @pytest.mark.skip(reason="LOVE CSC is not functional at this moment")
-async def test_successful_command(client, *args, **kwargs):
+async def test_successful_command(aiohttp_client, *args, **kwargs):
     # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
+
     remote = salobj.Remote(domain=salobj.Domain(), name="LOVE")
 
     await remote.start_task
@@ -35,8 +39,11 @@ async def test_successful_command(client, *args, **kwargs):
 
 
 @pytest.mark.skip(reason="LOVE CSC is not functional at this moment")
-async def test_wrong_data(client, *args, **kwargs):
+async def test_wrong_data(aiohttp_client, *args, **kwargs):
     # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
+
     data = {"wrong": "data"}
 
     # Act
