@@ -3,6 +3,7 @@ import pandas as pd
 import random
 from unittest.mock import patch, MagicMock
 from commander.efd import MAX_EFD_LOGS_LEN
+from commander.app import create_app
 
 
 # Patch for using MagicMock in async environments
@@ -45,8 +46,12 @@ def raise_exception(name):
     raise ConnectionError
 
 
-async def test_efd_timeseries(client):
+async def test_efd_timeseries(aiohttp_client):
     """Test the get timeseries response."""
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
+
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
     mock_efd_client = mock_efd_patcher.start()
@@ -83,8 +88,12 @@ async def test_efd_timeseries(client):
     mock_efd_patcher.stop()
 
 
-async def test_efd_timeseries_with_errors(client):
+async def test_efd_timeseries_with_errors(aiohttp_client):
     """Test the get timeseries response with errors."""
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
+
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
     mock_efd_client = mock_efd_patcher.start()
@@ -115,8 +124,12 @@ async def test_efd_timeseries_with_errors(client):
     mock_efd_patcher.stop()
 
 
-async def test_efd_logmessages(client):
+async def test_efd_logmessages(aiohttp_client):
     """Test the get timeseries response."""
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
+
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
     mock_efd_client = mock_efd_patcher.start()
@@ -208,8 +221,12 @@ async def test_efd_logmessages(client):
     mock_efd_patcher.stop()
 
 
-async def test_efd_clients(client):
+async def test_efd_clients(aiohttp_client):
     """Test query_efd_clients method"""
+    # Arrange
+    ac = await anext(aiohttp_client)
+    client = await ac(create_app())
+
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
     mock_efd_client = mock_efd_patcher.start()

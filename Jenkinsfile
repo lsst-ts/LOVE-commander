@@ -74,8 +74,8 @@ pipeline {
       }
       steps {
         script {
-          sh "docker build -f docker/Dockerfile-test -t love-commander-test  ."
-          sh "docker run --env LSST_DDS_PARTITION_PREFIX=ci --env LSST_SITE=ci love-commander-test"
+          sh "docker build --pull -f docker/Dockerfile-test -t love-commander-test  ."
+          sh "docker run --env LSST_DDS_PARTITION_PREFIX=ci --env LSST_SITE=ci love-commander-test:latest"
         }
       }
     }

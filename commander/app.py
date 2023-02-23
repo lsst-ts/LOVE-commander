@@ -4,9 +4,9 @@ from .commands import create_app as create_cmd_app
 from .heartbeats import create_app as create_heartbeat_app
 from .salinfo import create_app as create_salinfo_app
 from .lovecsc import create_app as create_lovecsc_app
-
 from .efd import create_app as create_efd_app
 from .tcs import create_app as create_tcs_app
+from .lfa import create_app as create_lfa_app
 
 
 def create_app(*args, **kwargs):
@@ -24,6 +24,7 @@ def create_app(*args, **kwargs):
     app.add_subapp("/lovecsc/", create_lovecsc_app())
     app.add_subapp("/efd/", create_efd_app())
     app.add_subapp("/tcs/", create_tcs_app())
+    app.add_subapp("/lfa/", create_lfa_app())
 
     app.add_subapp(
         "/salinfo/",
