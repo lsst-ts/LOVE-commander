@@ -18,7 +18,9 @@ def create_app(*args, **kwargs):
     domain = salobj.Domain()
     available_idl_files = list(domain.idl_dir.glob("**/*.idl"))
     names = [
-        file.name.split("_",)[
+        file.name.split(
+            "_",
+        )[
             -1
         ].replace(".idl", "")
         for file in available_idl_files

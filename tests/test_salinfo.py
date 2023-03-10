@@ -12,7 +12,7 @@ async def test_metadata(aiohttp_client):
     """Test the get metadata response."""
 
     # Arrange
-    ac = await anext(aiohttp_client)
+    ac = await anext(aiohttp_client)  # noqa
     client = await ac(create_app())
 
     salobj.set_random_lsst_dds_partition_prefix()
@@ -20,7 +20,9 @@ async def test_metadata(aiohttp_client):
         domain = salobj.Domain()
         available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
-            file.name.split("_",)[
+            file.name.split(
+                "_",
+            )[
                 -1
             ].replace(".idl", "")
             for file in available_idl_files
@@ -45,7 +47,7 @@ async def test_all_topic_names(aiohttp_client):
     """Test the get topic_names response."""
 
     # Arrange
-    ac = await anext(aiohttp_client)
+    ac = await anext(aiohttp_client)  # noqa
     client = await ac(create_app())
 
     salobj.set_random_lsst_dds_partition_prefix()
@@ -53,7 +55,9 @@ async def test_all_topic_names(aiohttp_client):
         domain = salobj.Domain()
         available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
-            file.name.split("_",)[
+            file.name.split(
+                "_",
+            )[
                 -1
             ].replace(".idl", "")
             for file in available_idl_files
@@ -80,7 +84,7 @@ async def test_some_topic_names(aiohttp_client):
     """Test the use of query params to get only some of the topic_names."""
 
     # Arrange
-    ac = await anext(aiohttp_client)
+    ac = await anext(aiohttp_client)  # noqa
     client = await ac(create_app())
 
     salobj.set_random_lsst_dds_partition_prefix()
@@ -88,7 +92,9 @@ async def test_some_topic_names(aiohttp_client):
         domain = salobj.Domain()
         available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
-            file.name.split("_",)[
+            file.name.split(
+                "_",
+            )[
                 -1
             ].replace(".idl", "")
             for file in available_idl_files
@@ -156,7 +162,7 @@ async def test_all_topic_data(aiohttp_client, *args, **kwargs):
     """Test the get topic_data response."""
 
     # Arrange
-    ac = await anext(aiohttp_client)
+    ac = await anext(aiohttp_client)  # noqa
     client = await ac(create_app())
 
     salobj.set_random_lsst_dds_partition_prefix()
@@ -164,7 +170,9 @@ async def test_all_topic_data(aiohttp_client, *args, **kwargs):
         domain = salobj.Domain()
         available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
-            file.name.split("_",)[
+            file.name.split(
+                "_",
+            )[
                 -1
             ].replace(".idl", "")
             for file in available_idl_files
@@ -190,7 +198,7 @@ async def test_some_topic_data(aiohttp_client, *args, **kwargs):
     """Test the use of query params to get only some of the topic_data."""
 
     # Arrange
-    ac = await anext(aiohttp_client)
+    ac = await anext(aiohttp_client)  # noqa
     client = await ac(create_app())
 
     salobj.set_random_lsst_dds_partition_prefix()
@@ -198,7 +206,9 @@ async def test_some_topic_data(aiohttp_client, *args, **kwargs):
         domain = salobj.Domain()
         available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
-            file.name.split("_",)[
+            file.name.split(
+                "_",
+            )[
                 -1
             ].replace(".idl", "")
             for file in available_idl_files
