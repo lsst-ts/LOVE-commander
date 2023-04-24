@@ -5,7 +5,7 @@ FROM ${registry}/develop-env:${dev_cycle}
 WORKDIR /usr/src/love/
 COPY requirements-dev.txt .
 
-RUN source /opt/lsst/software/stack/loadLSST.bash && \
+RUN source /home/saluser/.setup_dev.sh && \
     pip install lsst_efd_client && \
     pip install -r requirements-dev.txt
 
