@@ -1,8 +1,10 @@
-devtools==0.5.1
 aiohttp-devtools==1.0.post0
-watchgod==0.6
-Sphinx==2.4.4
-sphinx-rtd-theme==0.5.0
+black==23.3.0
+devtools==0.5.1
+flake8==4.0.1
 m2r==0.2.1
 pytest-aiohttp==1.0.4
 pytest-asyncio==0.20.2
+Sphinx==2.4.4
+sphinx-rtd-theme==0.5.0
+watchgod==0.6
