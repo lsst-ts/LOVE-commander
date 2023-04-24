@@ -13,20 +13,19 @@ documentation root, use os.path.abspath to make it absolute, like shown here.
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../.."))
-sys.path.insert(0, os.path.abspath("../../commander"))
+sys.path.insert(0, os.path.abspath("../commander"))
 
 
 # -- Project information -----------------------------------------------------
 
 project = "LOVE-Commander"
-copyright = "2020, Inria Chile"
+copyright = "2023, Inria Chile"
 author = "Inria Chile"
 
 # The short X.Y version
 version = ""
 # The full version, including alpha/beta/rc tags
-release = "2.0.0"
+release = "5.5.1"
 
 
 # -- General configuration ---------------------------------------------------
@@ -44,7 +43,7 @@ extensions = [
     "sphinx.ext.autosectionlabel",
     "sphinx.ext.intersphinx",
     "numpydoc",
-    "m2r",
+    "m2r2",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
