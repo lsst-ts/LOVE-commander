@@ -8,5 +8,6 @@ virtualenv
 **/.DS_Store
 **/*.log
 pytest_*
-**/*.egg-info
+python/love_commander.egg-info
+python/love/commander/version.py
 build
