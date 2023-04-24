@@ -9,4 +9,5 @@ RUN source /opt/lsst/software/stack/loadLSST.bash && \
     pip install lsst_efd_client && \
     pip install -r requirements-dev.txt
 
+USER root
 CMD ["/usr/src/love/docker/start-daemon-dev.sh"]
