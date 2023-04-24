@@ -1,15 +1,14 @@
 ARG cycle
-
 FROM ts-dockerhub.lsst.org/deploy-env:${cycle}
 
 WORKDIR /usr/src/love/
-
 COPY . .
 
 ARG idl
 RUN source /home/saluser/.setup_sal_env.sh && \
     pip install kafkit[aiohttp] aiokafka lsst_efd_client && \
-    pip install -r requirements-dev.txt
+    pip install -r requirements-dev.txt && \
+    pip install /usr/src/love/
 
 COPY docker/start-daemon-deploy.sh /home/saluser/.startup.sh
 USER root

@@ -6,7 +6,8 @@ WORKDIR /usr/src/love/
 COPY . .
 COPY docker/start-daemon.sh .
 
-RUN source /opt/lsst/software/stack/loadLSST.bash && \
-    pip install lsst_efd_client
+RUN source /home/saluser/.setup_sal_env.sh && \
+    pip install lsst_efd_client && \
+    pip install /usr/src/love/
 
 CMD ["/usr/src/love/start-daemon.sh"]
