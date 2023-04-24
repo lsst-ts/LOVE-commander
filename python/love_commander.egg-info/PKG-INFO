@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: love-commander
+Version: 5.5.0a7.dev10+g83f9764.d20230424
+Summary: LSST Operators Visualization Environment (LOVE) service to send SAL commands from http endpoints using salobj.
+License: GPL
+Project-URL: documentation, https://lsst-ts.github.io/LOVE-producer
+Project-URL: repository, https://github.com/lsst-ts/LOVE-commander
+Classifier: Programming Language :: Python :: 3
+Provides-Extra: dev

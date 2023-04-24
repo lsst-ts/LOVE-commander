@@ -1,5 +1,4 @@
 .ipytest_cache
-
 virtualenv
 */venv
 **/*.pyc
@@ -9,3 +8,5 @@ virtualenv
 **/.DS_Store
 **/*.log
 pytest_*
+**/*.egg-info
+build

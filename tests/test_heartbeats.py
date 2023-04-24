@@ -1,5 +1,5 @@
 from datetime import datetime
-from commander.app import create_app
+from love.commander.app import create_app
 
 
 async def test_successful_heartbeat(aiohttp_client):

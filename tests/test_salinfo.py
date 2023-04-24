@@ -2,7 +2,7 @@ from itertools import chain, combinations
 from lsst.ts import salobj
 from lsst.ts.utils import index_generator
 from tests import conftest
-from commander.app import create_app
+from love.commander.app import create_app
 
 index_gen = index_generator()
 idl_glob = "**/*.idl"
@@ -20,9 +20,7 @@ async def test_metadata(aiohttp_client):
         domain = salobj.Domain()
         available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
-            file.name.split(
-                "_",
-            )[
+            file.name.split("_",)[
                 -1
             ].replace(".idl", "")
             for file in available_idl_files
@@ -55,9 +53,7 @@ async def test_all_topic_names(aiohttp_client):
         domain = salobj.Domain()
         available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
-            file.name.split(
-                "_",
-            )[
+            file.name.split("_",)[
                 -1
             ].replace(".idl", "")
             for file in available_idl_files
@@ -92,9 +88,7 @@ async def test_some_topic_names(aiohttp_client):
         domain = salobj.Domain()
         available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
-            file.name.split(
-                "_",
-            )[
+            file.name.split("_",)[
                 -1
             ].replace(".idl", "")
             for file in available_idl_files
@@ -170,9 +164,7 @@ async def test_all_topic_data(aiohttp_client, *args, **kwargs):
         domain = salobj.Domain()
         available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
-            file.name.split(
-                "_",
-            )[
+            file.name.split("_",)[
                 -1
             ].replace(".idl", "")
             for file in available_idl_files
@@ -206,9 +198,7 @@ async def test_some_topic_data(aiohttp_client, *args, **kwargs):
         domain = salobj.Domain()
         available_idl_files = list(domain.idl_dir.glob(idl_glob))
         names = [
-            file.name.split(
-                "_",
-            )[
+            file.name.split("_",)[
                 -1
             ].replace(".idl", "")
             for file in available_idl_files

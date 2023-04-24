@@ -1,6 +1,6 @@
 import asyncio
 from unittest.mock import patch, MagicMock
-from commander.app import create_app
+from love.commander.app import create_app
 
 
 # Patch for using MagicMock in async environments
@@ -34,7 +34,7 @@ async def test_atcs_command(aiohttp_client):
     ac = await anext(aiohttp_client)
     client = await ac(create_app())
 
-    mock_tcs_patcher = patch("commander.tcs.ATCS")
+    mock_tcs_patcher = patch("love.commander.tcs.ATCS")
     mock_tcs_client = mock_tcs_patcher.start()
     mock_tcs_client.return_value = MockATCSClient()
 
@@ -60,7 +60,7 @@ async def test_missing_atcs_command(aiohttp_client):
     ac = await anext(aiohttp_client)
     client = await ac(create_app())
 
-    mock_tcs_patcher = patch("commander.tcs.ATCS")
+    mock_tcs_patcher = patch("love.commander.tcs.ATCS")
     mock_tcs_client = mock_tcs_patcher.start()
     mock_tcs_client.return_value = MockATCSClient()
 
@@ -80,7 +80,7 @@ async def test_atcs_docstring(aiohttp_client):
     ac = await anext(aiohttp_client)
     client = await ac(create_app())
 
-    mock_tcs_patcher = patch("commander.tcs.ATCS")
+    mock_tcs_patcher = patch("love.commander.tcs.ATCS")
     mock_tcs_client = mock_tcs_patcher.start()
     mock_tcs_client.return_value = MockATCSClient()
 
@@ -98,7 +98,7 @@ async def test_mtcs_command(aiohttp_client):
     ac = await anext(aiohttp_client)
     client = await ac(create_app())
 
-    mock_tcs_patcher = patch("commander.tcs.MTCS")
+    mock_tcs_patcher = patch("love.commander.tcs.MTCS")
     mock_tcs_client = mock_tcs_patcher.start()
     mock_tcs_client.return_value = MockMTCSClient()
 
@@ -124,7 +124,7 @@ async def test_missing_mtcs_command(aiohttp_client):
     ac = await anext(aiohttp_client)
     client = await ac(create_app())
 
-    mock_tcs_patcher = patch("commander.tcs.MTCS")
+    mock_tcs_patcher = patch("love.commander.tcs.MTCS")
     mock_tcs_client = mock_tcs_patcher.start()
     mock_tcs_client.return_value = MockMTCSClient()
 
@@ -144,7 +144,7 @@ async def test_mtcs_docstring(aiohttp_client):
     ac = await anext(aiohttp_client)
     client = await ac(create_app())
 
-    mock_tcs_patcher = patch("commander.tcs.MTCS")
+    mock_tcs_patcher = patch("love.commander.tcs.MTCS")
     mock_tcs_client = mock_tcs_patcher.start()
     mock_tcs_client.return_value = MockMTCSClient()
 
