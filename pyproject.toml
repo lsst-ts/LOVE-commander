@@ -10,9 +10,6 @@ classifiers = [ "Programming Language :: Python :: 3" ]
 urls = { documentation = "https://lsst-ts.github.io/LOVE-producer", repository = "https://github.com/lsst-ts/LOVE-commander" }
 dynamic = [ "version" ]
 
-#[tool.setuptools]
-#packages = ["commander"]
-
 [tool.setuptools.dynamic]
 version = { attr = "setuptools_scm.get_version" }
 
