@@ -3,7 +3,7 @@ import asyncio
 import types
 from unittest.mock import patch, MagicMock
 from tempfile import TemporaryFile
-from commander.app import create_app
+from love.commander.app import create_app
 
 
 # Patch for using MagicMock in async environments

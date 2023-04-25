@@ -2,7 +2,7 @@ from itertools import chain, combinations
 from lsst.ts import salobj
 from lsst.ts.utils import index_generator
 from tests import conftest
-from commander.app import create_app
+from love.commander.app import create_app
 
 index_gen = index_generator()
 idl_glob = "**/*.idl"
