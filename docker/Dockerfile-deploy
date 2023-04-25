@@ -4,7 +4,10 @@ FROM ts-dockerhub.lsst.org/deploy-env:${cycle}
 WORKDIR /usr/src/love/
 COPY . .
 
-ARG idl
+USER root
+RUN chown -R saluser:saluser /usr/src/love/python/love
+USER saluser
+
 RUN source /home/saluser/.setup_sal_env.sh && \
     pip install kafkit[aiohttp] aiokafka lsst_efd_client && \
     pip install -r requirements-dev.txt && \

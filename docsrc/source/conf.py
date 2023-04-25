@@ -13,20 +13,19 @@ documentation root, use os.path.abspath to make it absolute, like shown here.
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../.."))
-sys.path.insert(0, os.path.abspath("../../commander"))
+sys.path.insert(0, os.path.abspath("../"))
 
 
 # -- Project information -----------------------------------------------------
 
 project = "LOVE-Commander"
-copyright = "2020, Inria Chile"
+copyright = "2023, Inria Chile"
 author = "Inria Chile"
 
 # The short X.Y version
 version = ""
 # The full version, including alpha/beta/rc tags
-release = "2.0.0"
+release = "6.0.0"
 
 
 # -- General configuration ---------------------------------------------------
@@ -44,7 +43,7 @@ extensions = [
     "sphinx.ext.autosectionlabel",
     "sphinx.ext.intersphinx",
     "numpydoc",
-    "m2r",
+    "m2r2",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -63,7 +62,7 @@ master_doc = "index"
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
