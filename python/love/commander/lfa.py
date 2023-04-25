@@ -2,10 +2,13 @@
 to request info to the LOVE CSC from SAL."""
 import os
 import logging
-from tempfile import TemporaryFile
 from aiohttp import web
-from lsst.ts import utils
 from lsst.ts import salobj
+from love.commander.utils import (
+    unavailable_love_controller,
+    unavailable_s3_bucket,
+    upload_file_to_s3_bucket,
+)
 
 
 s3_bucket = None
@@ -50,26 +53,6 @@ def create_app(*args, **kwargs):
             logging.warning(e)
             s3_bucket = None
 
-    def unavailable_s3_bucket():
-        """Return a response for the case when the S3 bucket is not available.
-
-        Returns
-        -------
-        Response
-            The response for the HTTP request with the following structure:
-
-            .. code-block:: json
-
-                {
-                    "ack": "<Description about the \
-                    success state of the request>"
-                }
-        """
-        return web.json_response(
-            {"ack": "Could not stablish connection with S3 Bucket "},
-            status=400,
-        )
-
     def connect_to_love_controller():
         """Connect to the LOVE CSC.
 
@@ -87,8 +70,13 @@ def create_app(*args, **kwargs):
             logging.warning(e)
             LOVE_controller = None
 
-    def unavailable_love_controller():
-        """Return a response for the case when the LOVE CSC is not available.
+    async def upload_love_config_file(request):
+        """Handle file upload for LOVE config requests.
+
+        Parameters
+        ----------
+        request : Request
+            The original HTTP request
 
         Returns
         -------
@@ -99,11 +87,28 @@ def create_app(*args, **kwargs):
 
                 {
                     "ack": "<Description about the \
-                    success state of the request>"
+                    success state of the request>",
+                    "url": "<URL to the uploaded file>"
                 }
         """
-        return web.json_response(
-            {"ack": "LOVE CSC could not stablish connection"}, status=400
+
+        global s3_bucket, LOVE_controller
+        if not s3_bucket:
+            connect_to_s3_bucket()
+        if not s3_bucket:
+            return unavailable_s3_bucket()
+
+        if not LOVE_controller:
+            connect_to_love_controller()
+        if not LOVE_controller:
+            return unavailable_love_controller()
+        await LOVE_controller.start_task
+
+        reader = await request.multipart()
+        field = await reader.next()
+
+        return await upload_file_to_s3_bucket(
+            field, s3_bucket, LOVE_controller, "CONFIG"
         )
 
     async def upload_file(request):
@@ -143,55 +148,16 @@ def create_app(*args, **kwargs):
         reader = await request.multipart()
         field = await reader.next()
 
-        try:
-            assert field.name == "uploaded_file"
-        except AssertionError:
-            return web.json_response(
-                {"ack": "Request must have a file uploaded"},
-                status=400,
-            )
-
-        filename = field.filename
-        file_type = filename.split(".")[-1]
-        key = s3_bucket.make_key(
-            salname="LOVE",
-            salindexname=0,
-            generator="OLE",
-            date=utils.astropy_time_from_tai_unix(utils.current_tai()),
-            suffix="." + file_type,
-        )
-
-        try:
-            with TemporaryFile() as f:
-                file_data = await field.read()
-                f.write(file_data)
-                f.seek(0)
-                await s3_bucket.upload(fileobj=f, key=key)
-            new_url = f"{s3_bucket.service_resource.meta.client.meta.endpoint_url}/{s3_bucket.name}/{key}"
-        except Exception as e:
-            return web.json_response(
-                {"ack": f"File could not be uploaded: {e}"},
-                status=400,
-            )
-
-        await LOVE_controller.evt_largeFileObjectAvailable.set_write(
-            url=new_url,
-            generator=f"{LOVE_controller.salinfo.name}:{LOVE_controller.salinfo.index}",
-        )
-
-        return web.json_response(
-            {
-                "ack": "Added new file to S3 bucket",
-                "url": new_url,
-            },
-            status=200,
-        )
+        return await upload_file_to_s3_bucket(field, s3_bucket, LOVE_controller, "OLE")
 
     async def on_cleanup(lfa_app):
         pass
 
     connect_to_love_controller()
+
     lfa_app.router.add_post("/upload-file", upload_file)
+    lfa_app.router.add_post("/upload-love-config-file", upload_love_config_file)
+
     lfa_app.on_cleanup.append(on_cleanup)
 
     return lfa_app
