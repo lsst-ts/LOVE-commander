@@ -1,7 +1,7 @@
 import json
 import pytest
 from lsst.ts import salobj
-from commander.app import create_app
+from love.commander.app import create_app
 
 
 @pytest.mark.skip(reason="LOVE CSC is not functional at this moment")

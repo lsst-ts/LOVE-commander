@@ -2,8 +2,8 @@ import asyncio
 import pandas as pd
 import random
 from unittest.mock import patch, MagicMock
-from commander.efd import MAX_EFD_LOGS_LEN
-from commander.app import create_app
+from love.commander.efd import MAX_EFD_LOGS_LEN
+from love.commander.app import create_app
 
 
 # Patch for using MagicMock in async environments

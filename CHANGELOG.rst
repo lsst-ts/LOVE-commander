@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.0.0
+-------
+
+* Transform LOVE-commander repository to be a python package `<https://github.com/lsst-ts/LOVE-commander/pull/54>`_
+
 v5.5.1
 -------
 

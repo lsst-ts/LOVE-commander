@@ -1,5 +1,4 @@
 .ipytest_cache
-
 virtualenv
 */venv
 **/*.pyc
@@ -9,3 +8,6 @@ virtualenv
 **/.DS_Store
 **/*.log
 pytest_*
+python/love_commander.egg-info
+python/love/commander/version.py
+build

@@ -2,7 +2,7 @@ import json
 from lsst.ts import salobj
 from lsst.ts.utils import index_generator
 from commander_utils import NumpyEncoder
-from commander.app import create_app
+from love.commander.app import create_app
 import pytest
 
 index_gen = index_generator()

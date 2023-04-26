@@ -30,7 +30,8 @@ docker-compose exec commander bash
 2. Inside the container:, load the setup and got to love folder
 
 ```
-source /home/saluser/.setup_dev.sh #Here some configurations will be loaded and you will enter another bash. Press [Ctrl + D] to exit the current console, then the love-producer package will be installed and you can continue with the following step
+source /home/saluser/.setup_dev.sh # Here some configurations will be loaded and you will enter another bash.
+pip install /usr/src/love # Install the love.commander package
 cd /usr/src/love
 ```
 
