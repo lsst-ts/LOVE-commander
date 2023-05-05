@@ -30,17 +30,17 @@ class MockAsyncS3Bucket:
     def make_key(self, salname, salindexname, generator, date, suffix):
         return "test-key"
 
-    
     async def exists(self, key):
         f = asyncio.Future()
         f.set_result(True)
-        return f
+        return True
 
     async def upload(self, fileobj, key):
         f = asyncio.Future()
         data = {}
         f.set_result(data)
         return f
+
 
 async def test_lfa_file_exists(aiohttp_client):
     """Test LFA file existence."""
@@ -53,12 +53,13 @@ async def test_lfa_file_exists(aiohttp_client):
     mock_lfa_client = mock_lfa_patcher.start()
     mock_lfa_client.return_value = MockAsyncS3Bucket()
 
-    response = await client.post("/lfa/file-exists", data={"file_key": "test-key"})
+    response = await client.post("/lfa/file-exists", json={"file_key": "test-key"})
 
     assert response.status == 200
     response_data = await response.json()
     assert "exists" in response_data
     assert response_data["exists"] is True
+
 
 async def test_lfa_upload_file(aiohttp_client):
     """Test LFA file upload."""

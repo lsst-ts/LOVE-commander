@@ -70,7 +70,7 @@ def create_app(*args, **kwargs):
         except Exception as e:
             logging.warning(e)
             LOVE_controller = None
-    
+
     def make_connections():
         """Make connections to the LOVE CSC and the S3 bucket.
 
@@ -84,7 +84,7 @@ def create_app(*args, **kwargs):
             connect_to_s3_bucket()
         if not LOVE_controller:
             connect_to_love_controller()
-    
+
     async def check_file_exists(request):
         """Check if a file exists in the S3 bucket.
 
@@ -109,7 +109,8 @@ def create_app(*args, **kwargs):
         if not s3_bucket:
             return unavailable_s3_bucket()
 
-        file_key = request.match_info["file_key"]
+        json_req = await request.json()
+        file_key = json_req["file_key"]
         return await check_file_exists_in_s3_bucket(s3_bucket, file_key)
 
     async def upload_love_config_file(request):
@@ -140,7 +141,7 @@ def create_app(*args, **kwargs):
             return unavailable_s3_bucket()
         if not LOVE_controller:
             return unavailable_love_controller()
-        
+
         # Wait for the LOVE controller to be ready
         await LOVE_controller.start_task
 
@@ -179,7 +180,7 @@ def create_app(*args, **kwargs):
             return unavailable_s3_bucket()
         if not LOVE_controller:
             return unavailable_love_controller()
-        
+
         # Wait for the LOVE controller to be ready
         await LOVE_controller.start_task
 
