@@ -7,7 +7,7 @@ COPY . .
 COPY docker/start-daemon.sh .
 
 USER root
-RUN chown -R saluser:saluser /usr/src/love/python/love
+RUN chown -R saluser:saluser /usr/src/love
 USER saluser
 
 RUN source /home/saluser/.setup_dev.sh && \

@@ -5,9 +5,10 @@ WORKDIR /usr/src/love/
 COPY . .
 
 USER root
-RUN chown -R saluser:saluser /usr/src/love/python/love
+RUN chown -R saluser:saluser /usr/src/love
 USER saluser
 
+ARG idl
 RUN source /home/saluser/.setup_sal_env.sh && \
     pip install kafkit[aiohttp] aiokafka lsst_efd_client && \
     pip install -r requirements-dev.txt && \
