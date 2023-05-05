@@ -43,6 +43,29 @@ def unavailable_love_controller():
         {"ack": "LOVE CSC could not stablish connection"}, status=400
     )
 
+async def check_file_exists_in_s3_bucket(s3_bucket, file_key):
+    """Check if a file exists in the S3 bucket.
+
+    Parameters
+    ----------
+    s3_bucket: S3Bucket
+        The S3 bucket to check if the file exists
+    file_key: str
+        The key of the file to check if it exists
+
+    Returns
+    -------
+    Response
+        The response for the HTTP request with the following structure:
+
+        .. code-block:: json
+
+            {
+                "exists": "<True if the file exists, False otherwise>"
+            }
+    """
+    exists = await s3_bucket.exists(file_key)
+    return web.json_response({"exists": exists})
 
 async def upload_file_to_s3_bucket(field, s3_bucket, LOVE_controller, generator):
     """Handle file upload for LOVE config requests.

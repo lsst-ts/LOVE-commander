@@ -7,6 +7,7 @@ from lsst.ts import salobj
 from love.commander.utils import (
     unavailable_love_controller,
     unavailable_s3_bucket,
+    check_file_exists_in_s3_bucket,
     upload_file_to_s3_bucket,
 )
 
@@ -69,6 +70,47 @@ def create_app(*args, **kwargs):
         except Exception as e:
             logging.warning(e)
             LOVE_controller = None
+    
+    def make_connections():
+        """Make connections to the LOVE CSC and the S3 bucket.
+
+        Returns
+        -------
+        bool
+            True if both connections are established, False otherwise.
+        """
+        global s3_bucket, LOVE_controller
+        if not s3_bucket:
+            connect_to_s3_bucket()
+        if not LOVE_controller:
+            connect_to_love_controller()
+    
+    async def check_file_exists(request):
+        """Check if a file exists in the S3 bucket.
+
+        Parameters
+        ----------
+        request : Request
+            The original HTTP request
+
+        Returns
+        -------
+        Response
+            The response for the HTTP request with the following structure:
+
+            .. code-block:: json
+
+                {
+                    "exists": "<True if the file exists, False otherwise>"
+                }
+        """
+        global s3_bucket
+        make_connections()
+        if not s3_bucket:
+            return unavailable_s3_bucket()
+
+        file_key = request.match_info["file_key"]
+        return await check_file_exists_in_s3_bucket(s3_bucket, file_key)
 
     async def upload_love_config_file(request):
         """Handle file upload for LOVE config requests.
@@ -93,15 +135,13 @@ def create_app(*args, **kwargs):
         """
 
         global s3_bucket, LOVE_controller
-        if not s3_bucket:
-            connect_to_s3_bucket()
+        make_connections()
         if not s3_bucket:
             return unavailable_s3_bucket()
-
-        if not LOVE_controller:
-            connect_to_love_controller()
         if not LOVE_controller:
             return unavailable_love_controller()
+        
+        # Wait for the LOVE controller to be ready
         await LOVE_controller.start_task
 
         reader = await request.multipart()
@@ -134,15 +174,13 @@ def create_app(*args, **kwargs):
         """
 
         global s3_bucket, LOVE_controller
-        if not s3_bucket:
-            connect_to_s3_bucket()
+        make_connections()
         if not s3_bucket:
             return unavailable_s3_bucket()
-
-        if not LOVE_controller:
-            connect_to_love_controller()
         if not LOVE_controller:
             return unavailable_love_controller()
+        
+        # Wait for the LOVE controller to be ready
         await LOVE_controller.start_task
 
         reader = await request.multipart()
@@ -153,11 +191,10 @@ def create_app(*args, **kwargs):
     async def on_cleanup(lfa_app):
         pass
 
-    connect_to_love_controller()
-
+    make_connections()
+    lfa_app.router.add_post("/file-exists", check_file_exists)
     lfa_app.router.add_post("/upload-file", upload_file)
     lfa_app.router.add_post("/upload-love-config-file", upload_love_config_file)
-
     lfa_app.on_cleanup.append(on_cleanup)
 
     return lfa_app
