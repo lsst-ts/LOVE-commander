@@ -113,6 +113,45 @@ def create_app(*args, **kwargs):
         file_key = json_req["file_key"]
         return await check_file_exists_in_s3_bucket(s3_bucket, file_key)
 
+    async def upload_love_thumbnail(request):
+        """Handle file upload for LOVE thumbnail requests.
+
+        Parameters
+        ----------
+        request : Request
+            The original HTTP request
+
+        Returns
+        -------
+        Response
+            The response for the HTTP request with the following structure:
+
+            .. code-block:: json
+
+                {
+                    "ack": "<Description about the \
+                    success state of the request>",
+                    "url": "<URL to the uploaded file>"
+                }
+        """
+
+        global s3_bucket, LOVE_controller
+        make_connections()
+        if not s3_bucket:
+            return unavailable_s3_bucket()
+        if not LOVE_controller:
+            return unavailable_love_controller()
+
+        # Wait for the LOVE controller to be ready
+        await LOVE_controller.start_task
+
+        reader = await request.multipart()
+        field = await reader.next()
+
+        return await upload_file_to_s3_bucket(
+            field, s3_bucket, LOVE_controller, "THUMBNAIL"
+        )
+
     async def upload_love_config_file(request):
         """Handle file upload for LOVE config requests.
 
@@ -196,6 +235,7 @@ def create_app(*args, **kwargs):
     lfa_app.router.add_post("/file-exists", check_file_exists)
     lfa_app.router.add_post("/upload-file", upload_file)
     lfa_app.router.add_post("/upload-love-config-file", upload_love_config_file)
+    lfa_app.router.add_post("/upload-love-thumbnail", upload_love_thumbnail)
     lfa_app.on_cleanup.append(on_cleanup)
 
     return lfa_app
