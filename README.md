@@ -31,7 +31,7 @@ docker-compose exec commander bash
 
 ```
 source /home/saluser/.setup_dev.sh # Here some configurations will be loaded and you will enter another bash.
-pip install /usr/src/love # Install the love.commander package
+pip install -e /usr/src/love # Install the love.commander package
 cd /usr/src/love
 ```
 

@@ -2,9 +2,15 @@
 Version History
 ===============
 
+v6.0.1
+-------
+
+* Extend LFA endpoint to allow LOVE config files uploads `<https://github.com/lsst-ts/LOVE-commander/pull/56>`_
+
 v6.0.0
 -------
 
+* Update sphinx dependencies `<https://github.com/lsst-ts/LOVE-commander/pull/55>`_
 * Transform LOVE-commander repository to be a python package `<https://github.com/lsst-ts/LOVE-commander/pull/54>`_
 
 v5.5.1
