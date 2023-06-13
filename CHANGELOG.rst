@@ -2,6 +2,12 @@
 Version History
 ===============
 
+v6.0.2
+-------
+
+* Add changelog checker `<https://github.com/lsst-ts/LOVE-commander/pull/57>`_
+
+
 v6.0.1
 -------
 
