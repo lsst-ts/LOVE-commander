@@ -1,13 +1,16 @@
-"""Define the Heartbeats subapplication, which provides the endpoints to
-request a heartbeat.
-"""
+import signal
 from aiohttp import web
 import lsst_efd_client
 from astropy.time import Time, TimeDelta
 import asyncio
 
-MAX_EFD_LOGS_LEN = 10
+MAX_EFD_LOGS_LEN = 100
+EFD_CLIENT_CONNECTION_TIMEOUT = 5
 efd_clients = dict()
+
+
+def raise_timeout(*args):
+    raise TimeoutError
 
 
 def create_app(*args, **kwargs):
@@ -22,14 +25,20 @@ def create_app(*args, **kwargs):
 
     def connect_to_efd_intance(instance):
         global efd_clients
+
+        signal.signal(signal.SIGALRM, raise_timeout)
+
         instance_exists = efd_clients.get(instance)
         if instance_exists is not None:
             return instance_exists
 
         try:
+            signal.alarm(EFD_CLIENT_CONNECTION_TIMEOUT)
             efd_clients[instance] = lsst_efd_client.EfdClient(instance)
         except Exception:
             efd_clients[instance] = None
+        finally:
+            signal.signal(signal.SIGALRM, signal.SIG_IGN)
         return efd_clients[instance]
 
     def unavailable_efd_client():
