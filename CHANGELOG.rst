@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.0.3
+-------
+
+* Add TimeOut error when connecting to EFD instance `<https://github.com/lsst-ts/LOVE-commander/pull/48>`_
+
 v6.0.2
 -------
 
