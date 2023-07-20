@@ -174,6 +174,7 @@ async def test_efd_logmessages(aiohttp_client):
         "start_date": "2020-03-16T12:00:00",
         "end_date": "2020-03-17T12:00:00",
         "cscs": cscs,
+        "scale": "utc",
     }
     response = await client.post("/efd/logmessages/", json=request_data)
     assert response.status == 200

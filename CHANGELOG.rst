@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.0.4
+-------
+
+* Change query_efd_logs to allow timestamp scale specification `<https://github.com/lsst-ts/LOVE-commander/pull/58>`_
+
 v6.0.3
 -------
 

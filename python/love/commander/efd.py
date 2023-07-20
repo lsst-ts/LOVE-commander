@@ -111,6 +111,7 @@ def create_app(*args, **kwargs):
             start_date = req["start_date"]
             end_date = req["end_date"]
             cscs = req["cscs"]
+            scale = req["scale"]
         except Exception:
             return web.json_response(
                 {"ack": "Some of the required parameters is not present"}, status=400
@@ -122,8 +123,8 @@ def create_app(*args, **kwargs):
         if efd_client is None:
             return unavailable_efd_client()
 
-        start_date = Time(start_date, scale="utc")
-        end_date = Time(end_date, scale="utc")
+        start_date = Time(start_date, scale=scale).utc
+        end_date = Time(end_date, scale=scale).utc
         query_tasks = []
         sources = []
         for csc in cscs:
