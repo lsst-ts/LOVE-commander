@@ -1,3 +1,24 @@
+# This file is part of LOVE-commander.
+#
+# Copyright (c) 2023 Inria Chile.
+#
+# Developed by Inria Chile and Vera C. Rubin Observatory Telescope
+# and Site Systems.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or at
+# your option any later version.
+#
+# This program is distributed in the hope that it will be useful,but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
+
 """Define the SAL Info subapplication, which provides the endpoints to request
 info from SAL.
 """
@@ -17,7 +38,15 @@ def create_app(*args, **kwargs):
     salinfo_app = web.Application()
 
     domain = salobj.Domain()
-    available_component_names = xml.subsystems
+    available_idl_files = list(domain.idl_dir.glob("**/*.idl"))
+    names = [
+        file.name.split(
+            "_",
+        )[
+            -1
+        ].replace(".idl", "")
+        for file in available_idl_files
+    ]
     if kwargs.get("remotes_len_limit") is not None:
         available_component_names = available_component_names[
             : kwargs.get("remotes_len_limit")
