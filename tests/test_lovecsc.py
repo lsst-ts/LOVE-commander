@@ -2,8 +2,7 @@
 #
 # Copyright (c) 2023 Inria Chile.
 #
-# Developed by Inria Chile and Vera C. Rubin Observatory Telescope
-# and Site Systems.
+# Developed by Inria Chile.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

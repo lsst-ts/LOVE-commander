@@ -1,0 +1,1 @@
+Copyright (c) 2023 Inria Chile and Vera C. Rubin Observatory Telescope and Site Systems.
