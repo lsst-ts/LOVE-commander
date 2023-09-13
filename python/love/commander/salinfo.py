@@ -3,6 +3,7 @@ info from SAL.
 """
 from aiohttp import web
 from lsst.ts import salobj
+from lsst.ts import xml
 
 
 def create_app(*args, **kwargs):
@@ -16,18 +17,14 @@ def create_app(*args, **kwargs):
     salinfo_app = web.Application()
 
     domain = salobj.Domain()
-    available_idl_files = list(domain.idl_dir.glob("**/*.idl"))
-    names = [
-        file.name.split("_",)[
-            -1
-        ].replace(".idl", "")
-        for file in available_idl_files
-    ]
+    available_component_names = xml.subsystems
     if kwargs.get("remotes_len_limit") is not None:
-        names = names[: kwargs.get("remotes_len_limit")]
+        available_component_names = available_component_names[
+            : kwargs.get("remotes_len_limit")
+        ]
 
     salinfos = {}
-    for name in names:
+    for name in available_component_names:
         salinfos[name] = salobj.SalInfo(domain, name)
 
     async def get_metadata(request):
@@ -252,7 +249,7 @@ def create_app(*args, **kwargs):
         salinfo_app : object
             The SAL Info application
         """
-        for name in names:
+        for name in available_component_names:
             await salinfos[name].close()
         await domain.close()
 
