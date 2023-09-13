@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.0.5
+------
+
+* Refactor way of getting component names `<https://github.com/lsst-ts/LOVE-commander/pull/59>`_
+
 v6.0.4
 -------
 
