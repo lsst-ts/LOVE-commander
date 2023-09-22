@@ -37,15 +37,7 @@ def create_app(*args, **kwargs):
     salinfo_app = web.Application()
 
     domain = salobj.Domain()
-    available_idl_files = list(domain.idl_dir.glob("**/*.idl"))
-    names = [
-        file.name.split(
-            "_",
-        )[
-            -1
-        ].replace(".idl", "")
-        for file in available_idl_files
-    ]
+    available_component_names = xml.subsystems
     if kwargs.get("remotes_len_limit") is not None:
         available_component_names = available_component_names[
             : kwargs.get("remotes_len_limit")
