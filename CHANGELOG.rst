@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.0.6
+-------
+
+* LOVE License `<https://github.com/lsst-ts/LOVE-commander/pull/61>`_
+
 v6.0.5
 ------
 
