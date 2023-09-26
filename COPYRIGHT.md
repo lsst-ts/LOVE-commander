@@ -8,6 +8,8 @@ This distribution includes the following code libraries/external tools.
 These are distributed according to the licensing terms governing each
 library:
 
+```
+
 | Name                            | Version    | License                                             |
 |:---------------------------------|:------------|:-----------------------------------------------------|
 | Babel                           | 2.12.1     | BSD License                                        |
@@ -82,4 +84,3 @@ library:
 | watchgod                        | 0.6        | MIT License                                        |
 | yarl                            | 1.9.2      | Apache Software License                            |
 
-```
