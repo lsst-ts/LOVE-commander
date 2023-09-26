@@ -1,11 +1,48 @@
+# This file is part of LOVE-commander.
+#
+# Copyright (c) 2023 Inria Chile.
+#
+# Developed by Inria Chile.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or at
+# your option any later version.
+#
+# This program is distributed in the hope that it will be useful,but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
+
 from itertools import chain, combinations
 from lsst.ts import salobj
-from lsst.ts.utils import index_generator
-from tests import conftest
+from lsst.ts import xml
 from love.commander.app import create_app
 
-index_gen = index_generator()
-idl_glob = "**/*.idl"
+
+async def test_all_sal_components(aiohttp_client):
+    """Test the get topic_names response.
+    Ensure that all SAL components are listed.
+    """
+
+    # Arrange
+    ac = await anext(aiohttp_client)  # noqa
+    client = await ac(create_app())
+
+    salobj.set_random_lsst_dds_partition_prefix()
+    async with salobj.Domain():
+        response = await client.get("/salinfo/topic-names")
+
+        assert response.status == 200
+
+        response_data = await response.json()
+
+        for name in xml.subsystems:
+            assert name in response_data
 
 
 async def test_metadata(aiohttp_client):
@@ -16,31 +53,18 @@ async def test_metadata(aiohttp_client):
     client = await ac(create_app())
 
     salobj.set_random_lsst_dds_partition_prefix()
-    async with salobj.Domain() as domain:
-        domain = salobj.Domain()
-        available_idl_files = list(domain.idl_dir.glob(idl_glob))
-        names = [
-            file.name.split(
-                "_",
-            )[
-                -1
-            ].replace(".idl", "")
-            for file in available_idl_files
-        ]
-        names = names[: conftest.REMOTES_LEN_LIMIT]
-
+    async with salobj.Domain():
         response = await client.get("/salinfo/metadata")
 
         assert response.status == 200
 
         response_data = await response.json()
 
-        for name, data in response_data.items():
-            # assert name in names
+        for _, data in response_data.items():
             assert "sal_version" in data
             assert "xml_version" in data
             assert data["sal_version"].count(".") == 2
-            assert data["xml_version"].count(".") == 2
+            assert data["xml_version"].count(".") == 3
 
 
 async def test_all_topic_names(aiohttp_client):
@@ -51,27 +75,14 @@ async def test_all_topic_names(aiohttp_client):
     client = await ac(create_app())
 
     salobj.set_random_lsst_dds_partition_prefix()
-    async with salobj.Domain() as domain:
-        domain = salobj.Domain()
-        available_idl_files = list(domain.idl_dir.glob(idl_glob))
-        names = [
-            file.name.split(
-                "_",
-            )[
-                -1
-            ].replace(".idl", "")
-            for file in available_idl_files
-        ]
-        names = names[: conftest.REMOTES_LEN_LIMIT]
-
+    async with salobj.Domain():
         response = await client.get("/salinfo/topic-names")
 
         assert response.status == 200
 
         response_data = await response.json()
 
-        for name, data in response_data.items():
-            # assert name in names
+        for _, data in response_data.items():
             assert "command_names" in data
             assert "event_names" in data
             assert "telemetry_names" in data
@@ -88,19 +99,7 @@ async def test_some_topic_names(aiohttp_client):
     client = await ac(create_app())
 
     salobj.set_random_lsst_dds_partition_prefix()
-    async with salobj.Domain() as domain:
-        domain = salobj.Domain()
-        available_idl_files = list(domain.idl_dir.glob(idl_glob))
-        names = [
-            file.name.split(
-                "_",
-            )[
-                -1
-            ].replace(".idl", "")
-            for file in available_idl_files
-        ]
-        names = names[: conftest.REMOTES_LEN_LIMIT]
-
+    async with salobj.Domain():
         # Get all combinations of categories:
         categories = ["command", "event", "telemetry"]
         combs = chain.from_iterable(
@@ -112,7 +111,7 @@ async def test_some_topic_names(aiohttp_client):
             requested = list(comb)
             non_req = list(set(categories) - set(requested))
             query_param = "-".join(requested)
-            # Requeste them
+            # Request them
             response = await client.get(
                 "/salinfo/topic-names?categories=" + query_param
             )
@@ -166,19 +165,7 @@ async def test_all_topic_data(aiohttp_client, *args, **kwargs):
     client = await ac(create_app())
 
     salobj.set_random_lsst_dds_partition_prefix()
-    async with salobj.Domain() as domain:
-        domain = salobj.Domain()
-        available_idl_files = list(domain.idl_dir.glob(idl_glob))
-        names = [
-            file.name.split(
-                "_",
-            )[
-                -1
-            ].replace(".idl", "")
-            for file in available_idl_files
-        ]
-        names = names[: conftest.REMOTES_LEN_LIMIT]
-
+    async with salobj.Domain():
         response = await client.get("/salinfo/topic-data")
 
         assert response.status == 200
@@ -202,19 +189,7 @@ async def test_some_topic_data(aiohttp_client, *args, **kwargs):
     client = await ac(create_app())
 
     salobj.set_random_lsst_dds_partition_prefix()
-    async with salobj.Domain() as domain:
-        domain = salobj.Domain()
-        available_idl_files = list(domain.idl_dir.glob(idl_glob))
-        names = [
-            file.name.split(
-                "_",
-            )[
-                -1
-            ].replace(".idl", "")
-            for file in available_idl_files
-        ]
-        names = names[: conftest.REMOTES_LEN_LIMIT]
-
+    async with salobj.Domain():
         # Get all combinations of categories:
         categories = ["command", "event", "telemetry"]
         combs = chain.from_iterable(

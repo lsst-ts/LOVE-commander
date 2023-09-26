@@ -2,6 +2,14 @@
 Version History
 ===============
 
+v6.0.5
+------
+
+* Improve copyright file `<https://github.com/lsst-ts/LOVE-commander/pull/62>`_
+* LOVE License `<https://github.com/lsst-ts/LOVE-commander/pull/61>`_
+* Move `salobj.SalInfo` call to async function to avoid event loop errors `<https://github.com/lsst-ts/LOVE-commander/pull/60>`_
+* Refactor way of getting component names `<https://github.com/lsst-ts/LOVE-commander/pull/59>`_
+
 v6.0.4
 -------
 
