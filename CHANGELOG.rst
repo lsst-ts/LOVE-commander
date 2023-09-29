@@ -5,6 +5,7 @@ Version History
 v6.0.6
 ------
 
+* Move docs creation to CI `<https://github.com/lsst-ts/LOVE-commander/pull/63>`_
 * Add ts_pre_commit_conf `<https://github.com/lsst-ts/LOVE-commander/pull/64>`_
 
 v6.0.5
