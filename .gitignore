@@ -11,3 +11,10 @@ pytest_*
 python/love_commander.egg-info
 python/love/commander/version.py
 build
+.pre-commit-config.yaml
+.clang-format
+.flake8
+.isort.cfg
+.mypy.ini
+.ruff.toml
+towncrier.toml
