@@ -5,6 +5,7 @@ Version History
 v6.0.6
 ------
 
+* Hotfix for Jenkinsfile `<https://github.com/lsst-ts/LOVE-commander/pull/65>`_
 * Move docs creation to CI `<https://github.com/lsst-ts/LOVE-commander/pull/63>`_
 * Add ts_pre_commit_conf `<https://github.com/lsst-ts/LOVE-commander/pull/64>`_
 
