@@ -2,7 +2,7 @@
 
 LOVE service to send SAL commands from http endpoints using salobj.
 
-See the documentation here: https://lsst-ts.github.io/LOVE-commander/html/index.html
+See the documentation here: https://love-commander.lsst.io/
 
 ## 1. Use as part of the LOVE system
 
