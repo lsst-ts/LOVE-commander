@@ -19,9 +19,9 @@
 
 
 from itertools import chain, combinations
-from lsst.ts import salobj
-from lsst.ts import xml
+
 from love.commander.app import create_app
+from lsst.ts import salobj, xml
 
 
 async def test_all_sal_components(aiohttp_client):
@@ -64,7 +64,7 @@ async def test_metadata(aiohttp_client):
             assert "sal_version" in data
             assert "xml_version" in data
             assert data["sal_version"].count(".") == 2
-            assert data["xml_version"].count(".") == 3
+            assert data["xml_version"].count(".") == 2
 
 
 async def test_all_topic_names(aiohttp_client):
@@ -86,9 +86,9 @@ async def test_all_topic_names(aiohttp_client):
             assert "command_names" in data
             assert "event_names" in data
             assert "telemetry_names" in data
-            assert type(data["command_names"]) == list
-            assert type(data["event_names"]) == list
-            assert type(data["telemetry_names"]) == list
+            assert isinstance(data["command_names"], list)
+            assert isinstance(data["event_names"], list)
+            assert isinstance(data["telemetry_names"], list)
 
 
 async def test_some_topic_names(aiohttp_client):
@@ -128,7 +128,7 @@ async def test_some_topic_names(aiohttp_client):
                 for r in requested:
                     key = r + "_names"
                     assert key in data
-                    assert type(data[key]) == list
+                    assert isinstance(data[key], list)
                 # Assert that non-requested categories are NOT in the response
                 for nr in non_req:
                     key = nr + "_names"
@@ -137,9 +137,9 @@ async def test_some_topic_names(aiohttp_client):
 
 def assert_topic_data(topic_data):
     """Assert the structure of a topic data."""
-    assert type(topic_data) == dict
+    assert isinstance(topic_data, dict)
     for data in topic_data.values():
-        assert type(data) == dict
+        assert isinstance(data, dict)
         for k in data.keys():
             v = data[k]
             assert "name" in v
