@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.1.0
+------
+
+* Add M1M3 Bump Tests reports `<https://github.com/lsst-ts/LOVE-commander/pull/66>`_
+
 v6.0.6
 ------
 
