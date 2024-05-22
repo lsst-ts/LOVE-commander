@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.1.1
+------
+
+* Remove authlist references `<https://github.com/lsst-ts/LOVE-commander/pull/68>`_
+
 v6.1.0
 ------
 
