@@ -174,7 +174,6 @@ For example:
         "event_names": [
             "alarm",
             "appliedSettingsMatchStart",
-            "authList",
             "errorCode",
             "heartbeat",
             "logLevel",
@@ -194,7 +193,6 @@ For example:
             "enterControl",
             "exitControl",
             "mute",
-            "setAuthList",
             "setLogLevel",
             "setValue",
             "showAlarms",
