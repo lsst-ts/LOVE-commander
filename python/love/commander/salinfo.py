@@ -22,8 +22,7 @@
 info from SAL.
 """
 from aiohttp import web
-from lsst.ts import salobj
-from lsst.ts import xml
+from lsst.ts import salobj, xml
 
 
 def create_app(*args, **kwargs):
@@ -42,6 +41,7 @@ def create_app(*args, **kwargs):
         available_component_names = available_component_names[
             : kwargs.get("remotes_len_limit")
         ]
+
     salinfos = {}
     salinfo_filled = False
 
@@ -276,14 +276,14 @@ def create_app(*args, **kwargs):
     salinfo_app.router.add_get("/topic-data", get_topic_data)
 
     async def on_cleanup(salinfo_app):
-        """Close the domain when cleaning the application
+        """Close the domain when cleaning the application.
 
         Parameters
         ----------
-        salinfo_app : object
+        salinfo_app : `aiohttp.web.Application`
             The SAL Info application
         """
-        for name in available_component_names:
+        for name in salinfos:
             await salinfos[name].close()
         await domain.close()
 

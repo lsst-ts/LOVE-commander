@@ -160,7 +160,8 @@ def create_app(*args, **kwargs):
     reports_app.router.add_post("/m1m3-bump-tests", query_m1m3_bump_tests)
     reports_app.router.add_post("/m1m3-bump-tests/", query_m1m3_bump_tests)
 
-    async def on_cleanup():
+    async def on_cleanup(reports_app):
+        # This app doesn't require cleaning up.
         pass
 
     reports_app.on_cleanup.append(on_cleanup)

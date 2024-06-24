@@ -21,9 +21,10 @@
 """Define the Commands subapplication, which provides the endpoints to accept
 command requests.
 """
+import json
+
 from aiohttp import web
 from lsst.ts import salobj
-import json
 
 
 def create_app(*args, **kwargs):
@@ -92,7 +93,14 @@ def create_app(*args, **kwargs):
 
     cmd.router.add_post("/", start_cmd)
 
-    async def on_cleanup(cmd):
+    async def on_cleanup(cmd_app):
+        """Close the remotes when cleaning the application.
+
+        Parameters
+        ----------
+        cmd_app : `aiohttp.web.Application`
+            The Commands application
+        """
         for remote_name in remotes:
             await remotes[remote_name].close()
 

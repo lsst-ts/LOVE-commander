@@ -21,8 +21,9 @@
 """Define the Heartbeats subapplication, which provides the endpoints to
 request a heartbeat.
 """
-from aiohttp import web
 from datetime import datetime
+
+from aiohttp import web
 
 
 def create_app(*args, **kwargs):
@@ -45,7 +46,14 @@ def create_app(*args, **kwargs):
 
     heartbeat.router.add_get("/", start_heartbeat)
 
-    async def on_cleanup(heartbeat):
+    async def on_cleanup(heartbeat_app):
+        """Close the remotes when cleaning the application.
+
+        Parameters
+        ----------
+        salinfo_app : `aiohttp.web.Application`
+            The Heartbeat application
+        """
         for remote_name in remotes:
             await remotes[remote_name].close()
 

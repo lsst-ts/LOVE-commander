@@ -24,7 +24,6 @@ from aiohttp import web
 from lsst.ts.observatory.control.auxtel import ATCS
 from lsst.ts.observatory.control.maintel import MTCS
 
-
 atcs_client = None
 mtcs_client = None
 
@@ -179,7 +178,7 @@ def create_app():
     tcs_app.router.add_get("/main/docstrings/", maintel_docstrings)
 
     async def on_cleanup(tcs_app):
-        # Do cleanup
+        # This app doesn't require cleaning up.
         pass
 
     tcs_app.on_cleanup.append(on_cleanup)

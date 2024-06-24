@@ -23,6 +23,7 @@ info to the LOVE CSC from SAL.
 """
 import json
 import logging
+
 from aiohttp import web
 from lsst.ts import salobj
 
@@ -105,6 +106,13 @@ def create_app(*args, **kwargs):
     lovecsc_app.router.add_post("/observinglog", post_observing_log)
 
     async def on_cleanup(lovecsc_app):
+        """Close the CSC when cleaning the application.
+
+        Parameters
+        ----------
+        lovecsc_app : `aiohttp.web.Application`
+            The LOVE CSC application
+        """
         global csc
         if csc is not None:
             await csc.close()

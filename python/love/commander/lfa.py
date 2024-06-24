@@ -20,17 +20,17 @@
 
 """Define LOVE CSC subapplication, which provides the endpoints
 to request info to the LOVE CSC from SAL."""
-import os
 import logging
+import os
+
 from aiohttp import web
-from lsst.ts import salobj
 from love.commander.utils import (
+    check_file_exists_in_s3_bucket,
     unavailable_love_controller,
     unavailable_s3_bucket,
-    check_file_exists_in_s3_bucket,
     upload_file_to_s3_bucket,
 )
-
+from lsst.ts import salobj
 
 s3_bucket = None
 LOVE_controller = None
@@ -249,6 +249,7 @@ def create_app(*args, **kwargs):
         return await upload_file_to_s3_bucket(field, s3_bucket, LOVE_controller, "OLE")
 
     async def on_cleanup(lfa_app):
+        # This app doesn't require cleaning up.
         pass
 
     make_connections()
