@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.1.2
+------
+
+* Refactor use of Dockerfile-dev image `<https://github.com/lsst-ts/LOVE-commander/pull/69>`_
+
 v6.1.1
 ------
 

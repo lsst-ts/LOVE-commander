@@ -1,13 +1,15 @@
 ARG dev_cycle=develop
-ARG registry=lsstts
-FROM ${registry}/develop-env:${dev_cycle}
+FROM lsstts/develop-env:${dev_cycle}
 
 WORKDIR /usr/src/love/
-COPY requirements-dev.txt .
-
-RUN source /home/saluser/.setup_dev.sh && \
-    pip install lsst_efd_client && \
-    pip install -r requirements-dev.txt
+COPY . .
 
 USER root
-CMD ["/usr/src/love/docker/start-daemon-dev.sh"]
+RUN chown -R saluser:saluser /usr/src/love
+USER saluser
+
+RUN source /home/saluser/.setup_dev.sh && \
+    pip install pytest-aiohttp aiohttp-devtools lsst_efd_client && \
+    pip install -e .
+
+CMD ["docker/start-daemon-dev.sh"]
