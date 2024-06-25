@@ -1,8 +1,9 @@
 import pytest
 from love.commander.app import create_app
 
+from .test_utils import REMOTES_LEN_LIMIT
+
 pytest_plugins = "aiohttp.pytest_plugin"
-REMOTES_LEN_LIMIT = 10
 
 
 @pytest.fixture

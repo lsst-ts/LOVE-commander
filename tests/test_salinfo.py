@@ -22,6 +22,8 @@ from itertools import chain, combinations
 
 from lsst.ts import salobj, xml
 
+from .test_utils import REMOTES_LEN_LIMIT
+
 
 async def test_all_sal_components(http_client):
     """Test the get topic_names response.
@@ -36,7 +38,7 @@ async def test_all_sal_components(http_client):
 
         response_data = await response.json()
 
-        for name in xml.subsystems:
+        for name in xml.subsystems[:REMOTES_LEN_LIMIT]:
             assert name in response_data
 
 
