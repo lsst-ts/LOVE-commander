@@ -42,15 +42,12 @@ def create_app(*args, **kwargs):
             : kwargs.get("remotes_len_limit")
         ]
 
-    salinfos = {}
-    salinfo_filled = False
+    salinfo = {}
 
     async def connect_to_salinfo_instances():
-        global salinfo_filled
         async with salobj.Domain():
             for name in available_component_names:
-                salinfos[name] = salobj.SalInfo(domain, name)
-        salinfo_filled = True
+                salinfo[name] = salobj.SalInfo(domain, name)
 
     async def get_metadata(request):
         """Handle get metadata requests.
@@ -72,15 +69,15 @@ def create_app(*args, **kwargs):
                     "xml_version": "<XML version in format x.x.x>"
                 }
         """
-        if not salinfo_filled:
+        if not salinfo:
             await connect_to_salinfo_instances()
 
         results = {
-            salinfos[name].metadata.name: {
-                "sal_version": salinfos[name].metadata.sal_version,
-                "xml_version": salinfos[name].metadata.xml_version,
+            salinfo[name].metadata.name: {
+                "sal_version": salinfo[name].metadata.sal_version,
+                "xml_version": salinfo[name].metadata.xml_version,
             }
-            for name in salinfos
+            for name in salinfo
         }
 
         return web.json_response(results)
@@ -125,7 +122,7 @@ def create_app(*args, **kwargs):
                     }
         }
         """
-        if not salinfo_filled:
+        if not salinfo:
             await connect_to_salinfo_instances()
 
         accepted_categories = ["telemetry", "event", "command"]
@@ -135,10 +132,10 @@ def create_app(*args, **kwargs):
             categories = accepted_categories
         results = {
             name: {
-                c + "_names": salinfos[name].__getattribute__(c + "_names")
+                c + "_names": salinfo[name].__getattribute__(c + "_names")
                 for c in categories
             }
-            for name in salinfos
+            for name in salinfo
         }
         return web.json_response(results)
 
@@ -260,7 +257,7 @@ def create_app(*args, **kwargs):
                     },
                 }
         """
-        if not salinfo_filled:
+        if not salinfo:
             await connect_to_salinfo_instances()
 
         accepted_categories = ["telemetry", "event", "command"]
@@ -268,7 +265,7 @@ def create_app(*args, **kwargs):
         categories = [c for c in categories if c in accepted_categories]
         if len(categories) == 0:
             categories = accepted_categories
-        results = {name: _get_details(salinfos[name], categories) for name in salinfos}
+        results = {name: _get_details(salinfo[name], categories) for name in salinfo}
         return web.json_response(results)
 
     salinfo_app.router.add_get("/metadata", get_metadata)
@@ -283,8 +280,8 @@ def create_app(*args, **kwargs):
         salinfo_app : `aiohttp.web.Application`
             The SAL Info application
         """
-        for name in salinfos:
-            await salinfos[name].close()
+        for name in salinfo:
+            await salinfo[name].close()
         await domain.close()
 
     salinfo_app.on_cleanup.append(on_cleanup)
