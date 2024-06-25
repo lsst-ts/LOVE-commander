@@ -1,1 +1,2 @@
 REMOTES_LEN_LIMIT = 10
+LSST_SITE = "love"
