@@ -18,12 +18,11 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-import re
 import asyncio
+import re
 import types
-from unittest.mock import patch, MagicMock
 from tempfile import TemporaryFile
-from love.commander.app import create_app
+from unittest.mock import MagicMock, patch
 
 
 # Patch for using MagicMock in async environments
@@ -62,83 +61,76 @@ class MockAsyncS3Bucket:
         return f
 
 
-async def test_lfa_file_exists(aiohttp_client):
+async def test_lfa_file_exists(http_client):
     """Test LFA file existence."""
-
     # Arrange
-    ac = await anext(aiohttp_client)
-    client = await ac(create_app())
-
     mock_lfa_patcher = patch("lsst.ts.salobj.AsyncS3Bucket")
     mock_lfa_client = mock_lfa_patcher.start()
     mock_lfa_client.return_value = MockAsyncS3Bucket()
 
-    response = await client.post("/lfa/file-exists", json={"file_key": "test-key"})
-
+    # Act
+    response = await http_client.post("/lfa/file-exists", json={"file_key": "test-key"})
     assert response.status == 200
     response_data = await response.json()
     assert "exists" in response_data
     assert response_data["exists"] is True
 
-
-async def test_lfa_upload_file(aiohttp_client):
-    """Test LFA file upload."""
-
-    # Arrange
-    ac = await anext(aiohttp_client)
-    client = await ac(create_app())
-
-    mock_lfa_patcher = patch("lsst.ts.salobj.AsyncS3Bucket")
-    mock_lfa_client = mock_lfa_patcher.start()
-    mock_lfa_client.return_value = MockAsyncS3Bucket()
-
-    with TemporaryFile() as f:
-        response = await client.post("/lfa/upload-file", data={"uploaded_file": f})
-
-    assert response.status == 200
-    response_data = await response.json()
-    assert "ack" in response_data
-    assert "url" in response_data
-    match_url = re.search(
-        r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*",
-        response_data["url"],
-    )
-    assert match_url
-
+    # Stop lfa patch
     mock_lfa_patcher.stop()
 
 
-async def test_lfa_upload_erros(aiohttp_client):
-    """Test errors on uploading a file."""
-
+async def test_lfa_upload_file(http_client):
+    """Test LFA file upload."""
     # Arrange
-    ac = await anext(aiohttp_client)
-    client = await ac(create_app())
-
     mock_lfa_patcher = patch("lsst.ts.salobj.AsyncS3Bucket")
     mock_lfa_client = mock_lfa_patcher.start()
     mock_lfa_client.return_value = MockAsyncS3Bucket()
 
+    # Act
+    with TemporaryFile() as f:
+        response = await http_client.post("/lfa/upload-file", data={"uploaded_file": f})
+
+        assert response.status == 200
+        response_data = await response.json()
+        assert "ack" in response_data
+        assert "url" in response_data
+        match_url = re.search(
+            r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*",
+            response_data["url"],
+        )
+        assert match_url
+
+    # Stop lfa patch
+    mock_lfa_patcher.stop()
+
+
+async def test_lfa_upload_erros(http_client):
+    """Test errors on uploading a file."""
+    # Arrange
+    mock_lfa_patcher = patch("lsst.ts.salobj.AsyncS3Bucket")
+    mock_lfa_client = mock_lfa_patcher.start()
+    mock_lfa_client.return_value = MockAsyncS3Bucket()
+
+    # Act
     # Wrong parameter
     with TemporaryFile() as f:
-        response = await client.post("/lfa/upload-file", data={"uploaded_fileS": f})
+        response = await http_client.post(
+            "/lfa/upload-file", data={"uploaded_fileS": f}
+        )
         assert response.status == 400
         response_data = await response.json()
         assert "ack" in response_data
 
     # Wrong file format
-    response = await client.post("/lfa/upload-file", data={"uploaded_file": None})
+    response = await http_client.post("/lfa/upload-file", data={"uploaded_file": None})
     assert response.status == 400
 
+    # Stop lfa patch
     mock_lfa_patcher.stop()
 
 
-async def test_lfa_wrong_option(aiohttp_client):
+async def test_lfa_wrong_option(http_client):
     """Test wrong option."""
-
-    # Arrange
-    ac = await anext(aiohttp_client)
-    client = await ac(create_app())
-
-    response = await client.post("/lfa/upload-fileS", data={"uploaded_file": None})
+    # Act
+    response = await http_client.post("/lfa/upload-fileS", data={"uploaded_file": None})
     assert response.status == 404

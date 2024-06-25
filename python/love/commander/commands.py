@@ -17,22 +17,22 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+import json
 
-"""Define the Commands subapplication, which provides the endpoints to accept
-command requests.
-"""
 from aiohttp import web
 from lsst.ts import salobj
-import json
 
 
 def create_app(*args, **kwargs):
-    """Create the Commands application
+    """Create the Commands application.
+
+    Define the Commands subapplication, which provides the endpoints to
+    accept command requests.
 
     Returns
     -------
-    object
-        The application instance
+    `aiohttp.web.Application`
+        The application instance.
     """
     domain = None
     remotes = {}
@@ -92,7 +92,14 @@ def create_app(*args, **kwargs):
 
     cmd.router.add_post("/", start_cmd)
 
-    async def on_cleanup(cmd):
+    async def on_cleanup(cmd_app):
+        """Close the remotes when cleaning the application.
+
+        Parameters
+        ----------
+        cmd_app : `aiohttp.web.Application`
+            The Commands application.
+        """
         for remote_name in remotes:
             await remotes[remote_name].close()
 

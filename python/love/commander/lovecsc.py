@@ -17,12 +17,9 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-
-"""Define LOVE CSC subapplication, which provides the endpoints to request
-info to the LOVE CSC from SAL.
-"""
 import json
 import logging
+
 from aiohttp import web
 from lsst.ts import salobj
 
@@ -31,12 +28,15 @@ csc = None
 
 
 def create_app(*args, **kwargs):
-    """Create the LOVECsc application
+    """Create the LOVE CSC application.
+
+    Define LOVE CSC subapplication, which provides the endpoints to
+    request info to the LOVE CSC from SAL.
 
     Returns
     -------
-    object
-        The application instance
+    `aiohttp.web.Application`
+        The application instance.
     """
     lovecsc_app = web.Application()
 
@@ -60,7 +60,7 @@ def create_app(*args, **kwargs):
 
         Parameters
         ----------
-        request : Request
+        request : `Request`
             The original HTTP request
 
         Returns
@@ -105,6 +105,13 @@ def create_app(*args, **kwargs):
     lovecsc_app.router.add_post("/observinglog", post_observing_log)
 
     async def on_cleanup(lovecsc_app):
+        """Close the CSC when cleaning the application.
+
+        Parameters
+        ----------
+        lovecsc_app : `aiohttp.web.Application`
+            The LOVE CSC application.
+        """
         global csc
         if csc is not None:
             await csc.close()
