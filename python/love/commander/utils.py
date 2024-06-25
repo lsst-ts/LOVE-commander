@@ -18,9 +18,10 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 
+from tempfile import TemporaryFile
+
 from aiohttp import web
 from lsst.ts import utils
-from tempfile import TemporaryFile
 
 
 def unavailable_s3_bucket():
