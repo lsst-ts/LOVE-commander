@@ -19,18 +19,13 @@
 
 
 from datetime import datetime
-from love.commander.app import create_app
 
 
-async def test_successful_heartbeat(aiohttp_client):
-    # Arrange
-    ac = await anext(aiohttp_client)
-    client = await ac(create_app())
-
-    # build data
+async def test_successful_heartbeat(http_client):
     # Act
-    response = await client.get("/heartbeat")
+    response = await http_client.get("/heartbeat")
     timestamp = datetime.now()
+
     # Assert status
     assert response.status == 200
 

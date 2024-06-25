@@ -32,7 +32,7 @@ csc = None
 
 
 def create_app(*args, **kwargs):
-    """Create the LOVECsc application
+    """Create the LOVE CSC application
 
     Returns
     -------

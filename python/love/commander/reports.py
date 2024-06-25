@@ -50,7 +50,7 @@ def raise_timeout(*args):
 
 
 def create_app(*args, **kwargs):
-    """Create the EFD application
+    """Create the Reports application
 
     Returns
     -------

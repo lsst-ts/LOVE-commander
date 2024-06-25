@@ -19,19 +19,15 @@
 
 
 import json
+
 import pytest
 from lsst.ts import salobj
-from love.commander.app import create_app
 
 
 @pytest.mark.skip(reason="LOVE CSC is not functional at this moment")
-async def test_successful_command(aiohttp_client, *args, **kwargs):
+async def test_successful_command(http_client, *args, **kwargs):
     # Arrange
-    ac = await anext(aiohttp_client)
-    client = await ac(create_app())
-
     remote = salobj.Remote(domain=salobj.Domain(), name="LOVE")
-
     await remote.start_task
 
     observing_log_msg = {
@@ -41,7 +37,7 @@ async def test_successful_command(aiohttp_client, *args, **kwargs):
 
     # Act
     remote.evt_observingLog.flush()
-    response = await client.post(
+    response = await http_client.post(
         "/lovecsc/observinglog", data=json.dumps(observing_log_msg)
     )
 
@@ -59,15 +55,12 @@ async def test_successful_command(aiohttp_client, *args, **kwargs):
 
 
 @pytest.mark.skip(reason="LOVE CSC is not functional at this moment")
-async def test_wrong_data(aiohttp_client, *args, **kwargs):
+async def test_wrong_data(http_client, *args, **kwargs):
     # Arrange
-    ac = await anext(aiohttp_client)
-    client = await ac(create_app())
-
     data = {"wrong": "data"}
 
     # Act
-    response = await client.post("/lovecsc/observinglog", json=data)
+    response = await http_client.post("/lovecsc/observinglog", json=data)
 
     # Assert
     assert response.status == 400

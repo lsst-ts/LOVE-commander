@@ -52,7 +52,7 @@ def create_app(*args, **kwargs):
         Parameters
         ----------
         salinfo_app : `aiohttp.web.Application`
-            The Heartbeat application
+            The Heartbeats application
         """
         for remote_name in remotes:
             await remotes[remote_name].close()

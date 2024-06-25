@@ -1,11 +1,11 @@
-# import pytest
-# import asyncio
-# from commander.app import create_app
+import pytest
+from love.commander.app import create_app
 
-
+pytest_plugins = "aiohttp.pytest_plugin"
 REMOTES_LEN_LIMIT = 10
 
 
-# @pytest.fixture
-# async def client(aiohttp_client):
-#     return await aiohttp_client(create_app())
+@pytest.fixture
+def http_client(loop, aiohttp_client):
+    app = create_app(remotes_len_limit=REMOTES_LEN_LIMIT)
+    return loop.run_until_complete(aiohttp_client(app))

@@ -17,26 +17,17 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-
 import json
+
 from lsst.ts import salobj
-from lsst.ts.utils import index_generator
+
 from commander_utils import NumpyEncoder
-from love.commander.app import create_app
-import pytest
-
-index_gen = index_generator()
 
 
-@pytest.mark.asyncio
-async def test_successful_command(aiohttp_client):
+async def test_successful_command(http_client):
     # Arrange
-    ac = await anext(aiohttp_client)
-    client = await ac(create_app())
-
     # setup dds / csc
     salobj.set_random_lsst_dds_partition_prefix()
-    next(index_gen)
     csc = salobj.TestCsc(index=1, config_dir=None, initial_state=salobj.State.ENABLED)
     await csc.start_task
 
@@ -55,7 +46,7 @@ async def test_successful_command(aiohttp_client):
     )
 
     # Act
-    response = await client.post("/cmd", json=data)
+    response = await http_client.post("/cmd", json=data)
 
     # Assert status
     assert response.status == 200
@@ -67,15 +58,12 @@ async def test_successful_command(aiohttp_client):
     await csc.close()
 
 
-async def test_wrong_data(aiohttp_client):
+async def test_wrong_data(http_client):
     # Arrange
-    ac = await anext(aiohttp_client)
-    client = await ac(create_app())
-
     data = {"wrong": "data"}
 
     # Act
-    response = await client.post("/cmd", json=data)
+    response = await http_client.post("/cmd", json=data)
 
     # Assert status
     assert response.status == 400
@@ -89,14 +77,10 @@ async def test_wrong_data(aiohttp_client):
     )
 
 
-async def test_timeout(aiohttp_client):
+async def test_timeout(http_client):
     # Arrange
-    ac = await anext(aiohttp_client)
-    client = await ac(create_app())
-
     # setup dds / csc
     salobj.set_random_lsst_dds_partition_prefix()
-    next(index_gen)
     csc = salobj.TestCsc(index=1, config_dir=None, initial_state=salobj.State.ENABLED)
     await csc.start_task
 
@@ -118,7 +102,7 @@ async def test_timeout(aiohttp_client):
     )
 
     # Act
-    response = await client.post("/cmd", json=data)
+    response = await http_client.post("/cmd", json=data)
 
     # Assert status
     await response.json()

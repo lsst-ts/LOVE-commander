@@ -20,22 +20,17 @@
 
 from itertools import chain, combinations
 
-from love.commander.app import create_app
 from lsst.ts import salobj, xml
 
 
-async def test_all_sal_components(aiohttp_client):
+async def test_all_sal_components(http_client):
     """Test the get topic_names response.
     Ensure that all SAL components are listed.
     """
-
     # Arrange
-    ac = await anext(aiohttp_client)  # noqa
-    client = await ac(create_app())
-
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain():
-        response = await client.get("/salinfo/topic-names")
+        response = await http_client.get("/salinfo/topic-names")
 
         assert response.status == 200
 
@@ -45,16 +40,12 @@ async def test_all_sal_components(aiohttp_client):
             assert name in response_data
 
 
-async def test_metadata(aiohttp_client):
+async def test_metadata(http_client):
     """Test the get metadata response."""
-
     # Arrange
-    ac = await anext(aiohttp_client)  # noqa
-    client = await ac(create_app())
-
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain():
-        response = await client.get("/salinfo/metadata")
+        response = await http_client.get("/salinfo/metadata")
 
         assert response.status == 200
 
@@ -67,16 +58,12 @@ async def test_metadata(aiohttp_client):
             assert data["xml_version"].count(".") == 2
 
 
-async def test_all_topic_names(aiohttp_client):
+async def test_all_topic_names(http_client):
     """Test the get topic_names response."""
-
     # Arrange
-    ac = await anext(aiohttp_client)  # noqa
-    client = await ac(create_app())
-
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain():
-        response = await client.get("/salinfo/topic-names")
+        response = await http_client.get("/salinfo/topic-names")
 
         assert response.status == 200
 
@@ -91,13 +78,9 @@ async def test_all_topic_names(aiohttp_client):
             assert isinstance(data["telemetry_names"], list)
 
 
-async def test_some_topic_names(aiohttp_client):
+async def test_some_topic_names(http_client):
     """Test the use of query params to get only some of the topic_names."""
-
     # Arrange
-    ac = await anext(aiohttp_client)  # noqa
-    client = await ac(create_app())
-
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain():
         # Get all combinations of categories:
@@ -112,7 +95,7 @@ async def test_some_topic_names(aiohttp_client):
             non_req = list(set(categories) - set(requested))
             query_param = "-".join(requested)
             # Request them
-            response = await client.get(
+            response = await http_client.get(
                 "/salinfo/topic-names?categories=" + query_param
             )
             assert response.status == 200
@@ -157,16 +140,12 @@ def assert_topic_data(topic_data):
             )
 
 
-async def test_all_topic_data(aiohttp_client, *args, **kwargs):
+async def test_all_topic_data(http_client):
     """Test the get topic_data response."""
-
     # Arrange
-    ac = await anext(aiohttp_client)  # noqa
-    client = await ac(create_app())
-
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain():
-        response = await client.get("/salinfo/topic-data")
+        response = await http_client.get("/salinfo/topic-data")
 
         assert response.status == 200
 
@@ -181,13 +160,9 @@ async def test_all_topic_data(aiohttp_client, *args, **kwargs):
             assert_topic_data(data["telemetry_data"])
 
 
-async def test_some_topic_data(aiohttp_client, *args, **kwargs):
+async def test_some_topic_data(http_client):
     """Test the use of query params to get only some of the topic_data."""
-
     # Arrange
-    ac = await anext(aiohttp_client)  # noqa
-    client = await ac(create_app())
-
     salobj.set_random_lsst_dds_partition_prefix()
     async with salobj.Domain():
         # Get all combinations of categories:
@@ -202,7 +177,9 @@ async def test_some_topic_data(aiohttp_client, *args, **kwargs):
             non_req = list(set(categories) - set(requested))
             query_param = "-".join(requested)
             # Requeste them
-            response = await client.get("/salinfo/topic-data?categories=" + query_param)
+            response = await http_client.get(
+                "/salinfo/topic-data?categories=" + query_param
+            )
             assert response.status == 200
             response_data = await response.json()
 
