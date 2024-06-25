@@ -19,7 +19,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-
 import logging
 import signal
 from urllib.parse import urlencode, urlunparse
@@ -50,12 +49,15 @@ def raise_timeout(*args):
 
 
 def create_app(*args, **kwargs):
-    """Create the Reports application
+    """Create the Reports application.
+
+    Define Reports subapplication, which provides the endpoints to
+    interact with lsst.ts methods that produce reports.
 
     Returns
     -------
-    object
-        The application instance
+    `aiohttp.web.Application`
+        The application instance.
     """
     reports_app = web.Application()
 

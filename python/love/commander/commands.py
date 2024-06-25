@@ -17,10 +17,6 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-
-"""Define the Commands subapplication, which provides the endpoints to accept
-command requests.
-"""
 import json
 
 from aiohttp import web
@@ -28,12 +24,15 @@ from lsst.ts import salobj
 
 
 def create_app(*args, **kwargs):
-    """Create the Commands application
+    """Create the Commands application.
+
+    Define the Commands subapplication, which provides the endpoints to
+    accept command requests.
 
     Returns
     -------
-    object
-        The application instance
+    `aiohttp.web.Application`
+        The application instance.
     """
     domain = None
     remotes = {}
@@ -99,7 +98,7 @@ def create_app(*args, **kwargs):
         Parameters
         ----------
         cmd_app : `aiohttp.web.Application`
-            The Commands application
+            The Commands application.
         """
         for remote_name in remotes:
             await remotes[remote_name].close()

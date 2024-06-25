@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-
 import asyncio
 import signal
 
@@ -35,12 +34,15 @@ def raise_timeout(*args):
 
 
 def create_app(*args, **kwargs):
-    """Create the EFD application
+    """Create the EFD application.
+
+    Define the EFD subapplication, which provides the endpoints to
+    make queries to specific EFD instances.
 
     Returns
     -------
-    object
-        The application instance
+    `aiohttp.web.Application`
+        The application instance.
     """
     efd_app = web.Application()
 

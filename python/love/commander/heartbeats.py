@@ -17,22 +17,21 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-
-"""Define the Heartbeats subapplication, which provides the endpoints to
-request a heartbeat.
-"""
 from datetime import datetime
 
 from aiohttp import web
 
 
 def create_app(*args, **kwargs):
-    """Create the Heartbeats application
+    """Create the Heartbeats application.
+
+    Define the Heartbeats subapplication, which provides the endpoints to
+    request a heartbeat.
 
     Returns
     -------
-    object
-        The application instance
+    `aiohttp.web.Application`
+        The application instance.
     """
     remotes = {}
 
@@ -52,7 +51,7 @@ def create_app(*args, **kwargs):
         Parameters
         ----------
         salinfo_app : `aiohttp.web.Application`
-            The Heartbeats application
+            The Heartbeats application.
         """
         for remote_name in remotes:
             await remotes[remote_name].close()

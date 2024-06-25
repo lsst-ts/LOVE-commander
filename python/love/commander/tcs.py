@@ -17,9 +17,6 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-
-"""Define the Heartbeats subapplication, which
-provides the endpoints to request a heartbeat."""
 from aiohttp import web
 from lsst.ts.observatory.control.auxtel import ATCS
 from lsst.ts.observatory.control.maintel import MTCS
@@ -29,12 +26,15 @@ mtcs_client = None
 
 
 def create_app():
-    """Create the TCS application
+    """Create the TCS application.
+
+    Define the TCS subapplication, which provides the endpoints to
+    interact with the lsst.ts.observatory.control classes.
 
     Returns
     -------
-    object
-        The application instance
+    `aiohttp.web.Application`
+        The application instance.
     """
     tcs_app = web.Application()
 

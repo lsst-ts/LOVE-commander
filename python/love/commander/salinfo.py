@@ -26,12 +26,15 @@ from lsst.ts import salobj, xml
 
 
 def create_app(*args, **kwargs):
-    """Create the SAL Info application
+    """Create the SAL Info application.
+
+    Define the SAL Info subapplication, which provides the endpoints to
+    request info from SAL.
 
     Returns
     -------
-    object
-        The application instance
+    `aiohttp.web.Application`
+        The application instance.
     """
     salinfo_app = web.Application()
 
@@ -54,7 +57,7 @@ def create_app(*args, **kwargs):
 
         Parameters
         ----------
-        request : Request
+        request : `Request`
             The original HTTP request
 
         Returns
@@ -87,7 +90,7 @@ def create_app(*args, **kwargs):
 
             Parameters
             ----------
-            request : Request
+            request : `Request`
                 The original HTTP request
 
             Returns
@@ -144,7 +147,7 @@ def create_app(*args, **kwargs):
 
         Parameters
         ----------
-        field_info : dictionary of object
+        field_info : `dict`
             a list of fields description objects
 
         Returns
@@ -169,9 +172,9 @@ def create_app(*args, **kwargs):
 
         Parameters
         ----------
-        salinfo : dictionary
+        salinfo : `dict`
             Dictionary containing the SAL Info in a tree-like structure
-        categories : list of string
+        categories : `list[str]`
             List of categories to include, can contain any of "event",
             "telemetry" or "command".
 
@@ -212,8 +215,8 @@ def create_app(*args, **kwargs):
 
         Parameters
         ----------
-        request : Request
-            The original HTTP request
+        request : `Request`
+            The original HTTP request.
 
         Returns
         -------
@@ -278,7 +281,7 @@ def create_app(*args, **kwargs):
         Parameters
         ----------
         salinfo_app : `aiohttp.web.Application`
-            The SAL Info application
+            The SAL Info application.
         """
         for name in salinfo:
             await salinfo[name].close()
