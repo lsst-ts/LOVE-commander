@@ -5,6 +5,7 @@ Version History
 v6.1.2
 ------
 
+* Remove unused files `<https://github.com/lsst-ts/LOVE-commander/pull/72>`_
 * Refactor use of pytest-aiohttp plugins `<https://github.com/lsst-ts/LOVE-commander/pull/71>`_
 * Refactor use of Dockerfile-dev image `<https://github.com/lsst-ts/LOVE-commander/pull/69>`_
 
