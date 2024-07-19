@@ -20,7 +20,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from aiohttp import web
-from lsst.ts.planning.tool import ZephyrInterface
+from lsst.ts.planning.tool.zephyr_interface import ZephyrInterface
 
 
 def create_app(*args, **kwargs):
