@@ -21,7 +21,6 @@ import random
 from unittest.mock import patch
 
 from astropy.time import Time
-from love.commander.app import create_app
 from love.commander.reports import CHRONOGRAF_DASHBOARDS_PATHS, SITE_DOMAINS
 
 
@@ -45,12 +44,9 @@ class MockBumpTestTimes:
         )
 
 
-async def test_query_m1m3_bump_tests(aiohttp_client):
+async def test_query_m1m3_bump_tests(http_client):
     """Test the get timeseries response."""
     # Arrange
-    ac = await anext(aiohttp_client)
-    client = await ac(create_app())
-
     # Start patching `EfdClient`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
     mock_efd_client = mock_efd_patcher.start()
@@ -68,7 +64,7 @@ async def test_query_m1m3_bump_tests(aiohttp_client):
         "end_date": "2024-01-31T00:00:00",
         "actuator_id": 437,
     }
-    response = await client.post("/reports/m1m3-bump-tests/", json=request_data)
+    response = await http_client.post("/reports/m1m3-bump-tests/", json=request_data)
     assert response.status == 200
 
     response_data = await response.json()

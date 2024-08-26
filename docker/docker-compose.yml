@@ -3,6 +3,7 @@ version: "3.7"
 services:
   commander:
     container_name: love-commander-mount
+    network_mode: host
     build:
       context: ..
       dockerfile: docker/Dockerfile-dev
@@ -14,6 +15,3 @@ services:
       - LSST_SITE=local
     volumes:
       - ..:/usr/src/love
-    command: "/usr/src/love/docker/setup-dev.sh"
-    stdin_open: true
-    tty: true

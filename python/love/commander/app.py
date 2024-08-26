@@ -17,8 +17,6 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-
-"""Main application, instantiates the aiohtttp app."""
 from aiohttp import web
 
 from .commands import create_app as create_cmd_app
@@ -32,12 +30,12 @@ from .tcs import create_app as create_tcs_app
 
 
 def create_app(*args, **kwargs):
-    """Create the aaplication with its subapplications
+    """Create the application with its subapplications.
 
     Returns
     -------
-    object
-        the application
+    `aiohttp.web.Application`
+        the application of applications.
     """
     app = web.Application(middlewares=[web.normalize_path_middleware()])
 

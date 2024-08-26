@@ -19,11 +19,11 @@
 
 
 import asyncio
-import pandas as pd
 import random
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
+import pandas as pd
 from love.commander.efd import MAX_EFD_LOGS_LEN
-from love.commander.app import create_app
 
 
 # Patch for using MagicMock in async environments
@@ -66,12 +66,9 @@ def raise_exception(name):
     raise ConnectionError
 
 
-async def test_efd_timeseries(aiohttp_client):
+async def test_efd_timeseries(http_client):
     """Test the get timeseries response."""
     # Arrange
-    ac = await anext(aiohttp_client)
-    client = await ac(create_app())
-
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
     mock_efd_client = mock_efd_patcher.start()
@@ -92,9 +89,10 @@ async def test_efd_timeseries(aiohttp_client):
         "cscs": cscs,
         "resample": "1min",
     }
-    response = await client.post("/efd/timeseries/", json=request_data)
-    assert response.status == 200
 
+    # Act
+    response = await http_client.post("/efd/timeseries/", json=request_data)
+    assert response.status == 200
     response_data = await response.json()
     assert "ATDome-0-topic1" in list(response_data.keys())
     assert "ATMCS-1-topic2" in list(response_data.keys())
@@ -104,16 +102,13 @@ async def test_efd_timeseries(aiohttp_client):
     assert response_data["ATDome-0-topic1"]["field1"][0]["ts"] == "2020-03-06 21:49:00"
     assert response_data["ATDome-0-topic1"]["field1"][0]["value"] == 0.21
 
-    # Stop patching `efd_client`.
+    # Stop `efd_client` patch
     mock_efd_patcher.stop()
 
 
-async def test_efd_timeseries_with_errors(aiohttp_client):
+async def test_efd_timeseries_with_errors(http_client):
     """Test the get timeseries response with errors."""
     # Arrange
-    ac = await anext(aiohttp_client)
-    client = await ac(create_app())
-
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
     mock_efd_client = mock_efd_patcher.start()
@@ -134,22 +129,21 @@ async def test_efd_timeseries_with_errors(aiohttp_client):
         "cscs": cscs,
         "resample": "1min",
     }
-    response = await client.post("/efd/timeseries/", json=request_data)
+
+    # Act
+    response = await http_client.post("/efd/timeseries/", json=request_data)
     assert response.status == 400
 
     response_data = await response.json()
     print(response_data)
 
-    # Stop patching `efd_client`.
+    # Stop `efd_client` patch
     mock_efd_patcher.stop()
 
 
-async def test_efd_logmessages(aiohttp_client):
+async def test_efd_logmessages(http_client):
     """Test the get timeseries response."""
     # Arrange
-    ac = await anext(aiohttp_client)
-    client = await ac(create_app())
-
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
     mock_efd_client = mock_efd_patcher.start()
@@ -196,7 +190,9 @@ async def test_efd_logmessages(aiohttp_client):
         "cscs": cscs,
         "scale": "utc",
     }
-    response = await client.post("/efd/logmessages/", json=request_data)
+
+    # Act
+    response = await http_client.post("/efd/logmessages/", json=request_data)
     assert response.status == 200
 
     response_data = await response.json()
@@ -238,16 +234,13 @@ async def test_efd_logmessages(aiohttp_client):
         assert "errorReport" in response_data["ATMCS-0-logevent_errorCode"][0]
         assert "traceback" in response_data["ATMCS-0-logevent_errorCode"][0]
 
-    # Stop patching `efd_client`.
+    # Stop `efd_client` patch
     mock_efd_patcher.stop()
 
 
-async def test_efd_clients(aiohttp_client):
+async def test_efd_clients(http_client):
     """Test query_efd_clients method"""
     # Arrange
-    ac = await anext(aiohttp_client)
-    client = await ac(create_app())
-
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
     mock_efd_client = mock_efd_patcher.start()
@@ -260,7 +253,8 @@ async def test_efd_clients(aiohttp_client):
     ]
     mock_efd_client.list_efd_names = MagicMock(return_value=dummy_efd_instances)
 
-    response = await client.get("/efd/efd_clients/")
+    # Act
+    response = await http_client.get("/efd/efd_clients/")
     assert response.status == 200
 
     response_data = await response.json()
@@ -268,7 +262,8 @@ async def test_efd_clients(aiohttp_client):
 
     assert "instances" in response_data
     instances = response_data["instances"]
+
     assert all(i in instances for i in dummy_efd_instances)
 
-    # Stop patching `efd_client`.
+    # Stop `efd_client` patch
     mock_efd_patcher.stop()

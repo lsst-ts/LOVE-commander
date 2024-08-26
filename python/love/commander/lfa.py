@@ -17,32 +17,32 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-
-"""Define LOVE CSC subapplication, which provides the endpoints
-to request info to the LOVE CSC from SAL."""
-import os
 import logging
+import os
+
 from aiohttp import web
-from lsst.ts import salobj
 from love.commander.utils import (
+    check_file_exists_in_s3_bucket,
     unavailable_love_controller,
     unavailable_s3_bucket,
-    check_file_exists_in_s3_bucket,
     upload_file_to_s3_bucket,
 )
-
+from lsst.ts import salobj
 
 s3_bucket = None
 LOVE_controller = None
 
 
 def create_app(*args, **kwargs):
-    """Create the LFA application
+    """Create the LFA application.
+
+    Define the LFA subapplication, which provides the endpoints to
+    connect to the LFA S3 bucket.
 
     Returns
     -------
-    object
-        The application instance
+    `aiohttp.web.Application`
+        The application instance.
     """
     lfa_app = web.Application()
 
@@ -110,7 +110,7 @@ def create_app(*args, **kwargs):
 
         Parameters
         ----------
-        request : Request
+        request : `Request`
             The original HTTP request
 
         Returns
@@ -138,8 +138,8 @@ def create_app(*args, **kwargs):
 
         Parameters
         ----------
-        request : Request
-            The original HTTP request
+        request : `Request`
+            The original HTTP request.
 
         Returns
         -------
@@ -177,8 +177,8 @@ def create_app(*args, **kwargs):
 
         Parameters
         ----------
-        request : Request
-            The original HTTP request
+        request : `Request`
+            The original HTTP request.
 
         Returns
         -------
@@ -216,8 +216,8 @@ def create_app(*args, **kwargs):
 
         Parameters
         ----------
-        request : Request
-            The original HTTP request
+        request : `Request`
+            The original HTTP request.
 
         Returns
         -------
@@ -249,6 +249,7 @@ def create_app(*args, **kwargs):
         return await upload_file_to_s3_bucket(field, s3_bucket, LOVE_controller, "OLE")
 
     async def on_cleanup(lfa_app):
+        # This app doesn't require cleaning up.
         pass
 
     make_connections()

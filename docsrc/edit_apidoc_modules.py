@@ -1,6 +1,7 @@
 """Edits the apidoc modules.rst file in order to have a better explanation."""
-import sys
+
 import fileinput
+import sys
 
 if __name__ == "__main__":
     for i, line in enumerate(fileinput.input("source/apidoc/modules.rst", inplace=1)):

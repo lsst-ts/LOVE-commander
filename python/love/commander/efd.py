@@ -17,12 +17,12 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-
-import signal
-from aiohttp import web
-import lsst_efd_client
-from astropy.time import Time, TimeDelta
 import asyncio
+import signal
+
+import lsst_efd_client
+from aiohttp import web
+from astropy.time import Time, TimeDelta
 
 MAX_EFD_LOGS_LEN = 100
 EFD_CLIENT_CONNECTION_TIMEOUT = 5
@@ -34,12 +34,15 @@ def raise_timeout(*args):
 
 
 def create_app(*args, **kwargs):
-    """Create the EFD application
+    """Create the EFD application.
+
+    Define the EFD subapplication, which provides the endpoints to
+    make queries to specific EFD instances.
 
     Returns
     -------
-    object
-        The application instance
+    `aiohttp.web.Application`
+        The application instance.
     """
     efd_app = web.Application()
 
@@ -205,7 +208,7 @@ def create_app(*args, **kwargs):
     efd_app.router.add_get("/efd_clients/", query_efd_clients)
 
     async def on_cleanup(efd_app):
-        # Do cleanup
+        # This app doesn't require cleaning up.
         pass
 
     efd_app.on_cleanup.append(on_cleanup)

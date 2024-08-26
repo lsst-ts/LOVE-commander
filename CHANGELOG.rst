@@ -2,6 +2,14 @@
 Version History
 ===============
 
+v6.1.2
+------
+
+* Hook up to the ts_jenkins_shared_library `<https://github.com/lsst-ts/LOVE-commander/pull/70>`_
+* Remove unused files `<https://github.com/lsst-ts/LOVE-commander/pull/72>`_
+* Refactor use of pytest-aiohttp plugins `<https://github.com/lsst-ts/LOVE-commander/pull/71>`_
+* Refactor use of Dockerfile-dev image `<https://github.com/lsst-ts/LOVE-commander/pull/69>`_
+
 v6.1.1
 ------
 
