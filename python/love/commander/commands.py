@@ -47,11 +47,12 @@ def create_app(*args, **kwargs):
             assert "salindex" in data
             assert "cmd" in data
             assert "params" in data
+            assert "identity" in data
         except AssertionError:
             return web.json_response(
                 {
                     "ack": f"Request must have JSON data with the following "
-                    f"keys: csc, salindex, cmd_name, params. Received {json.dumps(data)}"
+                    f"keys: csc, salindex, cmd_name, params, identity. Received {json.dumps(data)}"
                 },
                 status=400,
             )
@@ -60,6 +61,7 @@ def create_app(*args, **kwargs):
         salindex = data["salindex"]
         cmd_name = data["cmd"]
         params = data["params"]
+        identity = data["identity"]
         remote_name = f"{csc}.{salindex}"
 
         # Only create domain if it does not already exist.
@@ -80,6 +82,7 @@ def create_app(*args, **kwargs):
         cmd.set(**params)
 
         try:
+            remotes[remote_name].salinfo.identity = identity
             cmd_result = await cmd.start(timeout=5)
             return web.json_response({"ack": cmd_result.result})
         except salobj.AckTimeoutError as e:
