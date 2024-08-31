@@ -82,7 +82,7 @@ def create_app(*args, **kwargs):
         cmd.set(**params)
 
         try:
-            domain.default_identity = identity
+            remotes[remote_name].salinfo.identity = identity
             cmd_result = await cmd.start(timeout=5)
             return web.json_response({"ack": cmd_result.result})
         except salobj.AckTimeoutError as e:
