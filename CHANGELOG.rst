@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.2.0
+------
+
+* Add identity to issued salobj.Remote commands `<https://github.com/lsst-ts/LOVE-commander/pull/74>`_
+
 v6.1.2
 ------
 

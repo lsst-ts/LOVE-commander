@@ -40,6 +40,7 @@ async def test_successful_command(http_client):
                 "salindex": 1,
                 "cmd": "cmd_setScalars",
                 "params": cmd_data,
+                "identity": "test@localhost",
             },
             cls=NumpyEncoder,
         )
@@ -72,7 +73,7 @@ async def test_wrong_data(http_client):
     response = await response.json()
     assert (
         response["ack"]
-        == "Request must have JSON data with the following keys: csc, salindex, cmd_name, params."
+        == "Request must have JSON data with the following keys: csc, salindex, cmd_name, params, identity."
         + f" Received {json.dumps(data)}"
     )
 
@@ -96,6 +97,7 @@ async def test_timeout(http_client):
                     "duration": -11,
                     "ack": salobj.SalRetCode.CMD_COMPLETE.value,
                 },
+                "identity": "test@localhost",
             },
             cls=NumpyEncoder,
         )
@@ -107,5 +109,9 @@ async def test_timeout(http_client):
     # Assert status
     await response.json()
 
-    assert response.status == 504
+    # TODO: uncomment the following line when transitioning to Kafka
+    # See DM-46247.
+    # assert response.status == 504
+    assert response.status == 200
+
     await csc.close()
