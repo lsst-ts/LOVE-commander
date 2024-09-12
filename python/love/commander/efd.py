@@ -24,7 +24,6 @@ import lsst_efd_client
 from aiohttp import web
 from astropy.time import Time, TimeDelta
 
-MAX_EFD_LOGS_LEN = 100
 EFD_CLIENT_CONNECTION_TIMEOUT = 5
 efd_clients = dict()
 
@@ -156,6 +155,9 @@ def create_app(*args, **kwargs):
                 topics = indexes[index]
                 for topic in topics:
                     fields = topics[topic]
+                    # Make sure the private_rcvStamp field is present
+                    if "private_rcvStamp" not in fields:
+                        fields.append("private_rcvStamp")
                     task = efd_client.select_time_series(
                         f"lsst.sal.{csc}.{topic}",
                         fields,
@@ -167,30 +169,14 @@ def create_app(*args, **kwargs):
                     query_tasks.append(task)
 
         results = [r for r in await asyncio.gather(*query_tasks)]
-        results = [r.to_dict("records") for r in results]
-
-        flattened_results = []
-        result_id_counter = 0
-        for sublist in results:
-            for item in sublist:
-                result_id_counter += 1
-                item["id"] = result_id_counter
-                flattened_results.append(item)
-
-        flattened_results.sort(key=lambda x: x["private_rcvStamp"], reverse=False)
-        marked_results_ids = [
-            item["id"] for item in flattened_results[:MAX_EFD_LOGS_LEN]
+        results = [
+            sorted(
+                r.to_dict("records"), key=lambda x: x["private_rcvStamp"], reverse=True
+            )
+            for r in results
         ]
 
-        filtered_results = []
-        for s, sublist in enumerate(results):
-            filtered_results.append([])
-            for i, item in enumerate(sublist):
-                if item["id"] not in marked_results_ids:
-                    continue
-                filtered_results[s].append(results[s][i])
-
-        response_data = dict(zip(sources, filtered_results))
+        response_data = dict(zip(sources, results))
         return web.json_response(response_data)
 
     async def query_efd_clients(request):

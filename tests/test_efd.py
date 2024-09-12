@@ -19,11 +19,10 @@
 
 
 import asyncio
-import random
+import time
 from unittest.mock import MagicMock, patch
 
 import pandas as pd
-from love.commander.efd import MAX_EFD_LOGS_LEN
 
 
 # Patch for using MagicMock in async environments
@@ -40,13 +39,19 @@ class MockEFDClient(object):
     ):
         f = asyncio.Future()
         data = {}
-        if not is_window:
-            for field in fields:
-                data[field] = {}
-                for i in range(int(MAX_EFD_LOGS_LEN)):
-                    data[field][pd.Timestamp(i)] = random.randint(1, 10000)
-        else:
-            for field in fields:
+        for field in fields:
+            # For log messages we use the private_rcvStamp field.
+            # Data will be then sorted by this field
+            # so we must mock sequential values for it.
+            if field == "private_rcvStamp":
+                data[field] = {
+                    pd.Timestamp("2020-03-06 21:49:41"): time.time(),
+                    pd.Timestamp("2020-03-06 21:50:41"): time.time(),
+                    pd.Timestamp("2020-03-06 21:51:41"): time.time(),
+                    pd.Timestamp("2020-03-06 21:52:41"): time.time(),
+                    pd.Timestamp("2020-03-06 21:53:41"): time.time(),
+                }
+            else:
                 data[field] = {
                     pd.Timestamp("2020-03-06 21:49:41"): 0.21,
                     pd.Timestamp("2020-03-06 21:50:41"): 0.21,
@@ -203,12 +208,6 @@ async def test_efd_logmessages(http_client):
     assert "ATMCS-0-logevent_logMessage" in list(response_data.keys())
     assert "ATMCS-0-logevent_errorCode" in list(response_data.keys())
 
-    # Response size test
-    flattened_results = [
-        item for topic in response_data for item in response_data[topic]
-    ]
-    assert len(flattened_results) <= MAX_EFD_LOGS_LEN
-
     # Response structure test
     if len(response_data["ATDome-0-logevent_logMessage"]) > 0:
         assert "private_rcvStamp" in response_data["ATDome-0-logevent_logMessage"][0]
@@ -233,6 +232,13 @@ async def test_efd_logmessages(http_client):
         assert "errorCode" in response_data["ATMCS-0-logevent_errorCode"][0]
         assert "errorReport" in response_data["ATMCS-0-logevent_errorCode"][0]
         assert "traceback" in response_data["ATMCS-0-logevent_errorCode"][0]
+
+    # Make sure the timestamps are sorted in descending order
+    for topic in response_data:
+        prev_timestamp = time.time()
+        for record in response_data[topic]:
+            assert record["private_rcvStamp"] < prev_timestamp
+            prev_timestamp = record["private_rcvStamp"]
 
     # Stop `efd_client` patch
     mock_efd_patcher.stop()
