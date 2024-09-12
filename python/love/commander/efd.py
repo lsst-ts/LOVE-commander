@@ -155,6 +155,9 @@ def create_app(*args, **kwargs):
                 topics = indexes[index]
                 for topic in topics:
                     fields = topics[topic]
+                    # Make sure the private_rcvStamp field is present
+                    if "private_rcvStamp" not in fields:
+                        fields.append("private_rcvStamp")
                     task = efd_client.select_time_series(
                         f"lsst.sal.{csc}.{topic}",
                         fields,
