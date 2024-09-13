@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.2.1
+------
+
+* Simplify query_efd_logs function and remove constraint on limit of logs `<https://github.com/lsst-ts/LOVE-commander/pull/75>`_
+
 v6.2.0
 ------
 
