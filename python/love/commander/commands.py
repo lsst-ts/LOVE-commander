@@ -84,7 +84,7 @@ def create_app(*args, **kwargs):
         try:
             remotes[remote_name].salinfo.identity = identity
             cmd_result = await cmd.start(timeout=5)
-            return web.json_response({"ack": cmd_result.result})
+            return web.json_response({"ack": cmd_result.result, "validate": "OK"})
         except salobj.AckTimeoutError as e:
             msg = (
                 "No ack received from component."
