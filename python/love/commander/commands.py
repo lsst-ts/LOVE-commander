@@ -85,18 +85,13 @@ def create_app(*args, **kwargs):
             remotes[remote_name].salinfo.identity = identity
             cmd_result = await cmd.start(timeout=5)
             return web.json_response({"ack": cmd_result.result})
-        except salobj.AckTimeoutError:
-            # TODO: uncomment following lines when transitioning to Kafka
-            # See DM-46247.
-            # msg = (
-            #     "No ack received from component."
-            #     if e.ackcmd == salobj.SalRetCode.CMD_NOACK
-            #     else f"Last ack received {e.ackcmd}."
-            # )
-            # return web.json_response({
-            #     "ack": f"Command time out. {msg}"
-            # }, status=504)
-            return web.json_response({"ack": "Done"})
+        except salobj.AckTimeoutError as e:
+            msg = (
+                "No ack received from component."
+                if e.ackcmd == salobj.SalRetCode.CMD_NOACK
+                else f"Last ack received {e.ackcmd}."
+            )
+            return web.json_response({"ack": f"Command time out. {msg}"}, status=504)
 
     cmd.router.add_post("/", start_cmd)
 
