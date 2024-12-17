@@ -18,6 +18,7 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 import json
+import os
 
 from aiohttp import web
 from lsst.ts import salobj
@@ -38,6 +39,8 @@ def create_app(*args, **kwargs):
     remotes = {}
 
     cmd = web.Application()
+
+    command_timeouts = int(os.environ.get("COMMAND_TIMEOUTS", "10"))
 
     async def start_cmd(request):
         nonlocal domain
@@ -83,7 +86,7 @@ def create_app(*args, **kwargs):
 
         try:
             remotes[remote_name].salinfo.identity = identity
-            cmd_result = await cmd.start(timeout=5)
+            cmd_result = await cmd.start(timeout=command_timeouts)
             return web.json_response({"ack": cmd_result.result})
         except salobj.AckTimeoutError as e:
             msg = (
