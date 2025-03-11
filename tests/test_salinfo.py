@@ -30,7 +30,7 @@ async def test_all_sal_components(http_client):
     Ensure that all SAL components are listed.
     """
     # Arrange
-    salobj.set_random_lsst_dds_partition_prefix()
+    salobj.set_test_topic_subname()
     async with salobj.Domain():
         response = await http_client.get("/salinfo/topic-names")
 
@@ -45,7 +45,7 @@ async def test_all_sal_components(http_client):
 async def test_metadata(http_client):
     """Test the get metadata response."""
     # Arrange
-    salobj.set_random_lsst_dds_partition_prefix()
+    salobj.set_test_topic_subname()
     async with salobj.Domain():
         response = await http_client.get("/salinfo/metadata")
 
@@ -63,7 +63,7 @@ async def test_metadata(http_client):
 async def test_all_topic_names(http_client):
     """Test the get topic_names response."""
     # Arrange
-    salobj.set_random_lsst_dds_partition_prefix()
+    salobj.set_test_topic_subname()
     async with salobj.Domain():
         response = await http_client.get("/salinfo/topic-names")
 
@@ -83,7 +83,7 @@ async def test_all_topic_names(http_client):
 async def test_some_topic_names(http_client):
     """Test the use of query params to get only some of the topic_names."""
     # Arrange
-    salobj.set_random_lsst_dds_partition_prefix()
+    salobj.set_test_topic_subname()
     async with salobj.Domain():
         # Get all combinations of categories:
         categories = ["command", "event", "telemetry"]
@@ -145,7 +145,7 @@ def assert_topic_data(topic_data):
 async def test_all_topic_data(http_client):
     """Test the get topic_data response."""
     # Arrange
-    salobj.set_random_lsst_dds_partition_prefix()
+    salobj.set_test_topic_subname()
     async with salobj.Domain():
         response = await http_client.get("/salinfo/topic-data")
 
@@ -165,7 +165,7 @@ async def test_all_topic_data(http_client):
 async def test_some_topic_data(http_client):
     """Test the use of query params to get only some of the topic_data."""
     # Arrange
-    salobj.set_random_lsst_dds_partition_prefix()
+    salobj.set_test_topic_subname()
     async with salobj.Domain():
         # Get all combinations of categories:
         categories = ["command", "event", "telemetry"]

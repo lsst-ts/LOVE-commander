@@ -26,8 +26,7 @@ from commander_utils import NumpyEncoder
 
 async def test_successful_command(http_client):
     # Arrange
-    # setup dds / csc
-    salobj.set_random_lsst_dds_partition_prefix()
+    salobj.set_test_topic_subname()
     csc = salobj.TestCsc(index=1, config_dir=None, initial_state=salobj.State.ENABLED)
     await csc.start_task
 
@@ -80,8 +79,7 @@ async def test_wrong_data(http_client):
 
 async def test_timeout(http_client):
     # Arrange
-    # setup dds / csc
-    salobj.set_random_lsst_dds_partition_prefix()
+    salobj.set_test_topic_subname()
     csc = salobj.TestCsc(index=1, config_dir=None, initial_state=salobj.State.ENABLED)
     await csc.start_task
 
