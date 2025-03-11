@@ -108,10 +108,5 @@ async def test_timeout(http_client):
 
     # Assert status
     await response.json()
-
-    # TODO: uncomment the following line when transitioning to Kafka
-    # See DM-46247.
-    # assert response.status == 504
-    assert response.status == 200
-
+    assert response.status == 504
     await csc.close()
