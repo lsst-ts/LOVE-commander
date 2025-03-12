@@ -1,0 +1,1 @@
+Random content for a file used in tests.

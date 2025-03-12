@@ -74,7 +74,7 @@ def create_app(*args, **kwargs):
             logging.warning(e)
             s3_bucket = None
 
-    def connect_to_love_controller():
+    async def connect_to_love_controller():
         """Connect to the LOVE CSC.
 
         Notes
@@ -86,24 +86,26 @@ def create_app(*args, **kwargs):
         """
         global LOVE_controller
         try:
-            LOVE_controller = salobj.Controller("LOVE", index=None, do_callbacks=False)
+            LOVE_controller = salobj.Controller(
+                "LOVE", index=None, do_callbacks=False, write_only=True
+            )
+            await LOVE_controller.start_task
         except Exception as e:
             logging.warning(e)
             LOVE_controller = None
 
-    def make_connections():
-        """Make connections to the LOVE CSC and the S3 bucket.
+    async def close_love_controller():
+        """Close the connection to the LOVE CSC.
 
-        Returns
-        -------
-        bool
-            True if both connections are established, False otherwise.
+        Notes
+        -----
+        This function will close the connection to the LOVE CSC and set
+        LOVE_controller to None.
         """
-        global s3_bucket, LOVE_controller
-        if not s3_bucket:
-            connect_to_s3_bucket()
-        if not LOVE_controller:
-            connect_to_love_controller()
+        global LOVE_controller
+        if LOVE_controller:
+            await LOVE_controller.close()
+            LOVE_controller = None
 
     async def check_file_exists(request):
         """Check if a file exists in the S3 bucket.
@@ -125,7 +127,6 @@ def create_app(*args, **kwargs):
                 }
         """
         global s3_bucket
-        make_connections()
         if not s3_bucket:
             return unavailable_s3_bucket()
 
@@ -156,14 +157,10 @@ def create_app(*args, **kwargs):
         """
 
         global s3_bucket, LOVE_controller
-        make_connections()
         if not s3_bucket:
             return unavailable_s3_bucket()
         if not LOVE_controller:
             return unavailable_love_controller()
-
-        # Wait for the LOVE controller to be ready
-        await LOVE_controller.start_task
 
         reader = await request.multipart()
         field = await reader.next()
@@ -195,14 +192,10 @@ def create_app(*args, **kwargs):
         """
 
         global s3_bucket, LOVE_controller
-        make_connections()
         if not s3_bucket:
             return unavailable_s3_bucket()
         if not LOVE_controller:
             return unavailable_love_controller()
-
-        # Wait for the LOVE controller to be ready
-        await LOVE_controller.start_task
 
         reader = await request.multipart()
         field = await reader.next()
@@ -234,29 +227,37 @@ def create_app(*args, **kwargs):
         """
 
         global s3_bucket, LOVE_controller
-        make_connections()
         if not s3_bucket:
             return unavailable_s3_bucket()
         if not LOVE_controller:
             return unavailable_love_controller()
 
-        # Wait for the LOVE controller to be ready
-        await LOVE_controller.start_task
+        try:
+            reader = await request.multipart()
+        except AssertionError:
+            return web.json_response(
+                {"ack": "Request content type must be multipart"}, status=400
+            )
 
-        reader = await request.multipart()
         field = await reader.next()
-
         return await upload_file_to_s3_bucket(field, s3_bucket, LOVE_controller, "OLE")
 
-    async def on_cleanup(lfa_app):
-        # This app doesn't require cleaning up.
-        pass
+    async def on_startup(lfa_app):
+        logging.info("Running LOVE controller")
+        await connect_to_love_controller()
+        logging.info("Running S3 bucket connection")
+        connect_to_s3_bucket()
 
-    make_connections()
+    async def on_cleanup(lfa_app):
+        logging.info("Closing LOVE controller")
+        await close_love_controller()
+
     lfa_app.router.add_post("/file-exists", check_file_exists)
     lfa_app.router.add_post("/upload-file", upload_file)
     lfa_app.router.add_post("/upload-love-config-file", upload_love_config_file)
     lfa_app.router.add_post("/upload-love-thumbnail", upload_love_thumbnail)
+
+    lfa_app.on_startup.append(on_startup)
     lfa_app.on_cleanup.append(on_cleanup)
 
     return lfa_app
