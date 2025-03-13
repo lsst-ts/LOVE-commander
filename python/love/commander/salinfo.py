@@ -56,36 +56,6 @@ def create_app(*args, **kwargs):
         for name in available_component_names:
             salinfo[name] = salobj.SalInfo(salobj_domain, name)
 
-    async def get_metadata(request):
-        """Handle get metadata requests.
-
-        Parameters
-        ----------
-        request : `Request`
-            The original HTTP request
-
-        Returns
-        -------
-        Response
-            The response for the HTTP request with the following structure:
-
-            .. code-block:: json
-
-                {
-                    "sal_version": "<SAL version in format x.x.x>",
-                    "xml_version": "<XML version in format x.x.x>"
-                }
-        """
-        results = {
-            salinfo[name].metadata.name: {
-                "sal_version": salinfo[name].metadata.sal_version,
-                "xml_version": salinfo[name].metadata.xml_version,
-            }
-            for name in salinfo
-        }
-
-        return web.json_response(results)
-
     async def get_topic_names(request):
         """Handle get topic names requests.
 
@@ -262,7 +232,6 @@ def create_app(*args, **kwargs):
         results = {name: _get_details(salinfo[name], categories) for name in salinfo}
         return web.json_response(results)
 
-    salinfo_app.router.add_get("/metadata", get_metadata)
     salinfo_app.router.add_get("/topic-names", get_topic_names)
     salinfo_app.router.add_get("/topic-data", get_topic_data)
 

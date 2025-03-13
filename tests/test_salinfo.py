@@ -42,24 +42,6 @@ async def test_all_sal_components(http_client):
             assert name in response_data
 
 
-async def test_metadata(http_client):
-    """Test the get metadata response."""
-    # Arrange
-    salobj.set_test_topic_subname()
-    async with salobj.Domain():
-        response = await http_client.get("/salinfo/metadata")
-
-        assert response.status == 200
-
-        response_data = await response.json()
-
-        for _, data in response_data.items():
-            assert "sal_version" in data
-            assert "xml_version" in data
-            assert data["sal_version"].count(".") == 2
-            assert data["xml_version"].count(".") == 2
-
-
 async def test_all_topic_names(http_client):
     """Test the get topic_names response."""
     # Arrange
