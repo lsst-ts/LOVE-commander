@@ -159,7 +159,7 @@ def create_app(*args, **kwargs):
                 "name": field_info[k].name,
                 "description": field_info[k].description,
                 "units": field_info[k].units,
-                "type_name": field_info[k].type_name,
+                "type_name": field_info[k].sal_type,
             }
             for k in field_info.keys()
             if not k.startswith("private_")
@@ -187,22 +187,18 @@ def create_app(*args, **kwargs):
         result = {}
         if "telemetry" in categories:
             result["telemetry_data"] = {
-                t: _dump_field_info(salinfo.metadata.topic_info[t].field_info)
+                t: _dump_field_info(salinfo.component_info.topics["tel_" + t].fields)
                 for t in salinfo.telemetry_names
             }
         if "command" in categories:
             result["command_data"] = {
-                t: _dump_field_info(
-                    salinfo.metadata.topic_info["command_" + t].field_info
-                )
+                t: _dump_field_info(salinfo.component_info.topics["cmd_" + t].fields)
                 for t in salinfo.command_names
             }
 
         if "event" in categories:
             result["event_data"] = {
-                t: _dump_field_info(
-                    salinfo.metadata.topic_info["logevent_" + t].field_info
-                )
+                t: _dump_field_info(salinfo.component_info.topics["evt_" + t].fields)
                 for t in salinfo.event_names
             }
 
