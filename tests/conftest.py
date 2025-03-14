@@ -11,6 +11,7 @@ from .test_utils import LSST_SITE, REMOTES_LEN_LIMIT
 pytest_plugins = "aiohttp.pytest_plugin"
 
 os.environ["LSST_SITE"] = LSST_SITE
+os.environ["LSST_TOPIC_SUBNAME"] = "test"
 os.environ["S3_INSTANCE"] = "test"
 
 
