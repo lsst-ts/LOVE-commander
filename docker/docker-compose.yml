@@ -1,9 +1,12 @@
 version: "3.7"
 
+networks:
+  kafka:
+    external: true
+
 services:
   commander:
     container_name: love-commander-mount
-    network_mode: host
     build:
       context: ..
       dockerfile: docker/Dockerfile-dev
@@ -11,7 +14,9 @@ services:
         dev_cycle: ${dev_cycle}
     image: love-commander-mount-image
     environment:
-      - LSST_DDS_PARTITION_PREFIX=local
-      - LSST_SITE=local
+      - LSST_SITE=test
+      - LSST_TOPIC_SUBNAME=test
     volumes:
       - ..:/usr/src/love
+    networks:
+      - kafka

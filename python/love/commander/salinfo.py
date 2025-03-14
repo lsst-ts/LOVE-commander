@@ -24,6 +24,8 @@ info from SAL.
 from aiohttp import web
 from lsst.ts import salobj, xml
 
+salobj_domain = None
+
 
 def create_app(*args, **kwargs):
     """Create the SAL Info application.
@@ -38,7 +40,6 @@ def create_app(*args, **kwargs):
     """
     salinfo_app = web.Application()
 
-    domain = salobj.Domain()
     available_component_names = xml.subsystems
     if kwargs.get("remotes_len_limit") is not None:
         available_component_names = available_component_names[
@@ -48,42 +49,12 @@ def create_app(*args, **kwargs):
     salinfo = {}
 
     async def connect_to_salinfo_instances():
-        async with salobj.Domain():
-            for name in available_component_names:
-                salinfo[name] = salobj.SalInfo(domain, name)
-
-    async def get_metadata(request):
-        """Handle get metadata requests.
-
-        Parameters
-        ----------
-        request : `Request`
-            The original HTTP request
-
-        Returns
-        -------
-        Response
-            The response for the HTTP request with the following structure:
-
-            .. code-block:: json
-
-                {
-                    "sal_version": "<SAL version in format x.x.x>",
-                    "xml_version": "<XML version in format x.x.x>"
-                }
-        """
-        if not salinfo:
-            await connect_to_salinfo_instances()
-
-        results = {
-            salinfo[name].metadata.name: {
-                "sal_version": salinfo[name].metadata.sal_version,
-                "xml_version": salinfo[name].metadata.xml_version,
-            }
-            for name in salinfo
-        }
-
-        return web.json_response(results)
+        """Connect to the SAL Info instances."""
+        global salobj_domain
+        if not salobj_domain:
+            salobj_domain = salobj.Domain()
+        for name in available_component_names:
+            salinfo[name] = salobj.SalInfo(salobj_domain, name)
 
     async def get_topic_names(request):
         """Handle get topic names requests.
@@ -125,9 +96,6 @@ def create_app(*args, **kwargs):
                     }
         }
         """
-        if not salinfo:
-            await connect_to_salinfo_instances()
-
         accepted_categories = ["telemetry", "event", "command"]
         categories = request.rel_url.query.get("categories", "").split("-")
         categories = [c for c in categories if c in accepted_categories]
@@ -161,7 +129,7 @@ def create_app(*args, **kwargs):
                 "name": field_info[k].name,
                 "description": field_info[k].description,
                 "units": field_info[k].units,
-                "type_name": field_info[k].type_name,
+                "type_name": field_info[k].sal_type,
             }
             for k in field_info.keys()
             if not k.startswith("private_")
@@ -189,22 +157,18 @@ def create_app(*args, **kwargs):
         result = {}
         if "telemetry" in categories:
             result["telemetry_data"] = {
-                t: _dump_field_info(salinfo.metadata.topic_info[t].field_info)
+                t: _dump_field_info(salinfo.component_info.topics["tel_" + t].fields)
                 for t in salinfo.telemetry_names
             }
         if "command" in categories:
             result["command_data"] = {
-                t: _dump_field_info(
-                    salinfo.metadata.topic_info["command_" + t].field_info
-                )
+                t: _dump_field_info(salinfo.component_info.topics["cmd_" + t].fields)
                 for t in salinfo.command_names
             }
 
         if "event" in categories:
             result["event_data"] = {
-                t: _dump_field_info(
-                    salinfo.metadata.topic_info["logevent_" + t].field_info
-                )
+                t: _dump_field_info(salinfo.component_info.topics["evt_" + t].fields)
                 for t in salinfo.event_names
             }
 
@@ -260,9 +224,6 @@ def create_app(*args, **kwargs):
                     },
                 }
         """
-        if not salinfo:
-            await connect_to_salinfo_instances()
-
         accepted_categories = ["telemetry", "event", "command"]
         categories = request.rel_url.query.get("categories", "").split("-")
         categories = [c for c in categories if c in accepted_categories]
@@ -271,22 +232,34 @@ def create_app(*args, **kwargs):
         results = {name: _get_details(salinfo[name], categories) for name in salinfo}
         return web.json_response(results)
 
-    salinfo_app.router.add_get("/metadata", get_metadata)
     salinfo_app.router.add_get("/topic-names", get_topic_names)
     salinfo_app.router.add_get("/topic-data", get_topic_data)
 
-    async def on_cleanup(salinfo_app):
-        """Close the domain when cleaning the application.
+    async def on_startup(salinfo_app):
+        """Connect to the SAL Info instances when starting the application.
 
         Parameters
         ----------
         salinfo_app : `aiohttp.web.Application`
             The SAL Info application.
         """
+        await connect_to_salinfo_instances()
+
+    async def on_cleanup(salinfo_app):
+        """Close the Salobj domain and SAL Info instances
+        when cleaning the application.
+
+        Parameters
+        ----------
+        salinfo_app : `aiohttp.web.Application`
+            The SAL Info application.
+        """
+        global salobj_domain
         for name in salinfo:
             await salinfo[name].close()
-        await domain.close()
+        await salobj_domain.close()
 
+    salinfo_app.on_startup.append(on_startup)
     salinfo_app.on_cleanup.append(on_cleanup)
 
     return salinfo_app

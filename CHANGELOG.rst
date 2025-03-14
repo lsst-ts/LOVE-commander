@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.0.0
+------
+
+* Update love commander to make it compatible with salobj-kafka. `<https://github.com/lsst-ts/LOVE-commander/pull/76>`_
+
 v6.2.1
 ------
 
