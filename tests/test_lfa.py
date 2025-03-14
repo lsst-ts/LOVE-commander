@@ -17,57 +17,14 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-
-import asyncio
+import os
 import re
-import types
-from tempfile import TemporaryFile
-from unittest.mock import MagicMock, patch
 
-
-# Patch for using MagicMock in async environments
-async def async_magic():
-    pass
-
-
-MagicMock.__await__ = lambda x: async_magic().__await__()
-
-
-class MockAsyncS3Bucket:
-    service_resource = types.SimpleNamespace(
-        meta=types.SimpleNamespace(
-            client=types.SimpleNamespace(
-                meta=types.SimpleNamespace(endpoint_url="http://localhost.test")
-            )
-        )
-    )
-    name = "rubinobs-lfa"
-
-    def make_bucket_name(self, s3_instance):
-        return "rubinobs-lfa"
-
-    def make_key(self, salname, salindexname, generator, date, suffix):
-        return "test-key"
-
-    async def exists(self, key):
-        f = asyncio.Future()
-        f.set_result(True)
-        return True
-
-    async def upload(self, fileobj, key):
-        f = asyncio.Future()
-        data = {}
-        f.set_result(data)
-        return f
+import aiohttp
 
 
 async def test_lfa_file_exists(http_client):
     """Test LFA file existence."""
-    # Arrange
-    mock_lfa_patcher = patch("lsst.ts.salobj.AsyncS3Bucket")
-    mock_lfa_client = mock_lfa_patcher.start()
-    mock_lfa_client.return_value = MockAsyncS3Bucket()
-
     # Act
     response = await http_client.post("/lfa/file-exists", json={"file_key": "test-key"})
     assert response.status == 200
@@ -75,58 +32,60 @@ async def test_lfa_file_exists(http_client):
     assert "exists" in response_data
     assert response_data["exists"] is True
 
-    # Stop lfa patch
-    mock_lfa_patcher.stop()
-
 
 async def test_lfa_upload_file(http_client):
     """Test LFA file upload."""
     # Arrange
-    mock_lfa_patcher = patch("lsst.ts.salobj.AsyncS3Bucket")
-    mock_lfa_client = mock_lfa_patcher.start()
-    mock_lfa_client.return_value = MockAsyncS3Bucket()
+    current_dir = os.path.dirname(__file__)
+    file_path = os.path.join(current_dir, "data/test_file.txt")
 
     # Act
-    with TemporaryFile() as f:
-        response = await http_client.post("/lfa/upload-file", data={"uploaded_file": f})
+    form = aiohttp.FormData()
+    form.add_field("uploaded_file", open(file_path, "rb"), filename="test_file.txt")
+    response = await http_client.post(
+        "/lfa/upload-file",
+        data=form,
+    )
 
-        assert response.status == 200
-        response_data = await response.json()
-        assert "ack" in response_data
-        assert "url" in response_data
-        match_url = re.search(
-            r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*",
-            response_data["url"],
-        )
-        assert match_url
-
-    # Stop lfa patch
-    mock_lfa_patcher.stop()
+    assert response.status == 200
+    response_data = await response.json()
+    assert "ack" in response_data
+    assert "url" in response_data
+    match_url = re.search(
+        r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*",
+        response_data["url"],
+    )
+    assert match_url
 
 
 async def test_lfa_upload_erros(http_client):
     """Test errors on uploading a file."""
     # Arrange
-    mock_lfa_patcher = patch("lsst.ts.salobj.AsyncS3Bucket")
-    mock_lfa_client = mock_lfa_patcher.start()
-    mock_lfa_client.return_value = MockAsyncS3Bucket()
+    current_dir = os.path.dirname(__file__)
+    file_path = os.path.join(current_dir, "data/test_file.txt")
 
     # Act
     # Wrong parameter
-    with TemporaryFile() as f:
-        response = await http_client.post(
-            "/lfa/upload-file", data={"uploaded_fileS": f}
-        )
-        assert response.status == 400
-        response_data = await response.json()
-        assert "ack" in response_data
+    form = aiohttp.FormData()
+    form.add_field(
+        "incorrect_field_name", open(file_path, "rb"), filename="test_file.txt"
+    )
+    response = await http_client.post(
+        "/lfa/upload-file",
+        data=form,
+    )
+    assert response.status == 400
+    response_data = await response.json()
+    assert "ack" in response_data
 
     # Wrong file format
-    response = await http_client.post("/lfa/upload-file", data={"uploaded_file": None})
+    form = aiohttp.FormData()
+    form.add_field("uploaded_file", None)
+    response = await http_client.post(
+        "/lfa/upload-file",
+        data=form,
+    )
     assert response.status == 400
-
-    # Stop lfa patch
-    mock_lfa_patcher.stop()
 
 
 async def test_lfa_wrong_option(http_client):

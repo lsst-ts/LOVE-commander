@@ -21,10 +21,11 @@ import json
 import logging
 
 from aiohttp import web
+from love.commander.utils import unavailable_love_controller
 from lsst.ts import salobj
 
 STD_TIMEOUT = 15  # timeout for command ack
-csc = None
+LOVE_controller = None
 
 
 def create_app(*args, **kwargs):
@@ -40,20 +41,38 @@ def create_app(*args, **kwargs):
     """
     lovecsc_app = web.Application()
 
-    def connect_to_love_controller():
-        global csc
+    async def connect_to_love_controller():
+        """Connect to the LOVE CSC.
+
+        Notes
+        -----
+        LOVE_controller is a global variable that will be used to store the
+        connection to the LOVE CSC using `salobj.Controller`.
+        If the connection could not be established, LOVE_controller will
+        be set to None.
+        """
+        global LOVE_controller
         try:
-            csc = salobj.Controller("LOVE", index=None, do_callbacks=False)
+            LOVE_controller = salobj.Controller(
+                "LOVE", index=None, do_callbacks=False, write_only=True
+            )
+            await LOVE_controller.start_task
         except Exception as e:
             logging.warning(e)
-            csc = None
+            LOVE_controller = None
 
-    connect_to_love_controller()
+    async def close_love_controller():
+        """Close the connection to the LOVE CSC.
 
-    def unavailable_love_controller():
-        return web.json_response(
-            {"ack": "LOVE CSC could not stablish connection"}, status=400
-        )
+        Notes
+        -----
+        This function will close the connection to the LOVE CSC and set
+        LOVE_controller to None.
+        """
+        global LOVE_controller
+        if LOVE_controller:
+            await LOVE_controller.close()
+            LOVE_controller = None
 
     async def post_observing_log(request):
         """Handle post observing log requests.
@@ -75,12 +94,9 @@ def create_app(*args, **kwargs):
                     "<Description about the success state of the request>"
                 }
         """
-        global csc
-        if csc is None:
-            connect_to_love_controller()
-        if csc is None:
+        global LOVE_controller
+        if not LOVE_controller:
             return unavailable_love_controller()
-        await csc.start_task
 
         data = await request.json()
 
@@ -98,24 +114,21 @@ def create_app(*args, **kwargs):
 
         user = data["user"]
         message = data["message"]
-        await csc.evt_observingLog.set_write(user=user, message=message)
+        await LOVE_controller.evt_observingLog.set_write(user=user, message=message)
 
         return web.json_response({"ack": "Added new observing log to SAL"}, status=200)
 
-    lovecsc_app.router.add_post("/observinglog", post_observing_log)
+    async def on_startup(lovecsc_app):
+        logging.info("Running LOVE controller")
+        await connect_to_love_controller()
 
     async def on_cleanup(lovecsc_app):
-        """Close the CSC when cleaning the application.
+        logging.info("Closing LOVE controller")
+        await close_love_controller()
 
-        Parameters
-        ----------
-        lovecsc_app : `aiohttp.web.Application`
-            The LOVE CSC application.
-        """
-        global csc
-        if csc is not None:
-            await csc.close()
+    lovecsc_app.router.add_post("/observinglog", post_observing_log)
 
+    lovecsc_app.on_startup.append(on_startup)
     lovecsc_app.on_cleanup.append(on_cleanup)
 
     return lovecsc_app
