@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.0.1
+------
+
+* Refactor dependency on criopy for BumpTestTimes to use lsst.ts.m1m3.utils. `<https://github.com/lsst-ts/LOVE-commander/pull/77>`_
+
 v7.0.0
 ------
 
