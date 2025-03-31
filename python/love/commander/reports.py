@@ -26,7 +26,7 @@ from urllib.parse import urlencode, urlunparse
 import lsst_efd_client
 from aiohttp import web
 from astropy.time import Time
-from lsst.ts.criopy.m1m3 import BumpTestTimes
+from lsst.ts.m1m3.utils import BumpTestTimes
 from lsst.ts.xml.tables.m1m3 import force_actuator_from_id
 
 EFD_CLIENT_CONNECTION_TIMEOUT = 5
