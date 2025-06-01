@@ -18,6 +18,7 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 import asyncio
+import math
 import signal
 
 import lsst_efd_client
@@ -119,7 +120,13 @@ def create_app(*args, **kwargs):
         for res in results:
             for field in res:
                 items = res[field].items()
-                res[field] = [{"ts": str(item[0]), "value": item[1]} for item in items]
+                res[field] = [
+                    {
+                        "ts": str(item[0]),
+                        "value": None if math.isnan(item[1]) else item[1],
+                    }
+                    for item in items
+                ]
 
         response_data = dict(zip(sources, results))
         return web.json_response(response_data)

@@ -50,14 +50,20 @@ class MockEFDClient(object):
                     pd.Timestamp("2020-03-06 21:51:41"): time.time(),
                     pd.Timestamp("2020-03-06 21:52:41"): time.time(),
                     pd.Timestamp("2020-03-06 21:53:41"): time.time(),
+                    pd.Timestamp("2020-03-06 21:54:41"): time.time(),
+                    pd.Timestamp("2020-03-06 21:55:41"): time.time(),
+                    pd.Timestamp("2020-03-06 21:56:41"): time.time(),
                 }
             else:
                 data[field] = {
                     pd.Timestamp("2020-03-06 21:49:41"): 0.21,
                     pd.Timestamp("2020-03-06 21:50:41"): 0.21,
                     pd.Timestamp("2020-03-06 21:51:41"): 0.21,
-                    pd.Timestamp("2020-03-06 21:52:41"): 0.21,
-                    pd.Timestamp("2020-03-06 21:53:41"): 0.21,
+                    pd.Timestamp("2020-03-06 21:52:41"): float("nan"),
+                    pd.Timestamp("2020-03-06 21:53:41"): float("nan"),
+                    pd.Timestamp("2020-03-06 21:54:41"): float("nan"),
+                    pd.Timestamp("2020-03-06 21:55:41"): 0.21,
+                    pd.Timestamp("2020-03-06 21:56:41"): 0.21,
                 }
 
         df = pd.DataFrame.from_dict(data)
@@ -106,6 +112,18 @@ async def test_efd_timeseries(http_client):
     # Endpoint truncates seconds due to resample
     assert response_data["ATDome-0-topic1"]["field1"][0]["ts"] == "2020-03-06 21:49:00"
     assert response_data["ATDome-0-topic1"]["field1"][0]["value"] == 0.21
+    assert response_data["ATMCS-1-topic2"]["field2"][0]["ts"] == "2020-03-06 21:49:00"
+    assert response_data["ATMCS-1-topic2"]["field2"][0]["value"] == 0.21
+    assert response_data["ATMCS-1-topic2"]["field3"][0]["ts"] == "2020-03-06 21:49:00"
+    assert response_data["ATMCS-1-topic2"]["field3"][0]["value"] == 0.21
+
+    # Check nan values are handled correctly
+    assert response_data["ATDome-0-topic1"]["field1"][3]["ts"] == "2020-03-06 21:52:00"
+    assert response_data["ATDome-0-topic1"]["field1"][3]["value"] is None
+    assert response_data["ATMCS-1-topic2"]["field2"][3]["ts"] == "2020-03-06 21:52:00"
+    assert response_data["ATMCS-1-topic2"]["field2"][3]["value"] is None
+    assert response_data["ATMCS-1-topic2"]["field3"][3]["ts"] == "2020-03-06 21:52:00"
+    assert response_data["ATMCS-1-topic2"]["field3"][3]["value"] is None
 
     # Stop `efd_client` patch
     mock_efd_patcher.stop()
