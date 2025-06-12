@@ -70,6 +70,31 @@ class MockEFDClient(object):
         f.set_result(df)
         return df
 
+    async def select_top_n(
+        self,
+        topic_name,
+        fields,
+        num,
+        time_cut=None,
+        index=None,
+        convert_influx_index=False,
+        use_old_csc_indexing=False,
+    ):
+        data = {}
+        for field in fields:
+            if field == "private_rcvStamp":
+                data[field] = {
+                    pd.Timestamp(f"2020-03-06 21:49:4{i}"): time.time()
+                    for i in range(num)
+                }
+            else:
+                data[field] = {
+                    pd.Timestamp(f"2020-03-06 21:49:4{i}"): 0.21 for i in range(num)
+                }
+
+        df = pd.DataFrame.from_dict(data)
+        return df
+
 
 # For EFD client's timeouts
 def raise_exception(name):
@@ -157,8 +182,75 @@ async def test_efd_timeseries_with_errors(http_client):
     response = await http_client.post("/efd/timeseries/", json=request_data)
     assert response.status == 400
 
+    # Stop `efd_client` patch
+    mock_efd_patcher.stop()
+
+
+async def test_efd_most_recent_timeseries(http_client):
+    """Test the get most recent timeseries response."""
+    # Arrange
+    # Start patching `efd_client`.
+    mock_efd_patcher = patch("lsst_efd_client.EfdClient")
+    mock_efd_client = mock_efd_patcher.start()
+    mock_efd_client.return_value = MockEFDClient()
+
+    cscs = {
+        "ATDome": {
+            0: {"topic1": ["field1"]},
+        },
+        "ATMCS": {
+            1: {"topic2": ["field2", "field3"]},
+        },
+    }
+    request_data = {
+        "efd_instance": "summit_efd",
+        "num": 5,
+        "cscs": cscs,
+    }
+
+    # Act
+    response = await http_client.post("/efd/top_timeseries/", json=request_data)
+    assert response.status == 200
+
     response_data = await response.json()
-    print(response_data)
+    assert "ATDome-0-topic1" in list(response_data.keys())
+    assert "ATMCS-1-topic2" in list(response_data.keys())
+    assert len(response_data["ATDome-0-topic1"]) == 1
+    assert len(response_data["ATMCS-1-topic2"]) == 2
+    assert len(response_data["ATDome-0-topic1"]["field1"]) == 5
+    assert len(response_data["ATMCS-1-topic2"]["field2"]) == 5
+    assert len(response_data["ATMCS-1-topic2"]["field3"]) == 5
+
+    # Stop `efd_client` patch
+    mock_efd_patcher.stop()
+
+
+async def test_efd_most_recent_timeseries_with_errors(http_client):
+    """Test the get most recent timeseries response with errors."""
+    # Arrange
+    # Start patching `efd_client`.
+    mock_efd_patcher = patch("lsst_efd_client.EfdClient")
+    mock_efd_client = mock_efd_patcher.start()
+    mock_efd_client.return_value = MockEFDClient()
+    mock_efd_client.side_effect = raise_exception
+
+    cscs = {
+        "ATDome": {
+            0: {"topic1": ["field1"]},
+        },
+        "ATMCS": {
+            1: {"topic2": ["field2", "field3"]},
+        },
+    }
+    request_data = {
+        "efd_instance": "summit_efd",
+        "num": 5,
+        "cscs": cscs,
+    }
+
+    # Act
+    response = await http_client.post("/efd/top_timeseries/", json=request_data)
+    assert response.status == 400
 
     # Stop `efd_client` patch
     mock_efd_patcher.stop()
@@ -262,6 +354,64 @@ async def test_efd_logmessages(http_client):
     mock_efd_patcher.stop()
 
 
+async def test_efd_logmessages_with_errors(http_client):
+    """Test the get timeseries response with errors."""
+    # Arrange
+    # Start patching `efd_client`.
+    mock_efd_patcher = patch("lsst_efd_client.EfdClient")
+    mock_efd_client = mock_efd_patcher.start()
+    mock_efd_client.return_value = MockEFDClient()
+    mock_efd_client.side_effect = raise_exception
+
+    cscs = {
+        "ATDome": {
+            0: {
+                "logevent_logMessage": [
+                    "private_rcvStamp",
+                    "level",
+                    "message",
+                    "traceback",
+                ],
+                "logevent_errorCode": [
+                    "private_rcvStamp",
+                    "errorCode",
+                    "errorReport",
+                    "traceback",
+                ],
+            },
+        },
+        "ATMCS": {
+            0: {
+                "logevent_logMessage": [
+                    "private_rcvStamp",
+                    "level",
+                    "message",
+                    "traceback",
+                ],
+                "logevent_errorCode": [
+                    "private_rcvStamp",
+                    "errorCode",
+                    "errorReport",
+                    "traceback",
+                ],
+            },
+        },
+    }
+    request_data = {
+        "start_date": "2020-03-16T12:00:00",
+        "end_date": "2020-03-17T12:00:00",
+        "cscs": cscs,
+        "scale": "utc",
+    }
+
+    # Act
+    response = await http_client.post("/efd/logmessages/", json=request_data)
+    assert response.status == 400
+
+    # Stop `efd_client` patch
+    mock_efd_patcher.stop()
+
+
 async def test_efd_clients(http_client):
     """Test query_efd_clients method"""
     # Arrange
@@ -280,13 +430,9 @@ async def test_efd_clients(http_client):
     # Act
     response = await http_client.get("/efd/efd_clients/")
     assert response.status == 200
-
     response_data = await response.json()
-    print(response_data)
-
     assert "instances" in response_data
     instances = response_data["instances"]
-
     assert all(i in instances for i in dummy_efd_instances)
 
     # Stop `efd_client` patch

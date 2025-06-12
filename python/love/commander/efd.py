@@ -131,6 +131,55 @@ def create_app(*args, **kwargs):
         response_data = dict(zip(sources, results))
         return web.json_response(response_data)
 
+    async def query_efd_most_recent_timeseries(request):
+        global efd_clients
+        req = await request.json()
+
+        try:
+            efd_instance = req["efd_instance"]
+            cscs = req["cscs"]
+            num = int(req.get("num", 1))
+            time_cut = req.get("time_cut", None)
+        except Exception:
+            return web.json_response(
+                {"ack": "Some of the required parameters is not present"}, status=400
+            )
+
+        efd_client = efd_clients.get(efd_instance)
+        if efd_client is None:
+            efd_client = connect_to_efd_intance(efd_instance)
+        if efd_client is None:
+            return unavailable_efd_client()
+
+        query_tasks = []
+        sources = []
+        for csc in cscs:
+            indexes = cscs[csc]
+            for index in indexes:
+                topics = indexes[index]
+                for topic in topics:
+                    fields = topics[topic]
+                    task = efd_client.select_top_n(
+                        f"lsst.sal.{csc}.{topic}",
+                        fields,
+                        num,
+                        time_cut=time_cut,
+                        index=int(index),
+                    )
+                    sources.append(f"{csc}-{index}-{topic}")
+                    query_tasks.append(task)
+
+        results = [r for r in await asyncio.gather(*query_tasks)]
+        results = [r.to_dict() for r in results]
+
+        for res in results:
+            for field in res:
+                items = res[field].items()
+                res[field] = [{"ts": str(item[0]), "value": item[1]} for item in items]
+
+        response_data = dict(zip(sources, results))
+        return web.json_response(response_data)
+
     async def query_efd_logs(request):
         global efd_clients
         req = await request.json()
@@ -195,6 +244,8 @@ def create_app(*args, **kwargs):
 
     efd_app.router.add_post("/timeseries", query_efd_timeseries)
     efd_app.router.add_post("/timeseries/", query_efd_timeseries)
+    efd_app.router.add_post("/top_timeseries", query_efd_most_recent_timeseries)
+    efd_app.router.add_post("/top_timeseries/", query_efd_most_recent_timeseries)
     efd_app.router.add_post("/logmessages", query_efd_logs)
     efd_app.router.add_post("/logmessages/", query_efd_logs)
     efd_app.router.add_get("/efd_clients", query_efd_clients)
