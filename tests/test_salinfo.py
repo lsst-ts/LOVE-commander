@@ -113,6 +113,8 @@ def assert_topic_data(topic_data):
             assert "description" in v
             assert "units" in v
             assert "type_name" in v
+            assert "count" in v
+
             assert k == v["name"]
             assert isinstance(v["name"], str)
             assert isinstance(v["description"], str) or isinstance(
@@ -122,6 +124,7 @@ def assert_topic_data(topic_data):
             assert isinstance(v["type_name"], str) or isinstance(
                 v["type_name"], type(None)
             )
+            assert isinstance(v["count"], int) or isinstance(v["count"], type(None))
 
 
 async def test_all_topic_data(http_client):

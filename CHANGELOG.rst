@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.0.2
+------
+
+* Retrieve count from FieldInfo to allow the frontend identify which topic parameters are arrays. `<https://github.com/lsst-ts/LOVE-commander/pull/78>`_
+
 v7.0.1
 ------
 

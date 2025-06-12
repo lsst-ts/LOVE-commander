@@ -130,6 +130,7 @@ def create_app(*args, **kwargs):
                 "description": field_info[k].description,
                 "units": field_info[k].units,
                 "type_name": field_info[k].sal_type,
+                "count": field_info[k].count,
             }
             for k in field_info.keys()
             if not k.startswith("private_")
