@@ -252,8 +252,8 @@ def create_app(*args, **kwargs):
     efd_app.router.add_get("/efd_clients/", query_efd_clients)
 
     async def on_cleanup(efd_app):
-        # This app doesn't require cleaning up.
-        pass
+        global efd_clients
+        efd_clients = dict()
 
     efd_app.on_cleanup.append(on_cleanup)
 

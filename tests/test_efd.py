@@ -154,8 +154,8 @@ async def test_efd_timeseries(http_client):
     mock_efd_patcher.stop()
 
 
-async def test_efd_timeseries_with_errors(http_client):
-    """Test the get timeseries response with errors."""
+async def test_efd_timeseries_with_efd_client_errors(http_client):
+    """Test the get timeseries response with efd client errors."""
     # Arrange
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
@@ -172,6 +172,7 @@ async def test_efd_timeseries_with_errors(http_client):
         },
     }
     request_data = {
+        "efd_instance": "summit_efd",
         "start_date": "2020-03-16T12:00:00",
         "time_window": 15,
         "cscs": cscs,
@@ -181,6 +182,7 @@ async def test_efd_timeseries_with_errors(http_client):
     # Act
     response = await http_client.post("/efd/timeseries/", json=request_data)
     assert response.status == 400
+    assert await response.json() == {"ack": "EFD Client could not stablish connection"}
 
     # Stop `efd_client` patch
     mock_efd_patcher.stop()
@@ -265,8 +267,8 @@ async def test_efd_most_recent_timeseries(http_client):
     mock_efd_patcher.stop()
 
 
-async def test_efd_most_recent_timeseries_with_errors(http_client):
-    """Test the get most recent timeseries response with errors."""
+async def test_efd_most_recent_timeseries_with_efd_client_errors(http_client):
+    """Test the get most recent timeseries response with efd client errors."""
     # Arrange
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
@@ -291,6 +293,7 @@ async def test_efd_most_recent_timeseries_with_errors(http_client):
     # Act
     response = await http_client.post("/efd/top_timeseries/", json=request_data)
     assert response.status == 400
+    assert await response.json() == {"ack": "EFD Client could not stablish connection"}
 
     # Stop `efd_client` patch
     mock_efd_patcher.stop()
@@ -433,8 +436,8 @@ async def test_efd_logmessages(http_client):
     mock_efd_patcher.stop()
 
 
-async def test_efd_logmessages_with_errors(http_client):
-    """Test the get logmessages response with errors."""
+async def test_efd_logmessages_with_efd_client_errors(http_client):
+    """Test the get logmessages response with efd client errors."""
     # Arrange
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
@@ -477,6 +480,7 @@ async def test_efd_logmessages_with_errors(http_client):
         },
     }
     request_data = {
+        "efd_instance": "summit_efd",
         "start_date": "2020-03-16T12:00:00",
         "end_date": "2020-03-17T12:00:00",
         "cscs": cscs,
@@ -486,6 +490,7 @@ async def test_efd_logmessages_with_errors(http_client):
     # Act
     response = await http_client.post("/efd/logmessages/", json=request_data)
     assert response.status == 400
+    assert await response.json() == {"ack": "EFD Client could not stablish connection"}
 
     # Stop `efd_client` patch
     mock_efd_patcher.stop()
