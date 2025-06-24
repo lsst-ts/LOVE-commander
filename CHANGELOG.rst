@@ -5,6 +5,7 @@ Version History
 v7.0.2
 ------
 
+* Add query_efd_most_recent_timeseries method to the efd app in order to query most recent timeseries. `<https://github.com/lsst-ts/LOVE-commander/pull/79>`_
 * Retrieve count from FieldInfo to allow the frontend identify which topic parameters are arrays. `<https://github.com/lsst-ts/LOVE-commander/pull/78>`_
 
 v7.0.1
