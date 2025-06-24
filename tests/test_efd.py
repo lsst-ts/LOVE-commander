@@ -186,6 +186,46 @@ async def test_efd_timeseries_with_errors(http_client):
     mock_efd_patcher.stop()
 
 
+async def test_efd_timeseries_with_missing_params(http_client):
+    """Test the get timeseries response with missing parameters."""
+    # Arrange
+    # Start patching `efd_client`.
+    mock_efd_patcher = patch("lsst_efd_client.EfdClient")
+    mock_efd_client = mock_efd_patcher.start()
+    mock_efd_client.return_value = MockEFDClient()
+
+    request_data = {
+        "efd_instance": "summit_efd",
+        "start_date": "2020-03-16T12:00:00",
+        "time_window": 15,
+        "csc": {
+            "ATDome": {
+                0: {"topic1": ["field1"]},
+            },
+            "ATMCS": {
+                1: {"topic2": ["field2", "field3"]},
+            },
+        },
+        "resample": "1min",
+    }
+
+    # Act
+    for key in request_data:
+        # Remove one key at a time to test missing parameters
+        request_data_copy = request_data.copy()
+        del request_data_copy[key]
+
+        # Act
+        response = await http_client.post("/efd/timeseries/", json=request_data_copy)
+        assert response.status == 400
+        assert await response.json() == {
+            "ack": "Some of the required parameters is not present"
+        }
+
+    # Stop `efd_client` patch
+    mock_efd_patcher.stop()
+
+
 async def test_efd_most_recent_timeseries(http_client):
     """Test the get most recent timeseries response."""
     # Arrange
@@ -256,8 +296,47 @@ async def test_efd_most_recent_timeseries_with_errors(http_client):
     mock_efd_patcher.stop()
 
 
+async def test_efd_most_recent_timeseries_with_missing_params(http_client):
+    """Test the get most recent timeseries response with missing parameters."""
+    # Arrange
+    # Start patching `efd_client`.
+    mock_efd_patcher = patch("lsst_efd_client.EfdClient")
+    mock_efd_client = mock_efd_patcher.start()
+    mock_efd_client.return_value = MockEFDClient()
+
+    request_data = {
+        "efd_instance": "summit_efd",
+        "cscs": {
+            "ATDome": {
+                0: {"topic1": ["field1"]},
+            },
+            "ATMCS": {
+                1: {"topic2": ["field2", "field3"]},
+            },
+        },
+    }
+
+    # Act
+    for key in request_data:
+        # Remove one key at a time to test missing parameters
+        request_data_copy = request_data.copy()
+        del request_data_copy[key]
+
+        # Act
+        response = await http_client.post(
+            "/efd/top_timeseries/", json=request_data_copy
+        )
+        assert response.status == 400
+        assert await response.json() == {
+            "ack": "Some of the required parameters is not present"
+        }
+
+    # Stop `efd_client` patch
+    mock_efd_patcher.stop()
+
+
 async def test_efd_logmessages(http_client):
-    """Test the get timeseries response."""
+    """Test the get logmessages response."""
     # Arrange
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
@@ -355,7 +434,7 @@ async def test_efd_logmessages(http_client):
 
 
 async def test_efd_logmessages_with_errors(http_client):
-    """Test the get timeseries response with errors."""
+    """Test the get logmessages response with errors."""
     # Arrange
     # Start patching `efd_client`.
     mock_efd_patcher = patch("lsst_efd_client.EfdClient")
@@ -407,6 +486,72 @@ async def test_efd_logmessages_with_errors(http_client):
     # Act
     response = await http_client.post("/efd/logmessages/", json=request_data)
     assert response.status == 400
+
+    # Stop `efd_client` patch
+    mock_efd_patcher.stop()
+
+
+async def test_efd_logmessages_with_missing_params(http_client):
+    """Test the get logmessages response with missing parameters."""
+    # Arrange
+    # Start patching `efd_client`.
+    mock_efd_patcher = patch("lsst_efd_client.EfdClient")
+    mock_efd_client = mock_efd_patcher.start()
+    mock_efd_client.return_value = MockEFDClient()
+
+    request_data = {
+        "efd_instance": "summit_efd",
+        "start_date": "2020-03-16T12:00:00",
+        "end_date": "2020-03-17T12:00:00",
+        "cscs": {
+            "ATDome": {
+                0: {
+                    "logevent_logMessage": [
+                        "private_rcvStamp",
+                        "level",
+                        "message",
+                        "traceback",
+                    ],
+                    "logevent_errorCode": [
+                        "private_rcvStamp",
+                        "errorCode",
+                        "errorReport",
+                        "traceback",
+                    ],
+                },
+            },
+            "ATMCS": {
+                0: {
+                    "logevent_logMessage": [
+                        "private_rcvStamp",
+                        "level",
+                        "message",
+                        "traceback",
+                    ],
+                    "logevent_errorCode": [
+                        "private_rcvStamp",
+                        "errorCode",
+                        "errorReport",
+                        "traceback",
+                    ],
+                },
+            },
+        },
+        "scale": "utc",
+    }
+
+    # Act
+    for key in request_data:
+        # Remove one key at a time to test missing parameters
+        request_data_copy = request_data.copy()
+        del request_data_copy[key]
+
+        # Act
+        response = await http_client.post("/efd/logmessages/", json=request_data_copy)
+        assert response.status == 400
+        assert await response.json() == {
+            "ack": "Some of the required parameters is not present"
+        }
 
     # Stop `efd_client` patch
     mock_efd_patcher.stop()
