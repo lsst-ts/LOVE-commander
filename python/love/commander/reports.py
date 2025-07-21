@@ -162,9 +162,15 @@ def create_app(*args, **kwargs):
     reports_app.router.add_post("/m1m3-bump-tests", query_m1m3_bump_tests)
     reports_app.router.add_post("/m1m3-bump-tests/", query_m1m3_bump_tests)
 
-    async def on_cleanup(reports_app):
-        # This app doesn't require cleaning up.
-        pass
+    async def on_cleanup(app):
+        global efd_clients
+        for instance, client in efd_clients.items():
+            if client is not None:
+                try:
+                    client.close()
+                except Exception as e:
+                    logging.error(f"Error closing EFD client {instance}: {e}")
+        efd_clients = dict()
 
     reports_app.on_cleanup.append(on_cleanup)
 
