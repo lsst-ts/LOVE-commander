@@ -22,6 +22,7 @@ from unittest.mock import patch
 
 from astropy.time import Time
 from love.commander.reports import CHRONOGRAF_DASHBOARDS_PATHS, SITE_DOMAINS
+from lsst.ts.m1m3.utils.bump_test_times import BumpTest
 
 
 class MockEFDClient:
@@ -29,19 +30,23 @@ class MockEFDClient:
 
 
 class MockBumpTestTimes:
-    async def find_times(self, actuator_id, start, end):
-        return (
-            [
+    async def find_times(self, fa, primary, start, end):
+        if primary:
+            for date_range in [
                 (Time("2024-01-01T00:00:00"), Time("2024-01-01T01:00:00")),
                 (Time("2024-01-02T00:00:00"), Time("2024-01-02T01:00:00")),
                 (Time("2024-01-03T00:00:00"), Time("2024-01-03T01:00:00")),
-            ],
-            [
+            ]:
+                test = BumpTest(fa, date_range[0], date_range[1], None)
+                yield test
+        else:
+            for date_range in [
                 (Time("2024-01-01T00:00:00"), Time("2024-01-01T01:00:00")),
                 (Time("2024-01-02T00:00:00"), Time("2024-01-02T01:00:00")),
                 (Time("2024-01-03T00:00:00"), Time("2024-01-03T01:00:00")),
-            ],
-        )
+            ]:
+                test = BumpTest(fa, date_range[0], date_range[1], None)
+                yield test
 
 
 async def test_query_m1m3_bump_tests(http_client):

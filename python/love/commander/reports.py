@@ -109,9 +109,6 @@ def create_app(*args, **kwargs):
         logging.info(
             f"Looking for actuator #{actuator_id} bump test times in {start_date} to {end_date}"
         )
-        primary, secondary = await btt.find_times(
-            int(actuator_id), Time(start_date), Time(end_date)
-        )
         actuator = force_actuator_from_id(actuator_id)
 
         def add_result(start, end, results):
@@ -146,12 +143,16 @@ def create_app(*args, **kwargs):
             )
 
         primary_tests = []
-        for bump in primary:
-            add_result(bump[0], bump[1], primary_tests)
+        async for bump in btt.find_times(
+            actuator, True, Time(start_date), Time(end_date)
+        ):
+            add_result(bump.start_time, bump.end_time, primary_tests)
 
         secondary_tests = []
-        for bump in secondary:
-            add_result(bump[0], bump[1], secondary_tests)
+        async for bump in btt.find_times(
+            actuator, False, Time(start_date), Time(end_date)
+        ):
+            add_result(bump.start_time, bump.end_time, secondary_tests)
 
         response_data = {
             "primary": primary_tests,
