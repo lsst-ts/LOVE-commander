@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.1.1
+------
+
+* Refactor reports application to support ts-m1m3-utils v0.3.2. `<https://github.com/lsst-ts/LOVE-commander/pull/80>`_
+
 v7.1.0
 ------
 
