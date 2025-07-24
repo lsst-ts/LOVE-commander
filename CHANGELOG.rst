@@ -2,7 +2,12 @@
 Version History
 ===============
 
-v7.0.2
+v7.1.1
+------
+
+* Refactor reports application to support ts-m1m3-utils v0.3.2. `<https://github.com/lsst-ts/LOVE-commander/pull/80>`_
+
+v7.1.0
 ------
 
 * Add query_efd_most_recent_timeseries method to the efd app in order to query most recent timeseries. `<https://github.com/lsst-ts/LOVE-commander/pull/79>`_

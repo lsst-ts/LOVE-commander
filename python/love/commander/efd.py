@@ -18,6 +18,7 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 import asyncio
+import logging
 import math
 import signal
 
@@ -251,8 +252,14 @@ def create_app(*args, **kwargs):
     efd_app.router.add_get("/efd_clients", query_efd_clients)
     efd_app.router.add_get("/efd_clients/", query_efd_clients)
 
-    async def on_cleanup(efd_app):
+    async def on_cleanup(app):
         global efd_clients
+        for instance, client in efd_clients.items():
+            if client is not None:
+                try:
+                    client.close()
+                except Exception as e:
+                    logging.error(f"Error closing EFD client {instance}: {e}")
         efd_clients = dict()
 
     efd_app.on_cleanup.append(on_cleanup)
