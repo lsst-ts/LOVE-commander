@@ -143,7 +143,7 @@ def create_app(*args, **kwargs):
                 {
                     "start": bump_test.start_time.isot,
                     "end": bump_test.end_time.isot,
-                    "result": bump_test.result == BumpTestStatus.PASSED,
+                    "result": bool(bump_test.result == BumpTestStatus.PASSED),
                     "url": url,
                 }
             )
