@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.1.2
+------
+
+* Add bump test result to query_m1m3_bump_tests response. `<https://github.com/lsst-ts/LOVE-commander/pull/81>`_
+
 v7.1.1
 ------
 

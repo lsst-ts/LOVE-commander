@@ -23,30 +23,36 @@ from unittest.mock import patch
 from astropy.time import Time
 from love.commander.reports import CHRONOGRAF_DASHBOARDS_PATHS, SITE_DOMAINS
 from lsst.ts.m1m3.utils.bump_test_times import BumpTest
+from lsst.ts.xml.enums.MTM1M3 import BumpTest as BumpTestStatus
 
 
 class MockEFDClient:
-    pass
+    def close(self):
+        pass
 
 
 class MockBumpTestTimes:
     async def find_times(self, fa, primary, start, end):
-        if primary:
-            for date_range in [
-                (Time("2024-01-01T00:00:00"), Time("2024-01-01T01:00:00")),
-                (Time("2024-01-02T00:00:00"), Time("2024-01-02T01:00:00")),
-                (Time("2024-01-03T00:00:00"), Time("2024-01-03T01:00:00")),
-            ]:
-                test = BumpTest(fa, date_range[0], date_range[1], None)
-                yield test
-        else:
-            for date_range in [
-                (Time("2024-01-01T00:00:00"), Time("2024-01-01T01:00:00")),
-                (Time("2024-01-02T00:00:00"), Time("2024-01-02T01:00:00")),
-                (Time("2024-01-03T00:00:00"), Time("2024-01-03T01:00:00")),
-            ]:
-                test = BumpTest(fa, date_range[0], date_range[1], None)
-                yield test
+        results = [
+            (
+                Time("2024-01-01T00:00:00"),
+                Time("2024-01-01T01:00:00"),
+                BumpTestStatus.PASSED,
+            ),
+            (
+                Time("2024-01-02T00:00:00"),
+                Time("2024-01-02T01:00:00"),
+                BumpTestStatus.NOTTESTED,
+            ),
+            (
+                Time("2024-01-03T00:00:00"),
+                Time("2024-01-03T01:00:00"),
+                BumpTestStatus.TESTINGPOSITIVE,
+            ),
+        ]
+        for start, end, result in results:
+            test = BumpTest(fa, start, end, result)
+            yield test
 
 
 async def test_query_m1m3_bump_tests(http_client):
@@ -80,15 +86,25 @@ async def test_query_m1m3_bump_tests(http_client):
     assert len(response_data["primary"]) == 3
     assert len(response_data["secondary"]) == 3
 
-    assert response_data["primary"][0]["start"] == "2024-01-01T00:00:00.000"
-    assert response_data["primary"][0]["end"] == "2024-01-01T01:00:00.000"
+    def assert_response_data(type, index):
+        entry = response_data[type][index]
+        assert "start" in entry
+        assert "end" in entry
+        assert "result" in entry
+        assert isinstance(entry["result"], bool)
+        assert "url" in entry
 
-    assert "url" in response_data["primary"][0]
-    assert response_data["primary"][0]["url"].startswith(
-        "https://"
-        + SITE_DOMAINS[selected_efd_instance]
-        + CHRONOGRAF_DASHBOARDS_PATHS["m1m3_bump_tests"][selected_efd_instance]
-    )
+        assert entry["start"] == f"2024-01-0{i+1}T00:00:00.000"
+        assert entry["end"] == f"2024-01-0{i+1}T01:00:00.000"
+        assert entry["url"].startswith(
+            "https://"
+            + SITE_DOMAINS[selected_efd_instance]
+            + CHRONOGRAF_DASHBOARDS_PATHS["m1m3_bump_tests"][selected_efd_instance]
+        )
+
+    for i in range(3):
+        assert_response_data("primary", i)
+        assert_response_data("secondary", i)
 
     # Stop patches
     mock_efd_patcher.stop()

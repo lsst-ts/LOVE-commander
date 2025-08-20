@@ -27,16 +27,21 @@ import lsst_efd_client
 from aiohttp import web
 from astropy.time import Time
 from lsst.ts.m1m3.utils import BumpTestTimes
+from lsst.ts.xml.enums.MTM1M3 import BumpTest as BumpTestStatus
 from lsst.ts.xml.tables.m1m3 import force_actuator_from_id
 
 EFD_CLIENT_CONNECTION_TIMEOUT = 5
 SITE_DOMAINS = {
     "summit_efd": "summit-lsp.lsst.codes",
+    "base_efd": "base-lsp.lsst.codes",
+    "tucson_efd": "tucson-teststand.lsst.codes",
     "usdf_efd": "usdf-rsp.slac.stanford.edu",
 }
 CHRONOGRAF_DASHBOARDS_PATHS = {
     "m1m3_bump_tests": {
         "summit_efd": "/chronograf/sources/1/dashboards/199",
+        "base_efd": "/chronograf/sources/1/dashboards/71",
+        "tucson_efd": "/chronograf/sources/1/dashboards/47",
         "usdf_efd": "/chronograf/sources/1/dashboards/61",
     }
 }
@@ -111,7 +116,7 @@ def create_app(*args, **kwargs):
         )
         actuator = force_actuator_from_id(actuator_id)
 
-        def add_result(start, end, results):
+        def add_result(bump_test, results):
             def act(index, actuator) -> int:
                 return 0 if index is None else actuator
 
@@ -121,8 +126,8 @@ def create_app(*args, **kwargs):
                 "tempVars[y_index]": act(actuator.y_index, actuator.actuator_id),
                 "tempVars[z_index]": actuator.actuator_id,
                 "tempVars[s_index]": act(actuator.s_index, actuator.actuator_id),
-                "lower": start.isot + "Z",
-                "upper": end.isot + "Z",
+                "lower": bump_test.start_time.isot + "Z",
+                "upper": bump_test.end_time.isot + "Z",
             }
             url = urlunparse(
                 (
@@ -136,8 +141,9 @@ def create_app(*args, **kwargs):
             )
             results.append(
                 {
-                    "start": start.isot,
-                    "end": end.isot,
+                    "start": bump_test.start_time.isot,
+                    "end": bump_test.end_time.isot,
+                    "result": bump_test.result == BumpTestStatus.PASSED,
                     "url": url,
                 }
             )
@@ -146,13 +152,13 @@ def create_app(*args, **kwargs):
         async for bump in btt.find_times(
             actuator, True, Time(start_date), Time(end_date)
         ):
-            add_result(bump.start_time, bump.end_time, primary_tests)
+            add_result(bump, primary_tests)
 
         secondary_tests = []
         async for bump in btt.find_times(
             actuator, False, Time(start_date), Time(end_date)
         ):
-            add_result(bump.start_time, bump.end_time, secondary_tests)
+            add_result(bump, secondary_tests)
 
         response_data = {
             "primary": primary_tests,
