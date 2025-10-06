@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.1.3
+------
+
+* Cast bump result to BumpTestStatus to avoid issues with json serializer on reports app. `<https://github.com/lsst-ts/LOVE-commander/pull/82>`_
+
 v7.1.2
 ------
 
