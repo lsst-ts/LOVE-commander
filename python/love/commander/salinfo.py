@@ -259,6 +259,7 @@ def create_app(*args, **kwargs):
         for name in salinfo:
             await salinfo[name].close()
         await salobj_domain.close()
+        salobj_domain = None
 
     salinfo_app.on_startup.append(on_startup)
     salinfo_app.on_cleanup.append(on_cleanup)

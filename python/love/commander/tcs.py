@@ -53,7 +53,6 @@ def create_app():
         )
 
     async def auxtel_command(request):
-        global atcs_client
         if not atcs_client:
             await connect_to_atcs_intance()
         if not atcs_client:
@@ -86,7 +85,6 @@ def create_app():
             )
 
     async def auxtel_docstrings(request):
-        global atcs_client
         if not atcs_client:
             await connect_to_atcs_intance()
         if not atcs_client:
@@ -118,7 +116,6 @@ def create_app():
         )
 
     async def maintel_command(request):
-        global mtcs_client
         if not mtcs_client:
             await connect_to_mtcs_intance()
         if not mtcs_client:
@@ -151,7 +148,6 @@ def create_app():
             )
 
     async def maintel_docstrings(request):
-        global mtcs_client
         if not mtcs_client:
             await connect_to_mtcs_intance()
         if not mtcs_client:
