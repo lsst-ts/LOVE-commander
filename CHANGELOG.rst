@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.1.4
+------
+
+* Change the build string in the conda recipe. `<https://github.com/lsst-ts/LOVE-commander/pull/83>`_
+
 v7.1.3
 ------
 

@@ -94,7 +94,6 @@ def create_app(*args, **kwargs):
                     "<Description about the success state of the request>"
                 }
         """
-        global LOVE_controller
         if not LOVE_controller:
             return unavailable_love_controller()
 
