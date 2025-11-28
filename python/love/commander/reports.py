@@ -67,8 +67,6 @@ def create_app(*args, **kwargs):
     reports_app = web.Application()
 
     def connect_to_efd_intance(instance):
-        global efd_clients
-
         signal.signal(signal.SIGALRM, raise_timeout)
 
         instance_exists = efd_clients.get(instance)
@@ -90,7 +88,6 @@ def create_app(*args, **kwargs):
         )
 
     async def query_m1m3_bump_tests(request):
-        global efd_clients
         req = await request.json()
 
         try:
@@ -143,7 +140,7 @@ def create_app(*args, **kwargs):
                 {
                     "start": bump_test.start_time.isot,
                     "end": bump_test.end_time.isot,
-                    "result": bump_test.result == BumpTestStatus.PASSED,
+                    "result": BumpTestStatus(bump_test.result) == BumpTestStatus.PASSED,
                     "url": url,
                 }
             )

@@ -126,7 +126,6 @@ def create_app(*args, **kwargs):
                     "exists": "<True if the file exists, False otherwise>"
                 }
         """
-        global s3_bucket
         if not s3_bucket:
             return unavailable_s3_bucket()
 
@@ -155,8 +154,6 @@ def create_app(*args, **kwargs):
                     "url": "<URL to the uploaded file>"
                 }
         """
-
-        global s3_bucket, LOVE_controller
         if not s3_bucket:
             return unavailable_s3_bucket()
         if not LOVE_controller:
@@ -190,8 +187,6 @@ def create_app(*args, **kwargs):
                     "url": "<URL to the uploaded file>"
                 }
         """
-
-        global s3_bucket, LOVE_controller
         if not s3_bucket:
             return unavailable_s3_bucket()
         if not LOVE_controller:
@@ -225,8 +220,6 @@ def create_app(*args, **kwargs):
                     "url": "<URL to the uploaded file>"
                 }
         """
-
-        global s3_bucket, LOVE_controller
         if not s3_bucket:
             return unavailable_s3_bucket()
         if not LOVE_controller:

@@ -48,8 +48,6 @@ def create_app(*args, **kwargs):
     efd_app = web.Application()
 
     def connect_to_efd_intance(instance):
-        global efd_clients
-
         signal.signal(signal.SIGALRM, raise_timeout)
 
         instance_exists = efd_clients.get(instance)
@@ -71,7 +69,6 @@ def create_app(*args, **kwargs):
         )
 
     async def query_efd_timeseries(request):
-        global efd_clients
         req = await request.json()
 
         try:
@@ -133,7 +130,6 @@ def create_app(*args, **kwargs):
         return web.json_response(response_data)
 
     async def query_efd_most_recent_timeseries(request):
-        global efd_clients
         req = await request.json()
 
         try:
@@ -182,7 +178,6 @@ def create_app(*args, **kwargs):
         return web.json_response(response_data)
 
     async def query_efd_logs(request):
-        global efd_clients
         req = await request.json()
 
         try:
