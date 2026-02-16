@@ -95,6 +95,10 @@ def create_app(*args, **kwargs):
                 else f"Last ack received {e.ackcmd}."
             )
             return web.json_response({"ack": f"Command time out. {msg}"}, status=504)
+        except salobj.AckError as e:
+            return web.json_response(
+                {"ack": f"Command failed with ack: {e.ackcmd}."}, status=422
+            )
 
     cmd.router.add_post("/", start_cmd)
 
