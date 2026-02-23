@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.1.5
+------
+
+* Handle salobj.AckError in the commands endpoint. `<https://github.com/lsst-ts/LOVE-commander/pull/84>`_
+
 v7.1.4
 ------
 
