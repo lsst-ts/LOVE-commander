@@ -165,8 +165,15 @@ def create_app(*args, **kwargs):
                     )
                     sources.append(f"{csc}-{index}-{topic}")
                     query_tasks.append(task)
-
-        results = [r for r in await asyncio.gather(*query_tasks)]
+        
+        results = []
+        for task in query_tasks:
+            try:
+                result = await task
+                results.append(result)
+            except Exception as e:
+                logging.error(f"Error executing EFD query: {e}")
+        # results = [r for r in await asyncio.gather(*query_tasks)]
         results = [r.to_dict() for r in results]
 
         for res in results:
