@@ -3,7 +3,7 @@ requires = [ "setuptools", "setuptools_scm" ]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "love-commander"
+name = "LOVE-commander"
 description = "LSST Operators Visualization Environment (LOVE) service to send SAL commands from http endpoints using salobj."
 license = { text = "GPL" }
 classifiers = [ "Programming Language :: Python :: 3" ]
