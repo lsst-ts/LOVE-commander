@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.2.0
+------
+
+* Add insert-license pre-commit hook and make LICENSE and COPYRIGHT standard. `<https://github.com/lsst-ts/LOVE-commander/pull/85>`_
+
 v7.1.5
 ------
 
