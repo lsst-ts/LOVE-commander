@@ -12,4 +12,9 @@ RUN source /home/saluser/.setup_dev.sh && \
     pip install pytest-aiohttp aiohttp-devtools lsst_efd_client && \
     pip install -e .
 
+# Bind ts_planning_tool repository
+RUN git clone -b tickets/DM-44804 https://github.com/lsst-ts/ts_planning_tool.git /home/saluser/ts_planning_tool
+RUN source /home/saluser/.setup_dev.sh && \
+    pip install -e /home/saluser/ts_planning_tool
+
 CMD ["docker/start-daemon-dev.sh"]
