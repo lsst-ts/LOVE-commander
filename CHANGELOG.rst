@@ -5,6 +5,7 @@ Version History
 v7.2.0
 ------
 
+* Set conda package architecture to noarch. `<https://github.com/lsst-ts/LOVE-commander/pull/87>`_
 * Update setup.py for compatibility with new ssw nexus repository conda uploads. `<https://github.com/lsst-ts/LOVE-commander/pull/86>`_
 * Add insert-license pre-commit hook and make LICENSE and COPYRIGHT standard. `<https://github.com/lsst-ts/LOVE-commander/pull/85>`_
 
